@@ -1,0 +1,5 @@
+<div style="background: red; color: white; font-weight: bold;">
+<p>
+Don't upload any record now, I'm moving the table...  Please wait until it's available on the new host, at <a href="http://www.nevercorner.net/">nevercorner</a>. Thanks !
+</p>
+</div>

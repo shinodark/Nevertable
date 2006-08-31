@@ -1,0 +1,324 @@
+25/02/06:  version 2.1.2 mise en ligne
+ - Ajout d'un système de cache (utilisé que pour la liste user_id <-> pseudo
+ pour l'instant ).
+ - Ajout du bblink dans l'affichage d'un record.
+ - Ajout de stats d'utilisateurs en ligne sur la table (nouvelle table
+ nvtbl_online).
+ - Ajout de la vérification des champs entrés dans la config par le panneau
+ admin
+ - Nouvelle page record.php pour l'affichage d'un record + commentaires,
+ dissociés de index.php maintenant.
+
+19/02/06: version 2.1.1  mise en ligne
+ - Fonction Db->Protect amélioré, et tous les champs sont protégés dans la
+ classe DB et non plus ailleurs un peu partout dans le code.
+ - Ajout d'un champ user_id pour les tables records et commentaires.
+ Elimination du champ pseudo qui devient inutile, et changement de tout le
+ code pour utilise de chap user_id à la place.
+ - Ajout de la table nvtbl_config, pour la configuration de la table.
+ Elimination des champs correspondants du fichier config.php
+ - Ajout de la fonction "Purge trash" pour vider la poubelle.
+ - Correction du bug des statistiques utilisateurs.
+ - La fonction "Re-compute everything" remplace la précédent qui ne recalculait
+ que les meilleurs records. Maintenant on recalcule aussi les stats
+ utilisateurs.
+
+19/11/05: mise en ligne v2.1.0
+ - Affichage des niveaux + images
+ - Rajout du diff view mode pour un niveau si sélectionne
+ - Edition des profils complet pour l'admin
+ - Elimination du maximum de failles potentielles de sécurité
+31/10/05: mise en ligne v2.1.0beta
+ - New users profiles: You can now edit your profile, change some options of the layout (number of records displayed by default, how they are sorted, etc...). 
+ - UI enhancements: Comments look better, you can use bbcode and add smilies. You can also now sort member list. I also add support for several themes (you can choose one on your profile), but only one is available at the moment.
+
+And some small bug fixes in admin panel and records management, I'm surprised Tuxmym haven't seen them yet :p
+22/09/05: mise en ligne v2.0.2
+22/09/05: Ajout de la checkbox "goal not reached" pour l'upload
+18/09/05: Ajout du test de nom de fichier replay / aux conditions
+18/09/05: Ajout du cookie
+18/09/05: Correction du buf dans is_a_best_record, pour gérer le cas ou
+		  plusieurs records "most coins" ont le même nombre de pièces, mais avec des tps
+		  différent. Seul le meilleur tps doit être retenu, mais il doit être
+		  retenu !
+14/09/05: Ajout du set mehdi2-beta ! \o/
+04/09/05: Remplacement de <? en <?php partour, pour compatibilité bbclone
+14/07/05 mise en ligne v2.0.1
+	* Affichage des derniers commentaires de contest et oldones seulement
+	* la selection de "all" dans le formulaire des filtres n'affiche que
+	oldones et contest
+	* le lien du champ pseudo dans l'affichage d'un record permet d'envoyer un
+	mail à l'utilisateur, lors de l'affichage du folder "incoming"
+	* la liste d'utilisateur est accessible en lecture seule pour les admin
+
+10/07/05 mise en ligne v2.0.0 \o/
+09/07/05 mise en ligne v2.0.0beta1
+	v2.0: mise à jour howto
+	* lancer install/newfilemanagement.php
+	* lancer install/comments_count.php
+	* créer les répertoires replays/<folder> + chmod
+	* déplacer les fichiers replays/* dans replays/contest et replays/out/*
+	dans replays/oldones
+	* faire un checkdatbase
+		-> Redéplacer les fichiers manquants, qui sont des trash par ex.
+	---------------------------------------------------------------------------
+	
+    * SQL: ajout table "users"
+	* SQL: ajout colonne "comments_count" dans la table "rec"
+		- plus besoin de compter lors de l'affichage, énorme économie du
+		nombre de requêtes.
+    * Gestion de comptes utilisateurs
+	* Nouvelle gestion des fichiers replays :
+		- autant de sous-répertoires à "replays/" qu'il y a de "folder"
+		- dans la base seul le nom du replay est stocké
+	* Ajout du mode diff view
+	* Modération des commentaires par authentification dans passer par le
+	panneau admin
+	* Possibilité de changer son mot de passe
+	* Recovery du mot de passe
+	* Liste et statistiques des membres
+	* admin: CheckDatabase largement déboggué
+	* admin: Edition des messages de la page principal, et de l'annonce
+	* admin: Gestion utilisateurs, pour le root uniquement
+	* admin: Explorateur de fichier
+
+v1.6.1-RELEASE
+15/06/05
+	* ajout du fichier speech.txt pour le texte de présentation.
+12/06/05
+    * Ajout d'une option de téléchargement de la liste des liens des fichiers
+	replays affichés
+	* Correction d'un bug lors de l'ajout avec "overwrite" d'un record :
+	maintenant l'ancien fichier replay (qui devenait orphelin) associé est
+	effacé.
+v1.6-RELEASE
+21/05/05
+	* Ajout de l'implémentation de la fonction "modification automatique si
+	existant" dans le formulaire "Auto add" du panneau d'admin
+	 -> Modif de la fonction "Check"
+	* Lorsqu'un fichier replay eiste déjà, renommage automatique lors de
+	l'ajout
+	* création du répoertoire "out/" ou les fichiers replays des vieux recoreds
+	sont déplacés
+v1.5-RELEASE
+16/05/2005
+	* Changement des requetes de comptage en SELECT COUNT(*)
+	  - Nouvelle fonction "CoutRows" dans la class DB
+15/05/2005
+    ------------------------------------------------------------------------
+	* Reécriture complète de la table ! (presque)Tout est passé en objet!
+	------------------------------------------------------------------------
+	Les fonctionnalités sont quasiment identiques, normalement, à celles du
+	14/05/05, sauf :
+	  - "addform" ne permet plus d'ajouter un record
+	  - L'ajout de record ne peut se faire qu'avec le "add auto".
+	  - La modification de celui-ci doit encore être implémenté
+14/05/2005
+v1.4-RELEASE
+ 	* ajout d'un param. de config. pour la version de mysql, utilisé dans la
+	fonction de conversion des dates.
+13/05/2005
+    * passage de toutes les fonctions d'accès à la bdd dans une classe.
+	* modifications de la section admin pour l'upload, la gestion des
+	meilleurs records, messages plus clairs, corrections de bugs...
+	* ajout d'une classe "replay" capable de sortir les infos d'un fichier
+	replay
+		-> Ajout d'un formulaire d'ajout automatique de record basé sur le
+		replay
+	* dans struct.inc.php, ajout des correspondances fichiers sol <->
+	set/niveau utilisé pour l'analyse de fichiers replays
+	* modifications de style mineurs, ajout d'une classe d'affichage
+	d'erreurs...
+27/03/2005
+	* Quand on clique sur le trombonne, tous les records sont affichés de tous
+	les répertoires.
+	* Correction d'un bug fans is_best_record, ajout de "0 + " devant "level"
+	et "levelset" pour qu'il soit bien interpréter comme des nombres, sinon
+	l'indexation ne marche pas dans le tableau "best" car 05 est interprété
+	comme la chaine "05" et pas le nombre "5"
+21/03/2005
+	* Ajout d'index dans les tables (voir MYSQL-INDEX.sql)
+20/03/2005
+	* Correction du bug énorme dans db_request_generic_filter qui effacait
+	tous les commentaires si on modérait un commentaire avec le mot "where"
+	dedans.
+06/03/2005
+	* Correction du cas ou plusieurs "most coins" ont des temps différents:
+	seul le meilleur temps est conservé.
+	* admin: La fonction "Check database" gère les déplcament vers "oldones".
+05/03/2005
+	* passage de tous les "nextargs" en "global"
+	* affichage du répertoire en cours d'affichage
+	* admin: Réinjection d'un "oldone" dans contest, si le dernier "best" est
+	effacé du contest.
+	* admin: déplacement automatique d'un record battu dans "oldones"
+	* ajout d'un champ dans la table des résultats, pour afficher les autres
+	records pour le même niveau (valable donc aussi dans les commentaires).
+	* changement du style pour l'affichage d'un record (ajout de oneresult
+	dans le css).
+	* ajout de l'affichage du record concerné dans les commentaires.
+	* ajout de functions/folders.php pour gérer l'accès aux répertoires.
+	* ajout d'une variable de configuration pour afficher une description du
+	répertoire actuellement affiché.
+
+25/02/2005
+	* dans comment_fcts.php, rajout de addslahes AVANT addcslashes dans
+	clean_content.
+
+v1.2-RELEASE
+30/01/2005
+	* Ajout de la colonne "old" avec possibilité de tri
+29/01/2005
+	* Si un record est ajouté avec un record déjà existant mais dans la
+	  poubelle, le message de confirmation n'est plus affiché.
+	* Mise en ligne de la 1.2 !
+	* Ajout de la possibilité de faire une annonce en dessous du speech par
+	upload d'un fichier announce.txt sur le serveur.
+28/01/2005
+	* Panneau admin: ajout du tri par id.
+	* Ajout d'un filtre d'afficgade des nouveaux records uniquement.
+23/01/2005
+	* Integration du tagboard dans la sidebar
+	* Preview des derniers commentaires dans la sidebar
+	* Effacement des commentaires associés à un record, quand celui-ci est
+	  définitivement supprimé.
+22/01/2005
+    * La fonction "check best record" détecte les faux best.
+	* Les record freestyle ne sont pas élus "best" quand ils sont modifiés
+	* L'upload remarche à nouveau.
+    * Correction de bugs, on ne pouvait plus poster de commentaires, ni les
+	modérer.
+	** Modification de la colonne "date" en timestamp dans la table des
+	commentaires. Ceci permet d'être homogène à la table records.
+20/01/2005
+    * Une bonne douzaine de bugs ont été corrigés.
+19/01/2005
+	* La nouvelle méthode de calcul des best record est implémentée
+	  complètement. A chaque déplacement d'un dossier à l'autre, ou
+	  modification d'un record, le calcul est fait à nouveau.
+16/01/2005
+    * Ajout d'une barre de navigation.
+	* Modification de la gestion des "best record". Un champ a été ajouté à la
+	  base qui indique si c'est un best record ou non. Ce champ doit être
+	  rempli lors de l'ajout/modification d'un record.
+	* Panneau admin : Ajout de la fonction  "recheck best records" qui
+	  revérifie toutes les entrée.
+	  BUG: modifie tous les timestamps. ?
+09/01/2005
+    * Supprime la mémorisation des filtres lors du clique sur le "Change" du
+	  formulaire de selection. Cela peut aboutir sur des résultats
+	  incompréhensibles avec des tableaux vides on ne sait pas pourquoi.
+    * Vrai modération des commentaires avec edition possible.
+    * Ajout de la gestion de dossier.
+	  3 dossiers, à usage différents :
+	     * "Contest": contient les replays activés, affichés dans la page
+		 principal.
+		 * "Incoming": peut-être utilisé pour poster un record avant
+		 approbation par un autre administrateur, en cas de doute. Les records
+		 dans incoming ne sont pas affichés en page principal.
+		 * "Trash" : la poubelle. Un record de "Contest" effacé va toujours
+		 dans la poubelle. Les fichiers uploadés ne sont PAS effacés. Un
+		 record dans la poubelle peut-etre soit définitivement supprimé, AVEC
+		 le fichier uploadé, ou "reinjecte" dans le dossier "Contest".
+	  Le formulaire d'ajout, en cas d'opération "Add" (et pas "modify") permet
+	  de choisir si on veut mettre le nouveau record tout de suite dans
+	  "Contest", ou dans "Incoming".
+		 
+08/01/2005
+    * Panneau admin : Ajout de la fonction "Check database" dans l'administration.
+    * Révision de tout le code de l'accès à la base de donnée,
+	  => nouveau module db.php, moteur de bdd qui gère TOUT le sql.
+	* config.inc.php : ajout des champs de configuration généraux
+	* Ajout d'un champ "timestamp" dans la table des records
+	  => affichage d'une icone "new" si un record a été ajouté/modifié
+	  depuis moins de 3 jours
+	* Panneau admin: Changement du formulaire :
+	    * Affichage de l'id dans le formulaire
+		* Les actions "add", "modify" sont séparés, ajout de "delete" dans le
+		formulaire. "add" ajoute un record, même déjà existant mais avec un
+		avertissement. "modify" modifie le record actuellement sléctionner
+		(par l'id), tous les champs sont alors modifiables.
+		
+
+ v1.1b
+
+02/01/2005
+	* Correction du bug des temps <0 qui emmpechait le filtre "best record"
+	  de marcher dans tous les cas. Les "goal not reached" sont maintenant
+	  ceux dont le temps est >=9999.
+	* Limite de taille d'upload passée à 2,5Mo.
+
+v1.1
+
+02/01/2005
+	* Ajout d'une option dans "addform" pour activation du hack ou non.
+	* Ajout du cas particulier pour les records de type freestyle :
+	  plusieurs record identiques (même joueur/niveau) sont autorisés.
+	  A la place du message "Overwrite" est affiché un message prévenant
+	  qu'on est dans un cas particulier.
+	* Ajout d'un filtre "niveaux". Il permet de n'afficher que les records
+	  pour une collection, ou pour une paire collection/niveau.
+	* Panneau Admin : Modification de toute l'interface pour profiter
+	  des mêmes possibilités de filtre que dans la page principale.
+	* Panneau Admin : Ajout de la colonne 'id' qui peut faciliter la
+	  reconnaissance d'un record en particulier en cas de problème.
+	* Panneau Admin : Ajout du bouton "Clear form".
+	* Amélioration du comportement des filtres (panneau admin et page
+	  principale) :
+	     * Les filtres sont cumulables. C'est à dire que l'on peut par ex
+		   filtré par joueur, puis par collection, puis trié les résultats
+		   par temps/pièces, etc...
+		 * un clic sur l'entête de la colonne "Player" annule le filtre
+		 "Joueur".
+	
+01/01/2005
+	* Bonne année !! :D
+	* filtre "best record only" :
+	  Ce filtre était buggé dans la première mise ligne, il ne réagissait
+	  pas bien quand on affichait les "most coins". Maintenant le comportement
+	  est le suivant :
+	    * si on est en "most coins", le "best record" est celui qui a le plus
+		de pièces
+		* dans tous les autres cas, le "best record" est celui qui a le
+		meilleur temps.
+	    * Les record "freestyle" ne peuvent pas être des "best records".
+		* ajout du "WHERE type='$type'" a la requete de recherche des meilleurs
+		  records, sinon l'affichage est erroné, un record freestyle avec un
+		  temps inférieur peut empêcher l'affichage d'un record "best time".
+	* Correction de l'affichage des temps pour respecter l'affichage comme
+	  dans le jeu : X:XX''xx
+	* Un record ayant un temps <0  (-1 par ex)est considéré comme un record dont la balle
+	  n'a pas atteint le goal. Ceci est affiché dans la page principale.
+	* Ajout d'une icone dans la table de la page principale, qui indique
+	  si le record est un "best time" ou "most record". Pas d'icône pour le
+	  freestyle encore, et je suis vraiment nul pour les graphismes !
+	* Panneau Admin: mémorisation des filtres: permet de n'afficher que les "most
+	  coins" par exemple, puis de trier parmis que ceux-là. L'annulation des
+	  filtres se fait en cliquant sur l'image du "top" comme pour la page
+	  principale.
+	* Panneau Admin: il n'y a plus "all" dans la liste de sélection du type.
+	* Upload: réecriture de la gestion de l'upload qui contenait au moins
+	  3 bugs. L'upload du même fichier 2 fois de suite entrainait son
+	  écrasement, et les erreurs étaient mal gérées. Passage de la limite
+	  de l'upload de le fichier de config, et augmentation de 1Mo=>1,5Mo.
+	  
+30/12/2004
+	* Amélioration du blabla
+	* Les adresses mail ne fonctionnait apparemment pas du tout, suppression
+	des '#'
+	* Ajout du filtre "best record only" !
+25/12/2004
+	* Un clique sur l'image du "top" annule tous les filtres/tri et revient
+	à l'affichage par défaut dans la page principale.
+ 
+v1.0
+
+23/12/2004
+   Première release en ligne utilisable avec toutes les fonctionnalités demandée au
+	départ:
+	* affichage des records, par type, avec tri et filtres.
+	* 3 catégories de record : "best time, "most coins" et "freestyle"
+	* upload de replay attaché à un record
+	* possibilité de poster des commentaires attaché à un record
+	* administration complete record+commentaires, protégée par http auth
+	* style définitif

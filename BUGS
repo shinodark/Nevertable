@@ -1,0 +1,1 @@
+* Lors de la modification automatique d'un record, penser à purger l'ancien fichier replay avant d'uploader le nouveau sinon ca fait un orphelin.

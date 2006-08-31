@@ -1,0 +1,31 @@
+body {
+	font-family : Tahoma,Verdana,Arial,Geneva,Helvetica,sans-serif;
+	font-size: 10px;
+	background: white;
+    height : 100%;
+    width : 180px;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    border: 0;
+}
+
+/******** Smilies ****************************/
+#smilies td {
+    width: 100%;
+}
+
+.smiliesHeader {
+	background-color: #469;
+    color : white;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+}
+.smiliesHeader a{
+    text-decoration: none;
+    color: white;
+
+}

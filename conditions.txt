@@ -1,0 +1,49 @@
+    <p>A record should meet some conditions to be added in the table :</p>
+    <br />
+    <br />technical conditions <br />
+    <p>- for "best time", the replay has to beat an existing one in the table,
+or use an original path to reach the goal. Some levels are not
+interesting for "best time" replays (like easy 1 and 3), for these
+levels we do not accept replays.</p>
+    <p>- for "most coins", the replay has to either beat an existing one or be
+    the first replay for the level.</p>
+    <p>- for "free style", the replay must be either lucky, unlucky or
+    acrobatic and be different from the existing ones.</p>
+    <br />
+    <br />camera conditions <br />
+    <p>Only the standard camera settings (or
+    nearer from the ball) are accepted for "best time" and "most coins"
+categories. Settings where the camera is more distant from the
+ball are not accepted because in many cases it helps the player to
+finish easily a level.</p>
+    <br />
+    <br />levels conditions <br />
+    <p>Some levels are considered as not interesing for the contest. So, here the list
+    of levels that are not accepted for "best time" categories : </p>
+    <ul>
+        <li>Easy : 1,3,5,6,8,10,19,23</li>
+        <li>Hard : 4,10,16,19</li>
+        <li>Mehdi : 9</li>
+    </ul>
+    <p>
+    Replays for those levels are of course welcomed in other categories ^-^
+    </p>
+    <br />
+    <br />replay name recommendations <br />
+    <p>A last thing ;) please, try to name your replay file as this standard, it's easier
+    to manage : </p>
+    <pre>
+    [f|c] [E|H|M|N] [level] [name]
+    </pre>
+    <p>That means, in plain text :</p>
+    <ul>
+        <li>First, add 'f' for "freestyle", or 'c' for "most coins" replays</li>
+        <li>Then 'E' for Easy set, 'H' for Hard and 'M' for Mehdi,</li>
+        <li>level number,</li>
+        <li>At the end your name shouldn't exceed 3 caracters, else it's not displayed
+        correctly in neverball GUI at the moment.</li>
+    </ul>
+    <p>For instance, a freestyle for easy 15 by toto : "fE15toto". That's simple ;)</p>
+    <p>
+    This "standard" is meant to be the default name for replay in next version of neverball.</p>
+    <p>That's all folks ^-^</p>

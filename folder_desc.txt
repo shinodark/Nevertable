@@ -1,0 +1,4 @@
+incoming#incoming folders, record to potentially add in contest.    
+contest#All current records of the neverball contest!
+trash#deleted records
+oldones#old records which were beaten by others.
