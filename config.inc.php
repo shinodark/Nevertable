@@ -23,9 +23,9 @@
 /*all path are relative to nevertable dir */
 $config = array (
     "bdd_server"        => "localhost",
-    "bdd_name"          => "localbase",
-    "bdd_user"          => "localebase",
-    "bdd_passwd"        => "pass",
+    "bdd_name"          => "shinobufan",
+    "bdd_user"          => "shinobufan",
+    "bdd_passwd"        => "P0werlea",
     "bdd_prefix"        => "nvrtbl_",
     "bdd_mysql_version" => "4.1.x",  /* 4.0.x or 4.1.x */
     );

@@ -45,7 +45,7 @@ class DialogStandard
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
     echo "<link rel=\"stylesheet\" href=\"".$this->style->GetCss()."\" type=\"text/css\" />\n";
     echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"Nevertable rss feed\" href=\"http://www.nevercorner.net/table/rss.php\" />\n";
-    echo "<link rel=\"shortcut icon\" href=\"./favicon.ico\" />\n";
+    /*echo "<link rel=\"shortcut icon\" href=\"./favicon.ico\" />\n";*/
     echo "<script type=\"text/javascript\" src=\"".ROOT_PATH."includes/js/jsutil.js\"></script>\n";
 
     if(!empty($special)) echo $special; 
@@ -183,7 +183,7 @@ class DialogStandard
         echo "<div class=\"menuitem\"><a href=\"admin/management.php\">&nbsp;&nbsp; Management</a><br/></div>\n";
         echo "<div class=\"menuitem\"><a href=\"admin/admin.php?to=memberlist\">&nbsp;&nbsp; Members mgmt</a><br/></div>\n";
         echo "<div class=\"menuitem\"><a href=\"admin/filexplorer.php\">&nbsp;&nbsp; File explorer</a><br/></div>\n";
-        echo "<div class=\"menuitem\"><a href=\"javascript:child=window.open('/shinotag/moder2.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">&nbsp;&nbsp; Tagboard moderation</a><br/></div>\n";
+        echo "<div class=\"menuitem\"><a href=\"javascript:child=window.open('/shinotag/moder.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">&nbsp;&nbsp; Tagboard moderation</a><br/></div>\n";
         echo "<div class=\"menuitem\"><a href=\"/bbclone\">&nbsp;&nbsp; BBclone stats</a><br/></div>\n";
       }
 
@@ -947,7 +947,7 @@ class DialogStandard
        echo  "<td><a href=\"record.php?id=".$fields['id']."\">".$str."</a></td>";
   
     /* "attach" */
-    echo "<td><a href=\"index.php?levelset_f=".$fields['levelset']."&amp;level_f=".$fields['level']."&amp;folder=-1\" title=\"Show all records for this level.\">";
+    echo "<td><a href=\"?levelset_f=".$fields['levelset']."&amp;level_f=".$fields['level']."&amp;folder=-1\" title=\"Show all records for this level.\">";
     echo $this->style->GetImage('attach', "Show all records for this level.");
     echo "</a></td>";
      

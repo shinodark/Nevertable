@@ -43,7 +43,7 @@ class DialogAdmin
     echo "<title>$title</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
     echo "<link rel=\"stylesheet\" href=\"".$this->style->GetCss()."\" type=\"text/css\" />\n";
-    echo "<link rel=\"shortcut icon\" href=\"".ROOT_PATH."favicon.ico\" />\n";
+   /* echo "<link rel=\"shortcut icon\" href=\"".ROOT_PATH."favicon.ico\" />\n"; */
     echo "<script type=\"text/javascript\" src=\"".ROOT_PATH."includes/js/jsutil.js\"></script>\n";
     echo $special; 
     echo "</head>\n\n";
@@ -141,7 +141,7 @@ class DialogAdmin
     echo "<div class=\"menuitem\"><a href=\"admin.php?to=memberlist\">Members List</a><br/></div>\n";
     echo "<div class=\"menuitem\"><a href=\"filexplorer.php\">File explorer</a><br/></div>\n";
     echo "<div class=\"menuitem\"><a href=\"purgetrash.php\">Purge trash !</a><br/></div>\n";
-    echo "<div class=\"menuitem\"><a href=\"javascript:child=window.open('/shinotag/moder2.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">Tagboard moderation</a><br/></div>\n";
+    echo "<div class=\"menuitem\"><a href=\"javascript:child=window.open('/shinotag/moder.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">Tagboard moderation</a><br/></div>\n";
     echo "<div class=\"menuitem\"><a href=\"/bbclone\">BBclone stats</a><br/></div>\n";
     echo "<div class=\"menuitem\"><a href=\"../index.php\">Leave admin panel</a><br/></div>\n";
     echo "</div>\n";
@@ -664,7 +664,7 @@ class DialogAdmin
     }
   
     /* "attach" */
-    echo "<td><a href=\"admin.php?levelset_f=".$fields['levelset']."&amp;level_f=".$fields['level']."&amp;folder=-1\" title=\"Show all records for this level.\">";
+    echo "<td><a href=\"?levelset_f=".$fields['levelset']."&amp;level_f=".$fields['level']."&amp;folder=-1\" title=\"Show all records for this level.\">";
     echo $this->style->GetImage('attach', "Show all records for this level.");
     echo "</a></td>";
      

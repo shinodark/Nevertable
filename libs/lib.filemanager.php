@@ -223,6 +223,17 @@ class FileManager
     return $data;
   }
 
+  function ReadString()
+  {
+     $data = file_get_contents($this->filename);
+     if (!$data)
+     {
+       $this->SetError("Error opening file ".$this->filename." for reading.");
+       return false;
+     }
+     return $data;
+  }
+
   function Write($data)
   {
     $handle = @fopen($this->filename, "w");
