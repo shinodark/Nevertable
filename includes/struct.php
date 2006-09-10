@@ -352,8 +352,9 @@ $toolbar_el = array (
     );
 
 $themes = array(
-    "default",
-/*    "kitty", */
+    "Sulfur",
+    "Oxygen",
+    "Lithium",
     );
 
 $icons = array (

@@ -184,7 +184,6 @@ class DialogStandard
         echo "<div class=\"menuitem\"><a href=\"admin/admin.php?to=memberlist\">&nbsp;&nbsp; Members mgmt</a><br/></div>\n";
         echo "<div class=\"menuitem\"><a href=\"admin/filexplorer.php\">&nbsp;&nbsp; File explorer</a><br/></div>\n";
         echo "<div class=\"menuitem\"><a href=\"javascript:child=window.open('/shinotag/moder.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">&nbsp;&nbsp; Tagboard moderation</a><br/></div>\n";
-        echo "<div class=\"menuitem\"><a href=\"/bbclone\">&nbsp;&nbsp; BBclone stats</a><br/></div>\n";
       }
 
       echo "<div class=\"menuitem\"><a href=\"?to=upload\">Upload a record</a><br/></div>\n";
@@ -702,7 +701,7 @@ class DialogStandard
 
     echo "</td><td style=\"text-align: right\"\n";
    
-    echo  "<a href=\"javascript:child=window.open('./smilies.php', 'Smiles', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">Add smiles ^o^</a>";
+    echo  "<a href=\"javascript:child=window.open('./smilies.php', 'Smiles', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">Add smiles \o/</a>";
 
     /* fin -- barre d'outils */
     echo  "</td></tr>\n";

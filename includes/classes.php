@@ -35,3 +35,4 @@ include_once ROOT_PATH ."libs/lib.auth.php";
 include_once ROOT_PATH ."libs/lib.mail.php";
 include_once ROOT_PATH ."libs/lib.bbcode.php";
 include_once ROOT_PATH ."libs/lib.cache.php";
+//include_once ROOT_PATH ."libs/lib.template.php";

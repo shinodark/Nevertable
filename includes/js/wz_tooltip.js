@@ -36,9 +36,9 @@ see http://www.gnu.org/copyleft/lesser.html
 
 ////////////////  GLOBAL TOOPTIP CONFIGURATION  /////////////////////
 var ttAbove       = false;        // tooltip above mousepointer? Alternative: true
-var ttBgColor     = "#ffecf6";
+var ttBgColor     = "#f8f8f8";
 var ttBgImg       = "";           // path to background image;
-var ttBorderColor = "#ff3300";
+var ttBorderColor = "#333300";
 var ttBorderWidth = 1;
 var ttDelay       = 0;          // time span until tooltip shows up [milliseconds]
 var ttFontColor   = "#000066";

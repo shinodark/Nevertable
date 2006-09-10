@@ -59,7 +59,6 @@ class Template
   }
 
   /* Remplace les données des clés entre { } par les données dynamiques */
-  }
   function Process($subst_arr)
   {
     if (empty($this->tpl_content))

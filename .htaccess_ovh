@@ -1,3 +1,4 @@
+Options +FollowSymlinks
 RewriteEngine on
-Rewritecond %{HTTP_HOST} ^nevercorner.net$
-RewriteRule   ^(.*)$ http://www.nevercorner.net/$1  [QSA,L,R=301]
+rewritecond %{http_host} ^nevercorner\.net [nc]
+rewriterule ^(.*)$ http://www.nevercorner.net/$1 [r=301,nc]
