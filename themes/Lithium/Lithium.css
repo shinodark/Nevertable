@@ -1,0 +1,393 @@
+body {
+	font-family: Tahoma, Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
+	font-size: 12px;
+	background : #eee;
+    height : 100%;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color : #003;
+	background: transparent;
+    text-decoration: none;
+}
+
+img {
+    border: 0;
+}
+
+
+#page {
+	background: #fff url(images/bg.png) repeat-y left;
+    color : #232;
+    width: 950px;
+    margin : 0 auto;
+    padding : 0 0 0 0;
+}
+
+#main {
+    background: transparent;
+    width: 900px;
+    margin : 0 auto;
+}
+
+input, textarea {
+	font-family: Tahoma, Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
+	border : 1px solid gray;
+	background: #beb;
+	font-size: 10px;
+}
+select, option {
+	background: #beb;
+}
+input[type=submit]:hover, input[type=submit]:focus {
+	background : #cfc;
+}
+
+input[type=text]:focus, input[type=password]:focus, textarea:focus {
+	border: 1px solid green;
+	padding:0;
+}
+
+table {
+    border: 1px solid #E0E0E0;
+    background: transparent;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th {
+    font-weight: bold;
+    text-align: center;
+    color: #655;
+    background: #FFF url(images/back-vertic.png) repeat-x;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    color: #223;
+}
+
+caption {
+    font-weight: bold;
+    text-align: center;
+}
+
+.embedded table, .embedded td, .embedded tr, .embedded th {
+    border: 0px;
+    padding: 0 0 0 0;
+}
+
+.embedded td {
+    height: 40px;
+}
+
+.embedded input {
+    font-family: "Courier New";
+    font-size: 14px;
+    border: 1px;
+    border-color: #888;
+    background: #ffe;
+}
+
+/******** Record table ********************/
+
+/* style only for main page */
+.results-prelude {
+    margin-top: 5px;
+    width: 670px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    text-align: center;
+	color : #f03080;
+}
+
+.results {
+    float: right; 
+    margin-left : 0px;
+    margin-top : 5px;
+    margin-bottom : 30px;
+    width : 670px;
+    font-size: 11px;
+    clear: both;
+}
+
+
+.results tr:hover {
+    background : #fff;
+}
+
+.results td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    text-align: center;
+    color: #223;
+}
+
+.results a {
+    color: #633;
+    text-decoration: none;
+}
+
+.row1 {
+    background: #fbfbfb;  
+   /* border-top: 1px solid #e8e8e8;  */
+}
+
+.row2 {
+    background: #f4f4f4;  
+  /*    border-top: 1px solid #eee;  */
+}
+
+/******** ONE result table *********/
+.oneresult {
+    margin-left : auto;
+    margin-right : auto;
+    margin-top : 30px;
+    margin-bottom : 30px;
+    width : 670px;
+    text-align: center;
+    clear: both;
+}
+
+.oneresult a {
+    color: #633;
+}
+
+/******** Comments table ********************/
+
+.comments {
+    margin : 20px auto;
+    width : 650px;
+    font-size: 11px;
+}
+
+.comments a {
+    color: #633;
+}
+
+.com_header {
+    background: #fff url(images/back-vertic.png) repeat-x;
+    height: 30px;
+    padding: 2px;
+}
+
+td .com_content {
+    border: 2px solid #d0f8d0;
+    padding: 10px 10px 10px 10px;
+    background: #dfd; 
+}
+
+
+/******** Title ****************************/
+
+#top {
+    color: #223;
+    width: 932px;
+    height: 169px;
+    margin-left: 9px;
+    margin-top: 0px;
+}
+
+/******** Prelude ****************************/
+
+#prelude {
+    margin-top: 5px;
+    width: 820px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
+	background: #FFF url(images/back-vertic.png) repeat-x;
+    text-align: left;
+    font-weight: bold;
+	color : #308030;
+}
+
+#prelude a {
+	color : #00f;
+}
+#prelude a:hover, #prelude a:focus {
+	color : #0373A1;
+}
+#prelude p,ul,li {
+	color : #333;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+/******** Speech ****************************/
+#speech {
+    position: relative;
+    float: left;
+    width: 820px;
+    margin-left: 11px;
+    margin-right: 10px;
+    margin-bottom: 40px;
+    text-align: left;
+	color : #333;
+}
+
+/******** Navbar *****************************/
+.navbar {
+	background: #FFF url(images/back-vertic.png) repeat-x;
+    width: 880px;
+    clear: both;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: left;
+    font-weight: bold;
+	color : #3b5;
+}
+.navbar a {
+	color : #558;
+}
+
+
+/******** Sidebar ****************************/
+#sidebar {
+    position : relative;
+    float : left;
+    top : 0px;
+    left : 3px;
+    bottom: auto;
+    margin-right: 0px;
+    margin-bottom: 60px;
+    width: 170px;
+    font-size: 10px;
+}
+
+#sidebar h2 {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    background: #3b5;
+    font-size: 14px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}
+
+#sidebar table {
+    padding: 0 0 0 0;
+}
+.comPreviewHeader {
+    background: #eee;
+}
+.comPreviewHeader a{
+    color: #411;
+}
+.comPreview {
+    background: #fff;
+}
+
+.menubar {
+    padding: 0px;
+    margin-bottom: 10px;
+    margin-top: 0px;
+}
+
+.menuitem {
+    padding-left: 6px;
+    border-top: 1px solid #f8f8f8;
+    background: #fbfbfb;
+}
+
+.menuitem:hover {    background: url(images/curseur.gif) repeat-y left; }
+.menuitem a:hover { color: #335 ; }
+
+/******** Footer ****************************/
+
+#footer
+{
+    margin-top: 0px;
+    margin-bottom: 0px;
+	margin-left: 10px;
+    margin-right: 10px;
+    clear: both;
+	padding: 0;
+	background: #FFF url(images/back-vertic.png) repeat-x;
+	text-align: center;
+    width: 929px;
+    height: 20px;
+    border: 1px solid #E0E0E0;
+
+    color: #335;
+ 
+    -moz-border-radius: 6px;
+}
+
+#footer a{
+	color: #558;
+}
+
+#stats
+{
+    margin-top: 50px;
+    margin-bottom: 0px;
+	margin-left: 10px;
+    margin-right: 10px;
+    clear: both;
+	padding: 0;
+	text-align: center;
+    width: 929px;
+    height: 20px;
+    border: 1px solid #E0E0E0;
+    color: #335;
+}
+
+/******** generic form  *****************/
+
+.nvform {
+	background: #FFF url(images/back-vertic.png) repeat-x;
+    clear: both;
+    margin-top : 50px;
+    margin-bottom : 30px;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 11px;
+    color: #224;
+}
+
+.nvform td {
+    padding: 5px;
+}
+
+/****** General Button ************************/
+
+.button {
+    margin-top: 30px;
+	margin-left: auto;
+    margin-right: auto;
+    clear: both;
+	padding: 5px;
+	background: #FFF url(images/back-vertic.png) repeat-x;
+	text-align: center;
+    border: 1px solid #E0E0E0;
+    color: #335;
+    -moz-border-radius: 6px;
+}
+.button a {
+    font-weight: bold;
+}
+.error {
+    margin-top: 30px;
+	margin-left: auto;
+    margin-right: auto;
+    clear: both;
+	padding: 5px;
+	background: #f55;
+	text-align: center;
+    font-weight: bold;
+    border: 1px solid #E0E0E0;
+    color: #fff;
+}
