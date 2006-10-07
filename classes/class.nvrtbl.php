@@ -388,6 +388,7 @@ class Nvrtbl
     global $users_cache;
 
     $this->db->RequestInit("SELECT", "rec");
+    $this->db->RequestGenericFilter("folder", get_folder_by_name("contest"));
     $this->db->RequestSort("old");
     $this->db->RequestLimit($order, 0);
     $this->db->Query();
