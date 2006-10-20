@@ -33,7 +33,7 @@ $table = new Nvrtbl($config, "DialogStandard");
 $ts = $table->GetEarlierDate();
 $items = $seq = '';
 
-$Records = $table->GetLastRecords(LEVEL);
+$Records = $table->GetLastRecords(LEVEL, "incoming");
 
 for ($i=0; $i<LEVEL; $i++)
 {
@@ -69,8 +69,8 @@ echo '<?xml version="1.0" encoding="iso-88591" ?>'."\n";
   xmlns="http://purl.org/rss/1.0/">
 
 <channel rdf:about="http://shinobufan.intuxication.org/nevertable/">
-  <title>Nevertable - Neverball Hall of Fame RSS feed</title>
-  <description>List of all neverball records</description>
+  <title>Nevertable - Neverball Hall of Fame RSS feed - incoming</title>
+  <description>List of incoming record in the table for (moderators)</description>
   <link>http://shinobufan.intuxication.org/nevertable/</link>
   <dc:language>en</dc:language>
   <dc:creator></dc:creator>

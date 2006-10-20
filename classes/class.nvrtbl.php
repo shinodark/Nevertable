@@ -372,7 +372,9 @@ class Nvrtbl
   }
   
   /*__UTILS__*/
-  function getEarlierDate()
+
+  /* Record RSS */
+  function GetEarlierDate()
   {
     $this->db->RequestInit("SELECT", "rec");
     $this->db->RequestSort("old");
@@ -383,12 +385,12 @@ class Nvrtbl
     return GetDateFromTimestamp($val['timestamp']);
   }
   
-  function getLastRecords($order)
+  function GetLastRecords($order, $folder="contest")
   {
     global $users_cache;
 
     $this->db->RequestInit("SELECT", "rec");
-    $this->db->RequestGenericFilter("folder", get_folder_by_name("contest"));
+    $this->db->RequestGenericFilter("folder", get_folder_by_name($folder));
     $this->db->RequestSort("old");
     $this->db->RequestLimit($order, 0);
     $this->db->Query();
@@ -411,6 +413,43 @@ class Nvrtbl
     }
   return $Records;
   }
+
+  /* Comments RSS */
+  function getEarlierDateComments()
+  {
+    $this->db->RequestInit("SELECT", "com");
+    $this->db->RequestSort("old");
+    $this->db->RequestLimit(1, 0);
+    $res = $this->db->Query();
+
+    $val = $this->db->FetchArray();
+    return GetDateFromTimestamp($val['timestamp']);
+  }
+  
+  function getLastComments($order)
+  {
+    global $users_cache;
+
+    $this->db->RequestInit("SELECT", "com");
+    $this->db->RequestSort("old");
+    $this->db->RequestLimit($order, 0);
+    $this->db->Query();
+
+    $i=0;
+    while($val = $this->db->FetchArray())
+    {
+      $pseudo = $users_cache[$val['user_id']];
+      $Comments[$i]['id'] = $val['id'];
+      $Comments[$i]['title'] = htmlspecialchars("New comment from ".$pseudo,ENT_NOQUOTES);
+      $Comments[$i]['pseudo'] =  $pseudo;
+      $Comments[$i]['content'] = $val['content'];
+      $Comments[$i]['date'] = getIsoDate(GetDateFromTimestamp($val['timestamp']));
+    
+      $i++;
+    }
+  return $Comments;
+  }
+
 
   function getProcessTime()
   {
