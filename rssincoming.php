@@ -35,8 +35,10 @@ $items = $seq = '';
 
 $Records = $table->GetLastRecords(LEVEL, "incoming");
 
-for ($i=0; $i<LEVEL; $i++)
+if (!empty($Records))
 {
+  for ($i=0; $i<LEVEL; $i++)
+  {
     $URL = NVRTBL_PATH . "index.php?link=".$Records[$i]['id'];
     $seq .=  "<rdf:li rdf:resource=\"".$URL."\" />\n";
    
@@ -52,6 +54,7 @@ for ($i=0; $i<LEVEL; $i++)
 	    "</item>\n";
 
     $items .= $itemappend;
+  }
 }
 
 $table->Close();
@@ -72,7 +75,7 @@ echo '<?xml version="1.0" encoding="iso-88591" ?>'."\n";
   <title>Nevertable - Neverball Hall of Fame RSS feed - incoming</title>
   <description>List of incoming record in the table for (moderators)</description>
   <link>http://shinobufan.intuxication.org/nevertable/</link>
-  <dc:language>en</dc:language>
+  <dc:language>fr</dc:language>
   <dc:creator></dc:creator>
   <dc:rights></dc:rights>
   <dc:date><?php echo getIsoDate($ts); ?></dc:date>
