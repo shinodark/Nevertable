@@ -19,6 +19,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
+#
+
+include_once ROOT_PATH ."classes/class.sidebar.php";
+include_once ROOT_PATH ."classes/class.menu.php";
 
 class DialogStandard
 {
@@ -30,7 +34,7 @@ class DialogStandard
    
 
   /*__CONSTRUCTEUR__*/
-  function DialogStandard(&$db, $o_style)
+  function DialogStandard(&$db, &$o_style)
   {
     $this->db = &$db;
     $this->smilies = new Smilies();
@@ -141,158 +145,60 @@ class DialogStandard
     echo $str;
   }
 
-  function SideBar($preview_length, $wrap_length, $nb_comments, $online_stats=array())
+  function SideBar($online_stats=array())
   {
     global $config, $users_cache;
 
     $rec = new Record($this->db);
+    $bar = new SideBar();
 
-    echo "<div id=\"sidebar\">\n"; 
-
-    /* Stats online users */
-    if (!empty($online_stats))
-    {
-      for ($i=0; $i<$online_stats['registered']; $i++)
-        $tooltip .= $online_stats['list'][$i] . ", ";
-      $tooltip = substr($tooltip, 0, strlen($tooltip)-2); // enlève la virgule à la fin
-      echo "<center>\n";
-      if (!empty($tooltip)) echo "<span onmouseover=\"return escape('".$tooltip."')\">";
-      echo $online_stats['registered'] . " registered users";
-      if (!empty($tooltip))echo "</span>";
-      echo "<br/>\n";
-      echo $online_stats['guests'] . " guests\n";
-      echo "</center>\n";
-      echo "<br/>\n";
-    }
+    $bar->AddBlock_Welcome();
+    $bar->AddBlock_stats($online_stats);
     
-    /* Lien vers panneau admin */
-    if (Auth::Check(get_userlevel_by_name("member")))
-      echo "<center>Welcome <b><a href=\"profile.php?id=".$_SESSION['user_id']."\">".$_SESSION['user_pseudo']."</a></b></center><br />\n";
-    echo "<br />";
     
-    /* Login */
+    /* Menu */
     if (Auth::Check(get_userlevel_by_name("member")))
     {
-      echo "<h2>Member menu</h2>\n";
-      echo "<div class=\"menubar\">\n";
+      $menu_main = new Menu();
+      $menu_main->AddItem("Admin Panel", "admin/admin.php");
+
       if (Auth::Check(get_userlevel_by_name("admin")))
       {
-        echo "<div class=\"menuitem\"><a href=\"admin/admin.php\">Admin panel</a><br/></div>\n";
+        $menu_sub = new Menu(1);
         $count_incoming =  $this->db->RequestCountRecords(get_folder_by_name("incoming"), get_type_by_name("all"));
-        echo "<div class=\"menuitem\"><a href=\"admin/admin.php?folder=".get_folder_by_name("incoming")."\">&nbsp;&nbsp; ".$count_incoming." incoming records</a><br/></div>\n";
-        echo "<div class=\"menuitem\"><a href=\"admin/management.php\">&nbsp;&nbsp; Management</a><br/></div>\n";
-        echo "<div class=\"menuitem\"><a href=\"admin/admin.php?to=memberlist\">&nbsp;&nbsp; Members mgmt</a><br/></div>\n";
-        echo "<div class=\"menuitem\"><a href=\"admin/filexplorer.php\">&nbsp;&nbsp; File explorer</a><br/></div>\n";
-        echo "<div class=\"menuitem\"><a href=\"javascript:child=window.open('/shinotag/moder.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">&nbsp;&nbsp; Tagboard moderation</a><br/></div>\n";
+        $menu_sub->AddItem($count_incoming." incoming records", "admin/admin.php?folder=".get_folder_by_name("incoming"));
+        $menu_sub->AddItem("Management", "admin/management.php");
+        $menu_sub->AddItem("Members mgmt", "admin/admin.php?to=memberlist");
+        $menu_sub->AddItem("File explorer", "admin/filexplorer.php");
+        $menu_sub->AddItem("Tagboard moderation", "javascript:child=window.open('/shinotag/moder.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()");
+      
+        $menu_main->AddSubMenu($menu_sub);
       }
-
-      echo "<div class=\"menuitem\"><a href=\"?to=upload\">Upload a record</a><br/></div>\n";
-      echo "<div class=\"menuitem\"><a href=\"?to=memberlist\">Member list</a><br/></div>\n";
-      echo "<div class=\"menuitem\"><a href=\"profile.php\">Your profile</a><br/></div>\n";
-      echo "<div class=\"menuitem\"><a href=\"login.php?out\">Logout</a></div>\n";
-      echo "</div>\n";
+      $menu_main->AddItem("Upload a record", "?to=upload");
+      $menu_main->AddItem("Member list", "?to=memberlist");
+      $menu_main->AddItem("Your profile", "profile.php");
+      $menu_main->AddItem("Logout", "login.php?out");
+      
+      $bar->AddBlock_MenuBar("Member Menu", $menu_main);
     }
     else
     {
-      echo "<form action=\"login.php\" method=\"post\" name=\"login\">\n";
-      echo "<table>\n";
-      echo "<tr>\n";
-      echo "<th>Ready ?</th>\n";
-      echo "</tr>\n";
-      echo "<tr>\n";
-      echo "<td><center><input type=\"text\" id=\"pseudo\" name=\"pseudo\" size=\"10\" value=\"Login\" onfocus=\"if (this.value=='Login') this.value=''\" /></center></td>\n";
-      echo "</tr><tr>\n";
-      echo "<td><center>&nbsp;&nbsp;<input type=\"password\" id=\"passwd\" name=\"passwd\" size=\"10\" value=\"passwd\" onfocus=\"this.value=''\" /></center></td>\n";
-      echo "</tr><tr>\n";
-      echo "<td><center><input type=\"submit\" value=\"Go!\" /></center><br/></td>\n";
-      echo "</tr></table>\n";
-      echo "</form>\n";
-      echo "<br />\n";
-      echo "<center><a href=\"register.php\">Register</a></center>\n";
-      echo "<center><a href=\"forgot.php\">Forgot your password ?</a></center>\n";
-      echo "<br />\n";
+      $bar->AddBlock_LoginForm();
+      $menu_main = new Menu();
+      $menu_main->AddItem("Register", "register.php");
+      $menu_main->AddItem("Forgot your password ?", "forgot.php");
+      $menu_main->AddItem("Member list", "?to=memberlist");
+      
+      $bar->AddBlock_MenuBar("", $menu_main);
     }
     
-    /* Tagboard */
-    echo "<h2>Nevertag</h2>\n";
-    echo "<iframe name=\"nevertag\" frameborder=\"0\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" width=\"100%\" height=\"500px\" align=\"middle\" src=\"../shinotag/index.php?lang=en&amp;css=".$this->style->GetStyle().".css&amp;p=".$_SESSION['user_pseudo']."\"></iframe>\n";
-
-    /* Last comments */
-    echo "<h2>Last comments</h2>\n";
-
-    $this->db->RequestInit("CUSTOM");
-    $req = "SELECT t1.replay_id AS replay_id,t1.id AS com_id,t1.user_id AS user_id,t1.content AS content, t1.timestamp AS timestamp, t2.levelset AS levelset,t2.level AS level FROM ".$config['bdd_prefix']."com AS t1 LEFT JOIN ".$config['bdd_prefix']."rec AS t2 ON t1.replay_id=t2.id WHERE t2.folder='0' OR t2.folder='3' ORDER BY t1.timestamp DESC LIMIT ".$nb_comments;
-    $this->db->RequestCustom($req);
-    $res = $this->db->Query();
-
-    if (!$res)
-    {
-     button_error("Error fetching comments.", 150);
-    } else {
-
-    echo "<table>\n";
-
-    while($val = $this->db->FetchArray($res))
-    {
-      echo "<tr><td class=\"comPreviewHeader\">\n";
-      echo "<a href=\"?to=viewprofile&amp;id=".$val['user_id']."\" title=\"View profile of ".$val['pseudo']."\">\n";
-      echo $users_cache[$val['user_id']];
-      echo "</a>\n";
-      echo "<a href=\"?levelset_f=".$val['levelset']."&amp;level_f=".$val['level']."\" title=\"Show this level\">\n";
-      echo "[".get_levelset_by_number($val['levelset'])."&nbsp;".$val['level']."]";
-      echo "</a>\n";
-      echo "\n</td></tr>\n";
-      echo "<tr><td class=\"comPreview\">\n";
-      /* élimination des bbcodes */
-      $contentout  = $val['content'];
-      $tooltip_content = CleanContent($contentout);
-      $tooltip_content = $this->bbcode->parse($tooltip_content, "all", false);
-      $tooltip_content = $this->smilies->Apply($tooltip_content);
-      $tooltip = "<table><tr><th>".date($config['date_format_mini'],GetDateFromTimestamp($val['timestamp']))."</th></tr><tr><td>".$tooltip_content."</td></tr></table>";
-      $tooltip = Javascriptize($tooltip);
-      if (strlen($contentout) > $preview_length)
-          $contentout = substr($contentout,0,$preview_length) . "...";
-      $contentout = wordwrap($contentout, $wrap_length, "<br />", 1);
-      echo "<div class=\"menuitem\" onmouseover=\"return escape('".$tooltip."')\">\n";
-      echo "<a href=\"record?id=".$val['replay_id']."#".$val['com_id']."\">\n";
-      echo $contentout;
-      echo "</a></div>\n";
-      echo "</td></tr>\n";
-    }
-    echo "</table>\n";
-
-    }
-  
-    echo "<br />";
-
-    /* Legende */
-    echo "<table><tr>\n";
-    echo "<td>".$this->style->GetImage('best')."</td><td>Best record for this level. It can be a best time, or a most coins.</td>\n";
-    echo "</tr><tr>\n";
-    echo "<td>".$this->style->GetImage('best time')."</td><td>Best time records.</td>\n";
-    echo "</tr><tr>\n";
-    echo "<td>".$this->style->GetImage('most coins')."</td><td>Most coins records.</td>\n";
-    echo "</tr><tr>\n";
-    echo "<td>".$this->style->GetImage('freestyle')."</td><td>Freestyle records.</td>\n";
-    echo "</tr>\n";
-    echo "</table>\n";
-
-    echo "<br />\n";
-
-    /* Bannières */
-    echo "<center>";
-    echo "<a href=\"rss.php\">flux rss&nbsp;<img src=\"".ROOT_PATH.$config['image_dir']."xml.gif\" alt=\"xml\" /></a><br/><br/>\n";
-    echo "<a href=\"http://validator.w3.org/check?uri=referer\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-xhtml.png\" alt=\"Valid XHTML 1.0!\" /></a><br/>\n";
-    echo "<a href=\"http://jigsaw.w3.org/css-validator/check/referer\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-css2.png\" alt=\"Valid CSS2 !\" /></a><br/><br/>\n";
-    echo "<a href=\"http://www.mozilla.org/products/firefox/\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-firefox.png\" alt=\"Valid CSS2 !\" /></a><br/><br/><br/>\n";
-    echo "</center>\n";
-  
-    echo  "</div>\n\n";
+    $bar->AddBlock_TagBoard($this->style->GetStyle());
+    $bar->AddBlock_LastComments($this->db, $this->bbcode, $this->smilies);
+    $bar->AddBlock_Legend($this->style);
+    $bar->AddBlock_Baneers();
     
-    /*
-    if (!empty($_SESSION['user_pseudo']))
-      echo "<script type=\"text/javascript\">frames['nevertag'].document.forms['_tagform'].pseudo.value=".$_SESSION['user_pseudo']."</script>";
-    */
+    $bar->End();
+    
   }
   
   function Footer($version, $time="")

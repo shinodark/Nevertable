@@ -129,24 +129,24 @@ class DialogAdmin
     echo $str;
   }
 
-  function SideBar($preview_length, $wrap_length, $nb_comments)
+  function SideBar()
   {
-    echo "<div id=\"sidebar\">\n";
-    echo "<h2>Admin menu</h2>\n";
-    echo "<div class=\"menubar\">\n";
-    echo "<div class=\"menuitem\"><a href=\"admin.php?to=check\">Check database</a><br/></div>\n";
-    echo "<div class=\"menuitem\"><a href=\"admin.php?to=recompute\">Re-compute everything</a><br/></div>\n";
-    echo "<div class=\"menuitem\"><a href=\"config.php\">Configuration</a><br/></div>\n";
-    echo "<div class=\"menuitem\"><a href=\"management.php\">Management</a><br/></div>\n";
-    echo "<div class=\"menuitem\"><a href=\"admin.php?to=memberlist\">Members List</a><br/></div>\n";
-    echo "<div class=\"menuitem\"><a href=\"filexplorer.php\">File explorer</a><br/></div>\n";
-    echo "<div class=\"menuitem\"><a href=\"purgetrash.php\">Purge trash !</a><br/></div>\n";
-    echo "<div class=\"menuitem\"><a href=\"javascript:child=window.open('/shinotag/moder2.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">Tagboard moderation</a><br/></div>\n";
-    echo "<div class=\"menuitem\"><a href=\"/bbclone\">BBclone stats</a><br/></div>\n";
-    echo "<div class=\"menuitem\"><a href=\"../index.php\">Leave admin panel</a><br/></div>\n";
-    echo "</div>\n";
-    echo "</div>\n"; 
+    $bar = new SideBar();
 
+    $menu_main = new Menu();
+    $menu_main->AddItem("Check database", "admin.php?to=check");
+    $menu_main->AddItem("Re-compute everything", "admin.php?to=recompute");
+    $menu_main->AddItem("Configuration", "config.php");
+    $menu_main->AddItem("Management", "management.php");
+    $menu_main->AddItem("Members List", "admin.php?to=memberlist");
+    $menu_main->AddItem("File explorer", "filexplorer.php");
+    $menu_main->AddItem("Purge trash", "purgetrash.php");
+    $menu_main->AddItem("Tagboard moderation", "javascript:child=window.open('/shinotag/moder2.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()");
+    $menu_main->AddItem("Leave admin panel", "../index.php");
+
+    $bar->AddBlock_MenuBar("Admin Menu", $menu_main);
+    
+    $bar->End();
   }
   
   function Footer($version, $time="")

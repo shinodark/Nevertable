@@ -58,7 +58,7 @@ include_once ROOT_PATH."includes/common.php";
 include_once ROOT_PATH."includes/classes.php";
 include_once ROOT_PATH."classes/class.dialog_admin.php";
  
-$table = new Nvrtbl($config, "DialogAdmin");
+$table = new Nvrtbl("DialogAdmin");
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

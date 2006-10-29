@@ -27,7 +27,7 @@ include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
 
-$table = new Nvrtbl($config, "DialogStandard");
+$table = new Nvrtbl("DialogStandard");
 
 
 $ts = $table->GetEarlierDate();

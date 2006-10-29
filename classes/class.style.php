@@ -31,8 +31,8 @@ class Style
 	function Style()
 	{
       global $config;
-      $this->current = "default";
-      $this->theme_dir = ROOT_PATH . $config['theme_dir'] . "default";
+      $this->current = $config['theme_default'];
+      $this->theme_dir = ROOT_PATH . $config['theme_dir'] . $this->current;
 	}
 
     function GetStyle()
@@ -43,8 +43,11 @@ class Style
     function Select($name="default")
     {
       global $config;
-      $this->current=$name;
-      $this->theme_dir = ROOT_PATH . $config['theme_dir'] . $name;
+      if ($name == "default")
+        $this->current= $config['theme_default'];
+      else
+        $this->current= $name;
+      $this->theme_dir = ROOT_PATH . $config['theme_dir'] . $this->current;
     }
 
     function GetImageDir()

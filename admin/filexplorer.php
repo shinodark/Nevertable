@@ -28,7 +28,7 @@ include_once ROOT_PATH ."classes/class.dialog_admin.php";
 
 //args process
 $args = get_arguments($_POST, $_GET);
-$table = new Nvrtbl($config, "DialogAdmin");
+$table = new Nvrtbl("DialogAdmin");
 
 $replay_path = ROOT_PATH.$config['replay_dir'];
 ?>

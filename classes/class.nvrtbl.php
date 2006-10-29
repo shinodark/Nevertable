@@ -26,7 +26,6 @@ class Nvrtbl
   var $dialog;
   var $current_user;
   var $style;
-  var $config;
   var $start_time;
   var $process_time;
   var $mode;
@@ -34,9 +33,9 @@ class Nvrtbl
   var $online_users_guest;
   var $online_users_list;
     
-  function Nvrtbl(&$configP, $mode="DialogStandard")
+  function Nvrtbl($mode="DialogStandard")
   {
-    global $users_cache;
+    global $users_cache, $config;
   
     $this->online_users_registered = 0;
     $this->online_users_guest      = 0;
@@ -45,12 +44,11 @@ class Nvrtbl
     $time = microtime();
     $time = explode(' ', $time);
     $this->start_time = $time[1] + $time[0];
-    $this->config = $configP;
-    $this->db = new DB($configP['bdd_server'],
-                 $configP['bdd_name'],
-                 $configP['bdd_prefix'],
-                 $configP['bdd_user'],
-                 $configP['bdd_passwd']);
+    $this->db = new DB($config['bdd_server'],
+                 $config['bdd_name'],
+                 $config['bdd_prefix'],
+                 $config['bdd_user'],
+                 $config['bdd_passwd']);
     if(!$this->db->Connect())
     {
       button_error($this->db->GetError(), 500);
@@ -58,7 +56,6 @@ class Nvrtbl
     }
 
     /* Chargement de la configuration dans la variable globale */
-    global $config;
     $this->db->RequestInit("SELECT", "conf");
     if(!$this->db->Query())
     {
@@ -67,7 +64,6 @@ class Nvrtbl
     }
     while ($val = $this->db->FetchArray())
       $config[$val['conf_name']] = $val['conf_value'];
-    $this->config = $config;
     
     /* Chargement des objets */
     $this->style = new Style();
@@ -81,7 +77,7 @@ class Nvrtbl
     if (Auth::Check(get_userlevel_by_name("member")))
     {
         $this->current_user->LoadFromId($_SESSION['user_id']);
-        $this->current_user->LoadOptions($this->config);
+        $this->current_user->LoadOptions();
         $this->style->Select($this->current_user->GetTheme());
     }
     else
@@ -127,6 +123,8 @@ class Nvrtbl
   
   function Show(&$args)
   {
+    global $config;
+
     /* Affichage supplémentaire dans le cas de l'affichage d'un seul niveau */
     if (isset($args['level_f']) && isset($args['levelset_f'])
        && ($args['level_f'] != 0) && ($args['levelset_f'] != -1)
@@ -148,7 +146,7 @@ class Nvrtbl
     {
         /* COMPTAGE */
         /* gestion du numéro de page et de l'offset */
-        $off = ($args['page']-1) * $this->config['limit'];
+        $off = ($args['page']-1) * $config['limit'];
 
         /* hack pour faire un count en utilisant tous les filtres de base */
         $this->db->RequestInit("SELECT", "rec", "COUNT(id)");
@@ -209,13 +207,11 @@ class Nvrtbl
             $args['sort']="coins";
 
           /* petit hack pas joli joli pour faire sauter la limite du nombre de record, dans le cas du diff */
-          global $config;
           $config['limit'] = 255;
-          $this->config = $config;
         }
 
         $this->db->RequestSort($sort);
-        $this->db->RequestLimit($this->config['limit'], $off);
+        $this->db->RequestLimit($config['limit'], $off);
         $result1 =   $this->db->Query();
         if(!$result1)
           echo button_error(  $this->db->GetError(), 500);
@@ -251,7 +247,7 @@ class Nvrtbl
     $this->PrintTypeForm($args);
     if (!$mode_level)
     {
-      $this->dialog->NavBar($args['page'], $this->config['limit'], $total);
+      $this->dialog->NavBar($args['page'], $config['limit'], $total);
       $diff = $args['diffview']=="on" ? true : false;
       $this->dialog->Table($result1, $args, $diff, $total);
     }
@@ -260,20 +256,17 @@ class Nvrtbl
       $this->dialog->Level($result1, $result2, $args, $total1, $total2);
     }
 
-    $this->dialog->SideBar($this->config['sidebar_comlength'],
-                           $this->config['sidebar_autowrap'],
-                           $this->config['sidebar_comments'],
-                           array("registered" => $this->online_users_registered,
-                                 "guests"     => $this->online_users_guest,
-                                 "list"       => $this->online_users_list)
+    $this->dialog->SideBar( array("registered" => $this->online_users_registered,
+                                  "guests"     => $this->online_users_guest,
+                                  "list"       => $this->online_users_list)
                           );
     if (!$mode_level)
-        $this->dialog->NavBar($args['page'], $this->config['limit'], $total);
+        $this->dialog->NavBar($args['page'], $config['limit'], $total);
   }
 
   function Post($replay_id, $content_memory="")
   {
-    global $nextargs;
+    global $nextargs, $config;
     $nextargs = "record.php?to=addcomment";
 
     /* test si le record existe */
@@ -282,7 +275,7 @@ class Nvrtbl
     {
       $results = $this->db->RequestMatchComments($replay_id);
       $this->PrintRecordById($replay_id, true); // with link
-      $this->dialog->Comments($results, $this->config['date_format']);
+      $this->dialog->Comments($results, $config['date_format']);
       if (!Auth::Check(get_userlevel_by_name("member")))
       {
         button("Please <a href=\"register.php\">register</a>  or <a href=\"login.php?ready\">log in</a> to post comments !", 400);
@@ -312,7 +305,8 @@ class Nvrtbl
     $this->dialog->Speech();
   }
   function PrintFooter()  {
-      $this->dialog->Footer($this->config['version'], $this->getProcessTime());
+      global $config;
+      $this->dialog->Footer($config['version'], $this->getProcessTime());
   }
   function PrintRecordById($id, $with_link=false)  {
     $rec = new Record($this->db);
@@ -331,7 +325,8 @@ class Nvrtbl
       $this->dialog->TypeForm($args);
   }
   function PrintUploadForm()  {
-      $this->dialog->UploadForm($this->config['upload_size_max']);
+      global $config;
+      $this->dialog->UploadForm($config['upload_size_max']);
   }
   function PrintCommentForm($replay_id, $content_memory, $user_id=-1)  {
       $this->dialog->CommentForm($replay_id, $content_memory, $user_id);
@@ -588,6 +583,7 @@ class Nvrtbl
 
   function UpdateOnlineUsers()
   {
+    global $config;
     /* Mettre à jour l'utilisateur */
     if ($_SESSION['user_logged'] == true)
     {
@@ -596,7 +592,7 @@ class Nvrtbl
 
     /* effacer les utilisateurs 'idle' */
     $this->db->RequestInit("DELETE", "online");
-    $this->db->RequestGenericFilter_lt("logged_time", $this->start_time-$this->config['online_idletime']);
+    $this->db->RequestGenericFilter_lt("logged_time", $this->start_time-$config['online_idletime']);
     if(!$this->db->Query()) {
       button_error("UpdateOnlineUser::" . $this->db->GetError(), 300);
       return false;
@@ -623,9 +619,9 @@ class Nvrtbl
 
   function CheckDatabase()
   {
-    global $folders;
+    global $folders, $config;
 
-    $replay_path = ROOT_PATH.$this->config['replay_dir'];
+    $replay_path = ROOT_PATH.$config['replay_dir'];
     $dir_list = array();
     $f = new FileManager();
 

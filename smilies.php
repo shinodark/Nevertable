@@ -31,7 +31,7 @@ if(empty($args['css']))
       $css = $css;
 
 /* nécessaire pour le chargement de la conf */
-$table = new Nvrtbl($config, "null");
+$table = new Nvrtbl("null");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"

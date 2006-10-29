@@ -28,7 +28,7 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl($config, "DialogStandard");
+$table = new Nvrtbl("DialogStandard");
 
 if (isset($args['out']))
 {

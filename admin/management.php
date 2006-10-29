@@ -29,7 +29,7 @@ include_once ROOT_PATH ."classes/class.dialog_admin.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl($config, "DialogAdmin");
+$table = new Nvrtbl("DialogAdmin");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"

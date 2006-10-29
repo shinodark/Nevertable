@@ -200,16 +200,16 @@ class User
 
     /* Programmation de champs quelconques */
 
-    function LoadOptions(&$config_ptr)
+    function LoadOptions()
     {
       global $config;
 
       if (!empty($this->fields['user_limit']))
-        $config_ptr['limit'] = $this->fields['user_limit'];
+        $config['limit'] = $this->fields['user_limit'];
       if (!empty($this->fields['user_sidebar_comments']))  
-        $config_ptr['sidebar_comments'] = $this->fields['user_sidebar_comments'];
+        $config['sidebar_comments'] = $this->fields['user_sidebar_comments'];
       if (!empty($this->fields['user_sidebar_comlength']))
-        $config_ptr['sidebar_comlength'] = $this->fields['user_sidebar_comlength'];
+        $config['sidebar_comlength'] = $this->fields['user_sidebar_comlength'];
     }
 
     function GetId()

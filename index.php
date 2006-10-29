@@ -36,7 +36,7 @@ if($args['to'] == 'showlinklist')
  exit;
 }
 
-$table = new Nvrtbl($config, "DialogStandard");
+$table = new Nvrtbl("DialogStandard");
 
 if(isset($args['link']))
   $special="<meta http-equiv=\"refresh\" content=\"0;URL=record.php?id=".$args['link']."\" />\n";

@@ -39,7 +39,7 @@ if (isset($args['preview']))
   $args['to'] = 'compreview';
 }
 
-$table = new Nvrtbl($config, "DialogStandard");
+$table = new Nvrtbl("DialogStandard");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
