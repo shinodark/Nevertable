@@ -160,10 +160,10 @@ class DialogStandard
     if (Auth::Check(get_userlevel_by_name("member")))
     {
       $menu_main = new Menu();
-      $menu_main->AddItem("Admin Panel", "admin/admin.php");
 
       if (Auth::Check(get_userlevel_by_name("admin")))
       {
+        $menu_main->AddItem("Admin Panel", "admin/admin.php");
         $menu_sub = new Menu(1);
         $count_incoming =  $this->db->RequestCountRecords(get_folder_by_name("incoming"), get_type_by_name("all"));
         $menu_sub->AddItem($count_incoming." incoming records", "admin/admin.php?folder=".get_folder_by_name("incoming"));
