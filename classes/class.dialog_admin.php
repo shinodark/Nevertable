@@ -433,7 +433,7 @@ class DialogAdmin
 
     echo  "<td><label for=\"levelset_f\">levelset: </label>\n";
     echo  "<select name=\"levelset_f\" id=\"levelset_f\">\n";
-    echo  "<option value=\"-1\">all</option>\n"; // warning! levelset_field start at -1
+    echo  "<option value=\"0\">all</option>\n";
     foreach ($levelsets as $set => $value)
     {
       echo  "<option value=\"".$set."\">".$levelsets[$set]["name"]."</option>\n";

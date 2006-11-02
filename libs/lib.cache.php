@@ -19,6 +19,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
+#
+include_once ROOT_PATH ."libs/lib.filemanager.php";
 
 class Cache
 {
@@ -31,10 +33,11 @@ class Cache
 	
   Cette fonction initialise l'objet Cache.
   */
-  function Cache($type="array")
+  function Cache($type="array", $cache_dir="")
   {
     global $config;
-    $this->cache_dir = $config['cache_dir'];
+    if (empty($cache_dir)) $this->cache_dir = $config['cache_dir'];
+    else $this->cache_dir = $cache_dir;
     $this->type = $type;
     $this->cache_hit = false;
 

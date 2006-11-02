@@ -42,7 +42,7 @@ function update_typeform_fields(tableP, folderP, levelsetP, levelP, diffviewP, n
     else
         document.forms['typeform'].folder.selectedIndex  = 2;
 
-	document.forms['typeform'].levelset_f.selectedIndex  = levelsetP+1;
+	document.forms['typeform'].levelset_f.selectedIndex  = levelsetP;
 	document.forms['typeform'].level_f.selectedIndex  = levelP;
 	if (diffviewP=="on")
         document.forms['typeform'].diffview.checked  = true;
@@ -59,7 +59,7 @@ function update_typeform_fields_admin(tableP, folderP, bestonlyP, newonlyP, leve
     else
         document.forms['typeform_admin'].bestonly.checked  = false;
 	document.forms['typeform_admin'].newonly.selectedIndex  = newonlyP;
-	document.forms['typeform_admin'].levelset_f.selectedIndex  = levelsetP+1;
+	document.forms['typeform_admin'].levelset_f.selectedIndex  = levelsetP;
 	document.forms['typeform_admin'].level_f.selectedIndex  = levelP;
 }
 

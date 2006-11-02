@@ -433,9 +433,9 @@ class DB
    
    function RequestFilterLevels($levelset, $level)
    {
-     if ($levelset != -1)  // -1 is index in list, "all" for levelset
+     if ($levelset > 0)  // -1 is index in list, "all" for levelset
         $this->RequestGenericFilter("levelset", $levelset);
-     if ($level != 0)      // 0 is index in list, "all" for level
+     if ($level > 0)      // 0 is index in list, "all" for level
         $this->RequestGenericFilter("level", $level);
    }
    

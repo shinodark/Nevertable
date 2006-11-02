@@ -127,7 +127,7 @@ class Nvrtbl
 
     /* Affichage supplémentaire dans le cas de l'affichage d'un seul niveau */
     if (isset($args['level_f']) && isset($args['levelset_f'])
-       && ($args['level_f'] != 0) && ($args['levelset_f'] != -1)
+       && ($args['level_f'] > 0) && ($args['levelset_f'] > 0)
        && ($args['diffview'] == "off") && $this->mode == "DialogStandard")
     {
       $mode_level = true;

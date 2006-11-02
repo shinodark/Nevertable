@@ -157,7 +157,7 @@ function get_arguments($post, $get)
     if(!isset($args['newonly']))
         $args['newonly'] = get_newonly_by_name("off");
     if(!isset($args['levelset_f']))  // used in main page to filter, index in list
-        $args['levelset_f'] = -1;     // all by default
+        $args['levelset_f'] = 0;     // all by default
     if(!isset($args['level_f']))     // used in main page to filter, index in list
         $args['level_f'] = 0;        // all by default
     if(!isset($args['folder']))

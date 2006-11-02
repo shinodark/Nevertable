@@ -19,19 +19,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+#
+include_once ROOT_PATH ."libs/lib.cache.php";
 /*****************/
 /* TABLE STRUCTS */
 /*****************/
 
+$cache = new Cache("array", "cache/");
 /* Cache pour les relation uid -> pseudo, initiailser par la classe nvrtbl */
 $users_cache = array();
 
-$levelsets = array (
-    array("name" => "Easy"),
-    array("name" => "Hard"),
-    array("name" => "Mehdi"),
-    );
 $types = array (
     array("name" => "best time"),
     array("name" => "most coins"),
@@ -79,108 +76,15 @@ $levels = array (
     25 => "25",
     );
 
-$solfiles = array (
-    "map-rlk/easy.sol"      => array("set" => 0, "level" => 1),
-    "map-rlk/peasy.sol"     => array("set" => 0, "level" => 2),
-    "map-rlk/coins.sol"     => array("set" => 0, "level" => 3),
-    "map-rlk/goslow.sol"    => array("set" => 0, "level" => 4),
-    "map-rlk/fence.sol"     => array("set" => 0, "level" => 5),
-    "map-rlk/bumper.sol"    => array("set" => 0, "level" => 6),
-    "map-rlk/maze.sol"      => array("set" => 0, "level" => 7),
-    "map-rlk/goals.sol"     => array("set" => 0, "level" => 8),
-    "map-rlk/hole.sol"      => array("set" => 0, "level" => 9),
-    "map-rlk/bumps.sol"     => array("set" => 0, "level" => 10),
-    "map-rlk/corners.sol"   => array("set" => 0, "level" => 11),
-    "map-rlk/easytele.sol"  => array("set" => 0, "level" => 12),
-    "map-rlk/zigzag.sol"    => array("set" => 0, "level" => 13),
-    "map-rlk/greed.sol"     => array("set" => 0, "level" => 14),
-    "map-rlk/mover.sol"     => array("set" => 0, "level" => 15),
-    "map-rlk/wakka.sol"     => array("set" => 0, "level" => 16),
-    "map-rlk/curbs.sol"     => array("set" => 0, "level" => 17),
-    "map-rlk/curved.sol"    => array("set" => 0, "level" => 18),
-    "map-rlk/stairs.sol"    => array("set" => 0, "level" => 19),
-    "map-rlk/rampdn.sol"    => array("set" => 0, "level" => 20),
-    "map-rlk/sync.sol"      => array("set" => 0, "level" => 21),
-    "map-rlk/plinko.sol"    => array("set" => 0, "level" => 22),
-    "map-rlk/drops.sol"     => array("set" => 0, "level" => 23),
-    "map-rlk/locks.sol"     => array("set" => 0, "level" => 24),
-    "map-rlk/spiralin.sol"  => array("set" => 0, "level" => 25),
-    "map-rlk/grid.sol"      => array("set" => 1, "level" => 1),
-    "map-rlk/four.sol"      => array("set" => 1, "level" => 2),
-    "map-rlk/telemaze.sol"  => array("set" => 1, "level" => 3),
-    "map-rlk/spiraldn.sol"  => array("set" => 1, "level" => 4),
-    "map-rlk/islands.sol"   => array("set" => 1, "level" => 5),
-    "map-rlk/angle.sol"     => array("set" => 1, "level" => 6),
-    "map-rlk/spiralup.sol"  => array("set" => 1, "level" => 7),
-    "map-rlk/rampup.sol"    => array("set" => 1, "level" => 8),
-    "map-rlk/check.sol"     => array("set" => 1, "level" => 9),
-    "map-rlk/risers.sol"    => array("set" => 1, "level" => 10),
-    "map-rlk/tilt.sol"      => array("set" => 1, "level" => 11),
-    "map-rlk/gaps.sol"      => array("set" => 1, "level" => 12),
-    "map-rlk/pyramid.sol"   => array("set" => 1, "level" => 13),
-    "map-rlk/quads.sol"     => array("set" => 1, "level" => 14),
-    "map-rlk/frogger.sol"   => array("set" => 1, "level" => 15),
-    "map-rlk/timer.sol"     => array("set" => 1, "level" => 16),
-    "map-rlk/spread.sol"    => array("set" => 1, "level" => 17),
-    "map-rlk/hump.sol"      => array("set" => 1, "level" => 18),
-    "map-rlk/movers.sol"    => array("set" => 1, "level" => 19),
-    "map-rlk/teleport.sol"  => array("set" => 1, "level" => 20),
-    "map-rlk/poker.sol"     => array("set" => 1, "level" => 21),
-    "map-rlk/invis.sol"     => array("set" => 1, "level" => 22),
-    "map-rlk/ring.sol"      => array("set" => 1, "level" => 23),
-    "map-rlk/pipe.sol"      => array("set" => 1, "level" => 24),
-    "map-rlk/title.sol"     => array("set" => 1, "level" => 25),
-    "map-mym/descent.sol"   => array("set" => 2, "level" => 1),
-    "map-mym/dance2.sol"    => array("set" => 2, "level" => 2),   
-    "map-mym/snow.sol"      => array("set" => 2, "level" => 3),
-    "map-mym/drive1.sol"    => array("set" => 2, "level" => 4),
-    "map-mym/glasstower.sol"   => array("set" => 2, "level" => 5),
-    "map-mym/scrambling.sol"   => array("set" => 2, "level" => 6),
-    "map-mym/trust.sol"     => array("set" => 2, "level" => 7),
-    "map-mym/loop1.sol"     => array("set" => 2, "level" => 8),
-    "map-mym/maze1.sol"     => array("set" => 2, "level" => 9),
-    "map-mym/up.sol"        => array("set" => 2, "level" => 10),
-    "map-mym/circuit2.sol"  => array("set" => 2, "level" => 11),
-    "map-mym/comeback.sol"  => array("set" => 2, "level" => 12),
-    "map-mym/maze2.sol"     => array("set" => 2, "level" => 13),
-    "map-mym/earthquake.sol"=> array("set" => 2, "level" => 14),
-    "map-mym/circuit1.sol"  => array("set" => 2, "level" => 15),
-    "map-mym/turn.sol"      => array("set" => 2, "level" => 16),
-    "map-mym/assault.sol"   => array("set" => 2, "level" => 17),
-    "map-mym/narrow.sol"    => array("set" => 2, "level" => 18),
-    "map-mym/loop2.sol"     => array("set" => 2, "level" => 19),
-    "map-mym/drive2.sol"    => array("set" => 2, "level" => 20),
-    "map-mym/running.sol"   => array("set" => 2, "level" => 21),
-    "map-mym/bombman.sol"   => array("set" => 2, "level" => 22),
-    "map-mym/climb.sol"     => array("set" => 2, "level" => 23),
-    "map-mym/dance1.sol"    => array("set" => 2, "level" => 24),
-    "map-mym/hard.sol"      => array("set" => 2, "level" => 25),
-    "map-mym2/sonic.sol"        => array("set" => 3, "level" => 1),
-    "map-mym2/speeddance.sol"   => array("set" => 3, "level" => 2),
-    "map-mym2/movinglumps.sol"  => array("set" => 3, "level" => 3),
-    "map-mym2/ghosts.sol"       => array("set" => 3, "level" => 4),
-    "map-mym2/backforth.sol"    => array("set" => 3, "level" => 5),
-    "map-mym2/webs.sol"         => array("set" => 3, "level" => 6),
-    "map-mym2/fall.sol"         => array("set" => 3, "level" => 7),
-    "map-mym2/basket.sol"       => array("set" => 3, "level" => 8),
-    "map-mym2/bigball.sol"      => array("set" => 3, "level" => 9),
-    "map-mym2/translation.sol"  => array("set" => 3, "level" => 10),
-    "map-mym2/movingpath.sol"   => array("set" => 3, "level" => 11), 
-    "map-mym2/bounces.sol"      => array("set" => 3, "level" => 12), 
-    "map-mym2/runstop.sol"      => array("set" => 3, "level" => 13), 
-    "map-mym2/longpipe.sol"     => array("set" => 3, "level" => 14), 
-    "map-mym2/rodeo.sol"        => array("set" => 3, "level" => 15), 
-    "map-mym2/rainbow.sol"      => array("set" => 3, "level" => 16), 
-    "map-mym2/bigcones.sol"     => array("set" => 3, "level" => 17), 
-    "map-mym2/shaker.sol"       => array("set" => 3, "level" => 18), 
-    "map-mym2/littlecones.sol"  => array("set" => 3, "level" => 19), 
-    "map-mym2/push.sol"	        => array("set" => 3, "level" => 20), 
-    "map-mym2/updown.sol"       => array("set" => 3, "level" => 21), 
-    "map-mym2/freefall.sol"     => array("set" => 3, "level" => 22), 
-    "map-mym2/grinder.sol"      => array("set" => 3, "level" => 23), 
-    "map-mym2/speed.sol"        => array("set" => 3, "level" => 24), 
-    "map-mym2/morenarrow.sol"   => array("set" => 3, "level" => 25), 
-    );
+if (!$cache->Hit("sets_cache"))
+  echo "No cache file for sets !";
+else
+  $levelsets = $cache->Read("sets_cache");
+
+if (!$cache->Hit("solfiles_cache"))
+  echo "No cache file for solfiles !";
+else
+  $solfiles = $cache->Read("solfiles_cache");
 
 /* Garder pour compatibilité avec les anciens records de joueurs non inscrits */
 $old_users = array(
