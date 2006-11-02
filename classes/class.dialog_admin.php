@@ -138,7 +138,7 @@ class DialogAdmin
     $menu_main->AddItem("Re-compute everything", "admin.php?to=recompute");
     $menu_main->AddItem("Configuration", "config.php");
     $menu_main->AddItem("Management", "management.php");
-    $menu_main->AddItem("Members List", "admin.php?to=memberlist");
+    $menu_main->AddItem("Members List", "memberlist.php");
     $menu_main->AddItem("File explorer", "filexplorer.php");
     $menu_main->AddItem("Purge trash", "purgetrash.php");
     $menu_main->AddItem("Tagboard moderation", "javascript:child=window.open('/shinotag/moder2.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()");
@@ -253,13 +253,13 @@ class DialogAdmin
     echo "<center>\n";
     echo "<div class=\"results\" style=\"width:100%; float: none;\">\n";
     echo "<table style=\"text-align: center;\"><tr>\n";
-    echo "<th style=\"text-align: center;\"><a href=?to=memberlist&sort=id>#</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=?to=memberlist&sort=pseudo>Name</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=?to=memberlist&sort=records>Records number</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=?to=memberlist&sort=best>Best records</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=?to=memberlist&sort=comments>Comments</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=id>#</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=pseudo>Name</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=records>Records number</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=best>Best records</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=comments>Comments</a></th>\n";
     echo "<th style=\"text-align: center;\">Mail</th>\n";
-    echo "<th style=\"text-align: center;\"><a href=?to=memberlist&sort=cat>Auth Level</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=cat>Auth Level</a></th>\n";
     echo "<th></th>\n"; // update
     echo "<th></th>\n"; // delete
     echo "</tr>\n";
@@ -525,24 +525,6 @@ class DialogAdmin
   {
   }
   
-  function UploadForm($size_limit)
-  {
-    global $nextargs;
-  
-    echo  "<div class=\"nvform\"  style=\"width: 600px;\" >\n";
-    echo  "<form enctype=\"multipart/form-data\" action=\"".$nextargs."&amp;to=upload2\" method=\"POST\">\n";
-    echo  "<table><tr>\n";
-    echo  "<td><input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".$size_limit."\" />\n";
-    echo  "<td><label for=\"uploadfile\">Upload a replay file : </label></td>\n";
-    echo  "<td><input name=\"uploadfile\" type=\"file\" /></td>\n";
-    echo  "<td><input type=\"submit\" value=\"Send File\" /></td>\n";
-    echo  "</tr></table>\n";
-    echo  "</form>\n";
-    echo  "</div>\n\n";
-  }
-
-
-  
   /*__METHODES PRIVESS__*/
 
   function _RecordLine($i, $fields)
@@ -601,7 +583,7 @@ class DialogAdmin
         echo "<td>".$fields['pseudo'] ."</td>\n" ;
       else
       {
-        echo  "<td><a href=\"?to=viewprofile&amp;id=".$fields['user_id']."\">";
+        echo  "<td><a href=\"edit_profile.php?id=".$fields['user_id']."\">";
         echo  $pseudo ."</a></td>\n" ;
       }
 
@@ -618,11 +600,11 @@ class DialogAdmin
     /* replay */
     if(empty($fields["replay"]))
     {
-      echo  "<td><a href=\"?to=upload1&amp;id=".$fields['id']."\">upload file</a></td>\n" ;
+      echo  "<td><a href=\"upload.php?id=".$fields['id']."\">upload file</a></td>\n" ;
     }
     else 
     {
-      echo  "<td><a href=\"?to=upload1&amp;id=".$fields['id']."\" title=\"".$fields["replay"]."\">replace file</a>\n" ;
+      echo  "<td><a href=\"upload.php?id=".$fields['id']."\" title=\"".$fields["replay"]."\">replace file</a>\n" ;
       $replay  = replay_link($fields['folder'], $fields['replay']);
       echo  "&nbsp;|&nbsp; <a href=" . $replay . " type=\"application/octet-stream\">replay</a></td>\n" ;
     }
@@ -680,7 +662,7 @@ class DialogAdmin
     $rowclass = ($i % 2) ? "row1" : "row2";
     echo  "<tr class=\"".$rowclass."\">\n";
     
-    echo "<form name=\"memberform_".$fields['id']."\" method=\"post\" action=\"?upmember&amp;id=".$fields['id']."\" >\n";
+    echo "<form name=\"memberform_".$fields['id']."\" method=\"post\" action=\"memberlist.php?upmember&amp;id=".$fields['id']."\" >\n";
 
     /* id */
     echo "<td>";
@@ -740,7 +722,7 @@ class DialogAdmin
     echo "</form>\n";
 
     /* Delete */
-    echo "<form name=\"memberdelete_".$fields['id']."\" method=\"post\" action=\"?delmember&amp;id=".$fields['id']."\" >\n";
+    echo "<form name=\"memberdelete_".$fields['id']."\" method=\"post\" action=\"memberlist.php?delmember&amp;id=".$fields['id']."\" >\n";
     echo "<td>";
     echo "<input type=\"submit\" value=\"Delete\" />";
     echo "</td>\n";

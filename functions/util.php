@@ -132,9 +132,6 @@ function get_arguments($post, $get)
       $args[$arg] = $value;
     }
     
-    if(!isset($args['to']))
-        $args['to']='show';
-    
     // trim known text args
     if(isset($args['pseudo']))
         $args['pseudo'] = trim($args['pseudo']);

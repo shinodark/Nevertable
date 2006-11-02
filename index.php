@@ -64,7 +64,7 @@ if (isset($args['link']))
   button("Redirecting...", 100);
 }
 
-else if($args['to'] == 'show')
+else 
 {
   if (isset($args['type'])) $nextargs .= "?type=".$args['type'];
   if (isset($args['sort'])) $nextargs .= "&amp;sort=".$args['sort'];
@@ -79,104 +79,6 @@ else if($args['to'] == 'show')
   $table->Show($args);
 }
 
-else if ($args['to'] == 'memberlist')
-{
-  $table->PrintMemberList($args);
-  button("<a href=\"?\">Return to table</a>", 200);
-}
-else if ($args['to'] == "viewprofile")
-{
-  if (isset($args['id']))
-    $table->ViewProfile($args['id']);
-  else
-    button_error("URL error.", 300);
-  button_back();
-}
-
-
-/***************************************************/
-/* ----------- POST D'UN REPLAY - -----------------*/
-/***************************************************/
-
-else if($args['to'] == 'upload')
-{
-  button("Max size of file : ".floor($config['upload_size_max']/1024)."kB.",550);
-  $table->PrintAddFormAuto();
-  button_back();
-}
-
-else if($args['to'] == 'autoadd')
-{
-  /* toujours off pour ce cas, puisqu'on va dans incoming d'abord */
-  $overwrite == "off";
-  
-  if (!Auth::Check(get_userlevel_by_name("member")))
-  {
-    button_error("You need to log in to post a record.", 400);
-  }
-  else if (empty($_SESSION['user_id']))
-  {
-    button_error("Invalid user !", 300);
-  }
-  else if ($args['folder'] != get_folder_by_name("incoming"))
-  {
-      button_error("Error: folder has to be incoming.", 300);
-  }
-  else
-  {
-    $rec = new Record($table->db);
-    $rec->SetFields($args);
-    
-    $up_dir = ROOT_PATH. $config['replay_dir'] . get_folder_by_number($rec->GetFolder());
-    
-    /* Upload du fichier */
-    $f = new FileManager();
-    $ret = $f->Upload($_FILES, 'replayfile', $up_dir, basename($_FILES['replayfile']['name']));
-
-    if(!$ret)
-    {
-      button_error($f->GetError(), 500);
-    }
-
-    /* Analyse */
-    $rep = new Replay($f->GetFileName(), $rec->GetType());
-    if(!$rep->Init())
-    { 
-      /* erreur lors de l'analyse */
-      button_error($rep->GetError(), 500);
-      $ret = $f->Unlink();
-      if(!$ret) button_error($f->GetError(), 500);
-    }
-    else
-    {
-      /* Insertion du record */
-      $rec->SetFields($rep->GetFields());
-      
-      /* récupération de la case "goal not reached */
-      if ($args['goalnotreached'] == "on")
-          $rec->SetFields(array("time" => 9999));
-      
-      $rec->SetFields(array("replay" => $f->GetBaseName()));
-
-      $ret = $rec->Insert();
-      
-      if(!$ret)
-      {
-        button_error($rec->GetError(), 500);
-        if ($f->Unlink())
-          button_error($f->GetError(), 500);
-      }
-      else
-      {
-        button("Your record is registered. An admin has to validate it before contest update.", 600);
-        /* Aucune gestion à faire, puisque le record est dans "incoming" */
-        $table->PrintRecordByFields($rec->GetFields());
-      }
-    }
-  }
-
-  button("<a href=\"?\">Return to table</a>", 200);
-}
 
 ?>
 

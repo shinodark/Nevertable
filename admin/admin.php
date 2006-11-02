@@ -102,62 +102,6 @@ if(isset($args['link']))
 }
 
 /***************************************************/
-/* ---------------- MEMBER LIST -------------------*/
-/***************************************************/
-else if ($args['to'] == 'memberlist')
-{
-  if (!Auth::Check(get_userlevel_by_name('root')))
-    button_error("Only root can modify member properties.", 400);
-  $table->PrintMemberList($args);
-  button("<a href=\"admin.php\">Return to admin panel</a>", 200);
-}
-
-else if (isset($args['upmember']))
-{
-  if (!Auth::Check(get_userlevel_by_name('root'))) {
-    button_error("Only root can modify member properties.", 400);
-  }
-  else if (!empty($args['id']) && !empty($args['pseudo'])) {
-    $u = new user($table->db);
-    $u->LoadFromId($args['id']);
-    $u->SetFields(array("pseudo" => $args['pseudo'], "level" => $args['authlevel']));
-    if(!$u->Update())
-      button_error($u->GetError(), 400);
-    else
-    {
-      button("user #".$args['id']." updated.", 300);
-      $cache = new Cache();
-      if(!$cache->Dirty("users_cache"))
-       button_error($cache->GetError(), 400);
-    }
-  }
-  button("<a href=\"?to=memberlist\">Return to member list</a>", 200);
-}
-
-else if (isset($args['delmember']))
-{
-  if (!Auth::Check(get_userlevel_by_name('root'))) {
-    button_error("Only root can modify member properties.", 400);
-  }
-  else if (!empty($args['id'])) {
-    $u = new user($table->db);
-    $u->LoadFromId($args['id']);
-    $u->SetFields(array("pseudo" => $args['pseudo'], "level" => $args['authlevel']));
-    if(!$u->Purge())
-      button_error($u->GetError(), 400);
-    else
-    {
-      button("user #".$args['id']." is deleted ! .", 300);
-      $cache = new Cache();
-      if(!$cache->Dirty("users_cache"))
-       button_error($cache->GetError(), 400);
-    }
-
-  }
-  button("<a href=\"?to=memberlist\">Return to member list</a>", 200);
-}
-
-/***************************************************/
 /* ------------------- MOVE   ---------------------*/
 /***************************************************/
 
@@ -376,88 +320,6 @@ else if ($args['to'] == 'edit')
 } 
 
 /***************************************************/
-/* -----------------UPLOAD ------------------------*/
-/***************************************************/
-
-
-/* selection du fichier */
-else if ($args['to'] == 'upload1')
-{
-  $id = $args['id'];
-  
-  $rec = new Record($table->db);
-  $rec->LoadFromId($id);
-  $table->PrintRecordByFields($rec->GetFields());
-  button("Max size of file : ".floor($config['upload_size_max']/1024)."kB.",550);
-  $nextargs = "?id=".$id ;
-  $table->PrintUploadForm();
-
-  button_back();
-} 
-
-/* process de l'upload */
-else if ($args['to'] == 'upload2')
-{
-  $id = $args['id'];
-  
-  $rec = new Record($table->db);
-  $rec->LoadFromId($id);
-
-  $replay_name   = basename($_FILES['uploadfile']['name']);
-  $up_dir        = ROOT_PATH . $config['replay_dir'].get_folder_by_number($rec->GetFolder());
-  
-  $f   = new FileManager();
-  $table->PrintRecordByFields($rec->GetFields());
- 
-  $r=$rec->GetReplay();
-  /* Effacement de l'ancien fichier si il existe */
-  if( !empty($r))
-  {
-      $f->SetFileName($rec->GetReplayRelativePath());
-      $ret = $f->Unlink();
-      if (!$ret)
-         button_error($f->GetError(), 500);
-      else
-         button("Old replay file ". $rec->GetReplayRelativePath()." deleted", 500);
-  }
-
-  /* Upload */
-  $ret = $f->Upload($_FILES, 'uploadfile', $up_dir, $replay_name);
-  if(!$ret)
-  {
-    button_error($f->GetError(), 500);
-  }
-  else
-  {
-    button("File uploaded", 500);
-  }
-  
-  /* Modification du record */
-  $rec->SetFields(array("replay" => $f->GetBaseName()));
-  $ret = $rec->Update(true);
-  if(!$ret)
-  {
-    button_error($rec->GetError(), 500);
-  }
-  else
-  {
-    button("Record updated", 500);
-  }
-
-  button("<a href=\"?\">Return to admin panel</a>", 100);
-}
-
-else if ($args['to'] == 'comments')
-{
-  $replay_id = $args['id'];
-  $nextargs = "admin.php?to=addcomment";
-  $results = $table->db->RequestMatchComments($replay_id);
-  $table->PrintRecordById($replay_id);
-  $table->dialog->Comments($results, $config['date_format']);
-  button_back();
-}
-
-/***************************************************/
 /* ----------- MAINTENANCE------- -----------------*/
 /***************************************************/
 else if ($args['to'] == "check")
@@ -476,7 +338,7 @@ else if ($args['to'] == "recompute")
 /* ----------------- SHOW  ------------------------*/
 /***************************************************/
 
-else if ($args['to'] == 'show')
+else
 {
   if (isset($args['type'])) $nextargs .= "?type=".$args['type'];
   if (isset($args['sort'])) $nextargs .= "&amp;sort=".$args['sort'];

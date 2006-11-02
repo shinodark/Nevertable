@@ -114,10 +114,12 @@ class User
         return false;
       if(empty($id))
         $id = $this->fields['id'];
-      
-      $this->SetError("User deletion deactivated. Need to implement record deletion too.");
-      return false;
-/*
+      if ($this->GetTotalRecords() > 0)
+      {
+        $this->SetError("User deletion deactivated. Need to implement record deletion too.");
+        return false;
+      }
+
       $this->db->RequestInit("DELETE", "users");
       $this->db->RequestGenericFilter("id", $id);
       $this->db->RequestLimit(1);
@@ -132,7 +134,7 @@ class User
         if(!$cache->Dirty("users_cache"))
           button_error($cache->GetError(), 400);
         return true;
-      } */
+      }
     }
 
     /* Insertion d'un nouveau record dans la bdd */

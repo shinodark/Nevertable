@@ -168,14 +168,14 @@ class DialogStandard
         $count_incoming =  $this->db->RequestCountRecords(get_folder_by_name("incoming"), get_type_by_name("all"));
         $menu_sub->AddItem($count_incoming." incoming records", "admin/admin.php?folder=".get_folder_by_name("incoming"));
         $menu_sub->AddItem("Management", "admin/management.php");
-        $menu_sub->AddItem("Members mgmt", "admin/admin.php?to=memberlist");
+        $menu_sub->AddItem("Members mgmt", "admin/memberlist.php");
         $menu_sub->AddItem("File explorer", "admin/filexplorer.php");
         $menu_sub->AddItem("Tagboard moderation", "javascript:child=window.open('/shinotag/moder.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()");
       
         $menu_main->AddSubMenu($menu_sub);
       }
-      $menu_main->AddItem("Upload a record", "?to=upload");
-      $menu_main->AddItem("Member list", "?to=memberlist");
+      $menu_main->AddItem("Upload a record", "upload.php");
+      $menu_main->AddItem("Member list", "memberlist.php");
       $menu_main->AddItem("Your profile", "profile.php");
       $menu_main->AddItem("Logout", "login.php?out");
       
@@ -187,7 +187,7 @@ class DialogStandard
       $menu_main = new Menu();
       $menu_main->AddItem("Register", "register.php");
       $menu_main->AddItem("Forgot your password ?", "forgot.php");
-      $menu_main->AddItem("Member list", "?to=memberlist");
+      $menu_main->AddItem("Member list", "memberlist.php");
       
       $bar->AddBlock_MenuBar("", $menu_main);
     }
@@ -372,7 +372,7 @@ class DialogStandard
         echo "<div class=\"embedded\">\n";
         echo "<table class=\"com_header\">\n";
         echo "<tr>\n";
-        echo "<td><a href=\"index.php?to=viewprofile&amp;id=".$o_user->GetId()."\">".$o_user->GetPseudo()."</a></td><td style=\"text-align: right;\">".date($date_format,GetDateFromTimestamp($val['timestamp']))."</td>\n";
+        echo "<td><a href=\"viewprofile.php?id=".$o_user->GetId()."\">".$o_user->GetPseudo()."</a></td><td style=\"text-align: right;\">".date($date_format,GetDateFromTimestamp($val['timestamp']))."</td>\n";
         
         if (Auth::Check(get_userlevel_by_name("moderator")))
         {
@@ -428,12 +428,12 @@ class DialogStandard
     echo "<center>\n";
     echo "<div class=\"results\" style=\"width:650px; float: none; padding: 5 0 5 0;\">\n";
     echo "<table style=\"text-align: center;\"><tr>\n";
-    echo "<th style=\"text-align: center;\"><a href=\"?to=memberlist&amp;sort=pseudo\">Name</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=\"?to=memberlist&amp;sort=records\">Records number</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=\"?to=memberlist&amp;sort=best\">Best records</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=\"?to=memberlist&amp;sort=best\">Rank</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=\"?to=memberlist&amp;sort=comments\">Comments</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=\"?to=memberlist&amp;sort=cat\">Category</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=\"memberlist.php?sort=pseudo\">Name</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=\"memberlist.php?sort=records\">Records number</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=\"memberlist.php?sort=best\">Best records</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=\"memberlist.php?sort=best\">Rank</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=\"memberlist.php?sort=comments\">Comments</a></th>\n";
+    echo "<th style=\"text-align: center;\"><a href=\"memberlist.php?sort=cat\">Category</a></th>\n";
     echo "</tr>\n";
     $i=0;
     while ($fields = $this->db->FetchArray($mysql_results))
@@ -702,7 +702,7 @@ class DialogStandard
     }
     
     echo  "<div class=\"nvform\"  style=\"width: 600px;\">\n";
-    echo  "<form enctype=\"multipart/form-data\" method=\"post\" action=\"".$nextargs."\" name=\"addform_auto\">\n";
+    echo  "<form enctype=\"multipart/form-data\" method=\"post\" action=\"upload.php?to=autoadd\" name=\"addform_auto\">\n";
     echo  "<table><tr>\n";
     echo  "<th colspan=\"6\">Auto add a record from replay file</th></tr><tr>\n";
     echo  "<td><label for=\"pseudo\">pseudo: </label></td>\n";
@@ -739,23 +739,6 @@ class DialogStandard
     echo  "</tr>\n";
   
     echo  "</table>\n";
-    echo  "</form>\n";
-    echo  "</div>\n\n";
-  }
-
-  function UploadForm()
-  {
-    global $nextargs;
-    global $config;
-  
-    echo  "<div id=\"uploadform\">\n";
-    echo  "<form enctype=\"multipart/form-data\" action=\"".$nextargs."&amp;to=upload2\" method=\"POST\">\n";
-    echo  "<table><tr>\n";
-    echo  "<td><input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".$config['upload_size_max']."\" />\n";
-    echo  "<td><label for=\"uploadfile\">Upload a replay file : </label></td>\n";
-    echo  "<td><input name=\"uploadfile\" type=\"file\" /></td>\n";
-    echo  "<td><input type=\"submit\" value=\"Send File\" /></td>\n";
-    echo  "</tr></table>\n";
     echo  "</form>\n";
     echo  "</div>\n\n";
   }
@@ -799,7 +782,7 @@ class DialogStandard
       echo "<td>".$old_users[$fields['user_id']] ."</td>\n" ;
     else
     {
-      echo  "<td><a href=\"?to=viewprofile&amp;id=".$fields['user_id']."\">";
+      echo  "<td><a href=\"viewprofile.php?id=".$fields['user_id']."\">";
       echo  $users_cache[$fields['user_id']] ."</a></td>\n" ;
     }
     /* set */
@@ -872,7 +855,7 @@ class DialogStandard
        $tooltip=Javascriptize("<center><img src=\"".ROOT_PATH.$config['avatar_dir']."/".$fields['user_avatar']."\" alt=\"\" /></center>");
     else
        $tooltip=Javascriptize("<center><i>No Avatar</i></center>");
-    echo "<a href=\"?to=viewprofile&amp;id=".$fields['id']."\" onmouseover=\"return escape('".$tooltip."')\">";
+    echo "<a href=\"viewprofile.php?id=".$fields['id']."\" onmouseover=\"return escape('".$tooltip."')\">";
     echo $fields['pseudo']."</a>\n";
     echo "</td>\n";
 
