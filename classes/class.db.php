@@ -753,5 +753,15 @@ class DB
      $this->RequestLimit(1);
      $this->Query();
    }
+
+   function GetSets()
+   {
+     $this->RequestInit("SELECT", "sets");
+     $this->Query();
+     $sets = array();
+     while ($val = $this->FetchArray())
+       $sets[$val['id']] = $val['set_name'];
+     return $sets;
+   }
 }
 ?>

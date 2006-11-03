@@ -75,11 +75,6 @@ $levels = array (
     25 => "25",
     );
 
-if (!$cache->Hit("sets_cache"))
-  echo "No cache file for sets !";
-else
-  $levelsets = $cache->Read("sets_cache");
-
 if (!$cache->Hit("solfiles_cache"))
   echo "No cache file for solfiles !";
 else
@@ -126,26 +121,6 @@ function GetShotMini($set, $level, $width="")
       return GetShot($set, $level);
     else
       return "<img src=\"".ROOT_PATH.$config['shot_dir'].$shots[$set][$level]."\" alt=\"\" width=\"".$width."\"/>";
-}
-
-function get_levelset_by_name($name)
-{
-    global $levelsets;
-
-    foreach ($levelsets as $set => $value)
-    {
-        if  (strcmp($levelsets[$set]["name"],$name) == 0)
-            return $set;
-    }
-    echo "Erreur de codage dans un appel a  get_levelset_by_name().";
-    exit;
-}
-
-function get_levelset_by_number($nb)
-{
-    global $levelsets;
-
-    return $levelsets[$nb]["name"];
 }
 
 function get_level_by_name($name)

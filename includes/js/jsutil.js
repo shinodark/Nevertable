@@ -23,7 +23,7 @@ function change_editform(idP,user_idP,pseudoP,levelsetP,levelP,timeP,coinsP,repl
 	document.forms['editform'].id.value  = idP;
 	document.forms['editform'].user_id.value  = user_idP;
 	document.forms['editform'].pseudo.value  = pseudoP;
-    document.forms['editform'].levelset.selectedIndex = levelsetP;
+    document.forms['editform'].levelset.selectedIndex = levelsetP-1;
     document.forms['editform'].level.selectedIndex = levelP;
     document.forms['editform'].time.value = timeP;
     document.forms['editform'].coins.value = coinsP;

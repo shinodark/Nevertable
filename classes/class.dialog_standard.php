@@ -329,9 +329,13 @@ class DialogStandard
 
     /* can be useful in case of print a new added record */
     $u = new User($this->db);
+    $s = new Set($this->db);
     if(!$u->LoadFromId($fields['user_id']))
         button_error($u->GetError(), 400);
+    if(!$s->LoadFromId($fields['levelset']))
+        button_error($u->GetError(), 400);
     $fields['pseudo'] = $u->GetPseudo();
+    $fields['set_name'] = $s->GetName();
     $this->_RecordLine(0, $fields);
     
     echo "</table>\n";
@@ -343,14 +347,18 @@ class DialogStandard
       global $config;
 
       $u = new User($this->db);
+      $s = new Set($this->db);
       if(!$u->LoadFromId($fields['user_id']))
-        button_error($u->GetError(), 400);
+          button_error($u->GetError(), 400);
+      if(!$s->LoadFromId($fields['levelset']))
+          button_error($u->GetError(), 400);
+
       
       echo "<div class=\"embedded\">\n";
       echo "<br/>\n";
       $link = "http://".$_SERVER['SERVER_NAME'] ."/".$config['nvtbl_path'] . "?link=".$fields['id'];
       $value =  "[url=".$link."]" .
-                 get_type_by_number($fields['type']) ." by ".$u->GetPseudo()." on ". get_levelset_by_number($fields['levelset']) . " " . $fields['level'].
+                 get_type_by_number($fields['type']) ." by ".$u->GetPseudo()." on ". $s->GetName() . " " . $fields['level'].
                 "[/url]";
       echo "<center><a href=\"".$link."\"  >bblink : </a>\n";
       echo "<input type=\"text\" size=\"".strlen($value)."\" value=\"".$value."\" readonly />\n";
@@ -635,7 +643,7 @@ class DialogStandard
 
   function TypeForm($args)
   {
-    global $types, $levelsets, $levels, $newonly;
+    global $types, $levels, $newonly;
   
     echo  "<div class=\"nvform\" style=\"width: 700px;\">\n";
     echo  "<form method=\"post\" action=\"?\" name=\"typeform\">\n";
@@ -662,9 +670,9 @@ class DialogStandard
     echo  "<td><label for=\"levelset_f\">levelset: </label>\n";
     echo  "<select name=\"levelset_f\" id=\"levelset_f\">\n";
     echo  "<option value=\"0\">all</option>\n";
-    foreach ($levelsets as $set => $value)
+    foreach ($this->db->GetSets() as $id => $name)
     {
-      echo  "<option value=\"".$set."\">".$levelsets[$set]["name"]."</option>\n";
+      echo  "<option value=\"".$id."\">".$name."</option>\n";
     }
     echo  "</select></td>\n";
     echo  "<td><label for=\"level_f\">level: </label>\n";
@@ -708,7 +716,7 @@ class DialogStandard
   
   function AddFormAuto()
   {
-    global $types,$levelsets, $levels, $nextargs;
+    global $types, $nextargs;
 
     if (!Auth::Check(get_userlevel_by_name("member")))
     {
@@ -797,7 +805,7 @@ class DialogStandard
     echo  $fields['pseudo'] ."</a></td>\n" ;
       
     /* set */
-    echo  "<td>". get_levelset_by_number($fields['levelset']) ."</td>\n" ;
+    echo  "<td>". $fields['set_name'] ."</td>\n" ;
     
     /* level */
     echo  "<td><a href=\"index.php?levelset_f=".$fields['levelset']."&amp;level_f=".$fields['level']."\"> " . $fields['level'] . "</a></td>\n" ;

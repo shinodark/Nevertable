@@ -150,7 +150,7 @@ class Nvrtbl
         /* requête avec tous les champs mais limitée à "limit" */
         $p = $config['bdd_prefix'];
         $this->db->RequestSelectInit(
-            array("rec", "users",),
+            array("rec", "users", "sets"),
             array(
               $p."rec.id AS id",
               $p."rec.levelset AS levelset",
@@ -165,11 +165,12 @@ class Nvrtbl
               $p."rec.comments_count AS comments_count",
               $p."rec.user_id AS user_id",
               $p."users.pseudo AS pseudo",
+              $p."sets.set_name AS set_name",
             )
             );
         $this->db->RequestGenericFilter(
-            array($p."rec.user_id",),
-            array($p."users.id"),
+            array($p."rec.user_id", $p."rec.levelset"),
+            array($p."users.id", $p."sets.id"),
             "AND", false
         );
         
@@ -216,7 +217,7 @@ class Nvrtbl
         /* requête pour les records du contest */
         $p = $config['bdd_prefix'];
         $this->db->RequestSelectInit(
-            array("rec", "users",),
+            array("rec", "users", "sets"),
             array(
               $p."rec.id AS id",
               $p."rec.levelset AS levelset",
@@ -231,11 +232,12 @@ class Nvrtbl
               $p."rec.comments_count AS comments_count",
               $p."rec.user_id AS user_id",
               $p."users.pseudo AS pseudo",
+              $p."sets.set_name AS set_name",
             )
             );
         $this->db->RequestGenericFilter(
-            array($p."rec.user_id",),
-            array($p."users.id"),
+            array($p."rec.user_id", $p."rec.levelset"),
+            array($p."users.id", $p."sets.id"),
             "AND", false
         );
         
@@ -251,7 +253,7 @@ class Nvrtbl
         /* requête pour les records anciens */
         $p = $config['bdd_prefix'];
         $this->db->RequestSelectInit(
-            array("rec", "users",),
+            array("rec", "users", "sets"),
             array(
               $p."rec.id AS id",
               $p."rec.levelset AS levelset",
@@ -266,11 +268,12 @@ class Nvrtbl
               $p."rec.comments_count AS comments_count",
               $p."rec.user_id AS user_id",
               $p."users.pseudo AS pseudo",
+              $p."sets.set_name AS set_name",
             )
             );
         $this->db->RequestGenericFilter(
-            array($p."rec.user_id",),
-            array($p."users.id"),
+            array($p."rec.user_id", $p."rec.levelset"),
+            array($p."users.id", $p."sets.id"),
             "AND", false
         );
         
@@ -427,7 +430,7 @@ class Nvrtbl
 
     $p = $config['bdd_prefix'];
     $this->db->RequestSelectInit(
-        array("rec", "users" ),
+        array("rec", "users", "sets" ),
         array(
             $p."rec.id AS id",
             $p."rec.type AS type",
@@ -437,11 +440,12 @@ class Nvrtbl
             $p."rec.time AS time",
             $p."rec.coins AS coins",
             $p."rec.timestamp AS timestamp",
+            $p."sets.set_name AS set_name",
             )
      );
      $this->db->RequestGenericFilter(
-        $p."rec.user_id",
-        $p."users.id",
+        array($p."rec.user_id", $p."rec.levelset"),
+        array($p."users.id", $p."sets.id"),
         "AND", false
     );
         
@@ -454,8 +458,8 @@ class Nvrtbl
     while($val = $this->db->FetchArray())
     {
       $Records[$i]['id'] = $val['id'];
-      $Records[$i]['title'] = htmlspecialchars(get_type_by_number($val['type'])." ~ ".get_levelset_by_number($val['levelset'])." ".$val['level']." by ".$val['pseudo'],ENT_NOQUOTES);
-      $Records[$i]['level'] =  get_levelset_by_number($val['levelset'])." ".$val['level'];
+      $Records[$i]['title'] = htmlspecialchars(get_type_by_number($val['type'])." ~ ".($val['set_name'])." ".$val['level']." by ".$val['pseudo'],ENT_NOQUOTES);
+      $Records[$i]['level'] =  $val['set_name']." ".$val['level'];
       $Records[$i]['pseudo'] =  $val['pseudo'];
       $Records[$i]['time'] = sec_to_friendly_display($val['time']);
       $Records[$i]['coins'] = $val['coins'];

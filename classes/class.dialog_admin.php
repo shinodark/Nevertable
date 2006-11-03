@@ -233,6 +233,14 @@ class DialogAdmin
     echo "<th></th>\n"; // goto same records
     echo "</tr>\n";
 
+    $u = new User($this->db);
+    $s = new Set($this->db);
+    if(!$u->LoadFromId($fields['user_id']))
+        button_error($u->GetError(), 400);
+    if(!$s->LoadFromId($fields['levelset']))
+        button_error($u->GetError(), 400);
+    $fields['pseudo'] = $u->GetPseudo();
+    $fields['set_name'] = $s->GetName();
     $this->_RecordLine(0, $fields);
     
     echo "</table>\n";
@@ -398,7 +406,7 @@ class DialogAdmin
   
   function TypeForm($args)
   {
-    global $types, $levelsets, $levels, $folders, $newonly;
+    global $types, $levels, $folders, $newonly;
   
     echo  "<div class=\"nvform\" style=\"width: 700px;\">\n";
     echo  "<form method=\"post\" action=\"?\" name=\"typeform_admin\">\n";
@@ -434,9 +442,9 @@ class DialogAdmin
     echo  "<td><label for=\"levelset_f\">levelset: </label>\n";
     echo  "<select name=\"levelset_f\" id=\"levelset_f\">\n";
     echo  "<option value=\"0\">all</option>\n";
-    foreach ($levelsets as $set => $value)
+    foreach ($this->db->GetSets() as $id => $name)
     {
-      echo  "<option value=\"".$set."\">".$levelsets[$set]["name"]."</option>\n";
+      echo  "<option value=\"".$id."\">".$name."</option>\n";
     }
     echo  "</select></td>\n";
     echo  "<td><label for=\"level_f\">level: </label>\n";
@@ -459,7 +467,7 @@ class DialogAdmin
   
   function EditForm()
   {
-    global $types,$levelsets, $levels, $nextargs;
+    global $types, $levels, $nextargs;
     
     echo  "<div class=\"nvform\" style=\"width: 600px;\">\n";
     echo  "<form method=\"post\" action=\"".$nextargs."\" name=\"editform\">\n";
@@ -476,9 +484,9 @@ class DialogAdmin
     echo  "<td><label for=\"levelset\">levelset: </label></td>\n";
     echo  "<td><select name=\"levelset\" id=\"levelset\">\n";
   
-    foreach ($levelsets as $set => $value)
+    foreach ($this->db->GetSets() as $id => $name)
     {
-      echo  "<option value=\"".$set."\">".$levelsets[$set]["name"]."</option>\n";
+      echo  "<option value=\"".$id."\">".$name."</option>\n";
     }
   
     echo  "</select></td>\n";
@@ -601,7 +609,7 @@ class DialogAdmin
 
     }
     /* levelset */
-    echo  "<td>". get_levelset_by_number($fields['levelset']) ."</td>\n" ;
+    echo  "<td>". $fields['set_name'] ."</td>\n" ;
     /* level */
     echo  "<td>" . $fields['level'] . "</td>\n" ;
     /* time */

@@ -115,7 +115,7 @@ class SideBar
 
       $p = $config['bdd_prefix'];
       $db->RequestSelectInit(
-        array("rec", "users", "com" ),
+        array("rec", "users", "com", "sets" ),
         array(
             $p."com.replay_id AS replay_id",
             $p."com.id AS com_id",
@@ -125,12 +125,13 @@ class SideBar
             $p."rec.levelset AS levelset",
             $p."rec.level AS level",
             $p."users.pseudo AS pseudo",
+            $p."sets.set_name AS set_name",
             )
       );
 
       $db->RequestGenericFilter(
-        array($p."com.user_id", $p."com.replay_id"),
-        array($p."users.id", $p."rec.id"),
+        array($p."com.user_id", $p."com.replay_id", $p."rec.levelset"),
+        array($p."users.id", $p."rec.id", $p."sets.id"),
         "AND", false
       );
       
@@ -152,7 +153,7 @@ class SideBar
         $this->output .=  $val['pseudo'];
         $this->output .=  "</a>\n";
         $this->output .=  "<a href=\"?levelset_f=".$val['levelset']."&amp;level_f=".$val['level']."\" title=\"Show this level\">\n";
-        $this->output .=  "[".get_levelset_by_number($val['levelset'])."&nbsp;".$val['level']."]";
+        $this->output .=  "[".$val['set_name']."&nbsp;".$val['level']."]";
         $this->output .=  "</a>\n";
         $this->output .=  "\n</td></tr>\n";
         $this->output .=  "<tr><td class=\"comPreview\">\n";
