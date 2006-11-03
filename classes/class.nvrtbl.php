@@ -383,9 +383,11 @@ class Nvrtbl
     switch($args['sort'])
     {
      case "pseudo": $this->db->RequestGenericSort(array("pseudo"), "ASC"); break;
-     case "records": $this->db->RequestGenericSort(array("stat_total_records"), "DESC"); break;
+     case "records": $this->db->RequestGenericSort(array("stat_total_records", "stat_best_records"), array("DESC", "DESC"));
+         break;
      default: 
-     case "best": $this->db->RequestGenericSort(array("stat_best_records"), "DESC"); break;
+     case "best": $this->db->RequestGenericSort(array("stat_best_records", "stat_total_records"), array("DESC", "DESC"));
+         break;
      case "comments": $this->db->RequestGenericSort(array("stat_comments"), "DESC"); break;
      case "cat": $this->db->RequestGenericSort(array("level"), "ASC"); break;
      case "id": $this->db->RequestGenericSort(array("id"), "ASC"); break;
