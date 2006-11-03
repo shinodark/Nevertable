@@ -128,13 +128,7 @@ class User
         $this->SetError($this->db->GetError(), 400);
         return false;
       }
-      else
-      {
-        $cache = new Cache();
-        if(!$cache->Dirty("users_cache"))
-          button_error($cache->GetError(), 400);
-        return true;
-      }
+      return true;
     }
 
     /* Insertion d'un nouveau record dans la bdd */
@@ -149,9 +143,6 @@ class User
         $this->SetError($this->db->GetError());
         return false;
       }
-      $cache = new Cache();
-      if(!$cache->Dirty("users_cache"))
-        button_error($cache->GetError(), 400);
       return true;
     }
 

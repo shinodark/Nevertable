@@ -35,7 +35,7 @@ class Nvrtbl
     
   function Nvrtbl($mode="DialogStandard")
   {
-    global $users_cache, $config;
+    global $config;
   
     $this->online_users_registered = 0;
     $this->online_users_guest      = 0;
@@ -52,7 +52,7 @@ class Nvrtbl
     if(!$this->db->Connect())
     {
       button_error($this->db->GetError(), 500);
-      return false;
+      exit;
     }
 
     /* Chargement de la configuration dans la variable globale */
@@ -60,6 +60,7 @@ class Nvrtbl
     if(!$this->db->Query())
     {
       button_error($this->db->GetError(), 500);
+      exit;
       return false;
     }
     while ($val = $this->db->FetchArray())
@@ -96,24 +97,6 @@ class Nvrtbl
       $this->dialog = new DialogStandard($this->db, $this->style);
 
     $this->mode = $mode;
-
-    /* Charger la table correspondance user_id -> Pseudo depuis le cache */
-    $cache = new Cache();
-    if (!$cache->Hit("users_cache"))
-    {
-      $this->db->RequestSelectInit("users", array("id", "pseudo"));
-      $this->db->Query();
-      while($val = $this->db->FetchArray())
-        $users_cache[$val['id']] = $val['pseudo'];
-      if (!$cache->Create("users_cache", $users_cache))
-        button_error("Error updating cache data", 300);
-    }
-    else
-    {
-      $users_cache = $cache->Read("users_cache");
-      if ($users_cache === false)
-        button_error("Error caching users_cache data: ". $cache->GetError(), 500);
-    }
   }
 
   function Close()
@@ -142,6 +125,7 @@ class Nvrtbl
       $sort = $args['sort'];
 
     /* Affichage normal */
+    /* ---------------- */
     if (!$mode_level)
     {
         /* COMPTAGE */
@@ -154,16 +138,7 @@ class Nvrtbl
         $this->db->RequestFilterLevels($args['levelset_f'], $args['level_f']);
         $this->db->RequestFilterType($args['type']);
         $this->db->RequestFilterNew($args['newonly']);
-        if ($args['folder'] >= 0)
-          $this->db->RequestGenericFilter("folder", $args['folder']);
-        else
-        { /* affichage des répertoires oldones et contest, $args['folder'] = -1 => all*/
-          $this->db->RequestGenericFilter(
-              array("folder", "folder"),
-              array(get_folder_by_name("contest"), get_folder_by_name("oldones")),
-              "OR"
-          );
-        }
+        $this->db->RequestFilterFolder($args['folder']);
         $result0 =   $this->db->Query();
         if(!$result0)
             echo button_error(  $this->db->GetError(), 500);
@@ -173,21 +148,37 @@ class Nvrtbl
         /* FIN COMPTAGE */
         
         /* requête avec tous les champs mais limitée à "limit" */
-        $this->db->RequestInit("SELECT", "rec", "*");
+        $p = $config['bdd_prefix'];
+        $this->db->RequestSelectInit(
+            array("rec", "users",),
+            array(
+              $p."rec.id AS id",
+              $p."rec.levelset AS levelset",
+              $p."rec.level AS level",
+              $p."rec.time AS time",
+              $p."rec.coins AS coins",
+              $p."rec.replay AS replay",
+              $p."rec.type AS type",
+              $p."rec.folder AS folder",
+              $p."rec.timestamp AS timestamp",
+              $p."rec.isbest AS isbest",
+              $p."rec.comments_count AS comments_count",
+              $p."rec.user_id AS user_id",
+              $p."users.pseudo AS pseudo",
+            )
+            );
+        $this->db->RequestGenericFilter(
+            array($p."rec.user_id",),
+            array($p."users.id"),
+            "AND", false
+        );
+        
         $this->db->RequestGenericFilter($args['filter'], $args['filterval']);
         $this->db->RequestFilterLevels($args['levelset_f'], $args['level_f']);
         $this->db->RequestFilterType($args['type']);
         $this->db->RequestFilterNew($args['newonly']);
-        if ($args['folder'] >= 0)
-          $this->db->RequestGenericFilter("folder", $args['folder']);
-        else
-        { /* affichage des répertoires oldones et contest, $args['folder'] = -1 => all*/
-          $this->db->RequestGenericFilter(
-              array("folder", "folder"),
-              array(get_folder_by_name("contest"), get_folder_by_name("oldones")),
-              "OR"
-          );
-        }
+        $this->db->RequestFilterFolder($args['folder']);
+        
         if($args['bestonly'] == "on")
           $this->db->RequestGenericFilter("isbest", 1);
         
@@ -202,9 +193,9 @@ class Nvrtbl
           }
           /* choix automatique de l'ordre de tri */
           if ($args['type'] == get_type_by_name("best time") )
-            $args['sort']="time";
+            $sort="time";
           else if ($args['type'] == get_type_by_name("most coins") )
-            $args['sort']="coins";
+            $sort="coins";
 
           /* petit hack pas joli joli pour faire sauter la limite du nombre de record, dans le cas du diff */
           $config['limit'] = 255;
@@ -212,16 +203,42 @@ class Nvrtbl
 
         $this->db->RequestSort($sort);
         $this->db->RequestLimit($config['limit'], $off);
+        //echo $this->db->GetRequestString();
         $result1 =   $this->db->Query();
         if(!$result1)
           echo button_error(  $this->db->GetError(), 500);
     }
 
     /* Mode fiche de niveau */
+    /* -------------------- */
     else 
     {
         /* requête pour les records du contest */
-        $this->db->RequestInit("SELECT", "rec", "*");
+        $p = $config['bdd_prefix'];
+        $this->db->RequestSelectInit(
+            array("rec", "users",),
+            array(
+              $p."rec.id AS id",
+              $p."rec.levelset AS levelset",
+              $p."rec.level AS level",
+              $p."rec.time AS time",
+              $p."rec.coins AS coins",
+              $p."rec.replay AS replay",
+              $p."rec.type AS type",
+              $p."rec.folder AS folder",
+              $p."rec.timestamp AS timestamp",
+              $p."rec.isbest AS isbest",
+              $p."rec.comments_count AS comments_count",
+              $p."rec.user_id AS user_id",
+              $p."users.pseudo AS pseudo",
+            )
+            );
+        $this->db->RequestGenericFilter(
+            array($p."rec.user_id",),
+            array($p."users.id"),
+            "AND", false
+        );
+        
         $this->db->RequestGenericFilter($args['filter'], $args['filterval']);
         $this->db->RequestFilterLevels($args['levelset_f'], $args['level_f']);
         $this->db->RequestGenericFilter("folder", get_folder_by_name("contest"));
@@ -232,7 +249,31 @@ class Nvrtbl
         $total1 = $this->db->NumRows();
           
         /* requête pour les records anciens */
-        $this->db->RequestInit("SELECT", "rec", "*");
+        $p = $config['bdd_prefix'];
+        $this->db->RequestSelectInit(
+            array("rec", "users",),
+            array(
+              $p."rec.id AS id",
+              $p."rec.levelset AS levelset",
+              $p."rec.level AS level",
+              $p."rec.time AS time",
+              $p."rec.coins AS coins",
+              $p."rec.replay AS replay",
+              $p."rec.type AS type",
+              $p."rec.folder AS folder",
+              $p."rec.timestamp AS timestamp",
+              $p."rec.isbest AS isbest",
+              $p."rec.comments_count AS comments_count",
+              $p."rec.user_id AS user_id",
+              $p."users.pseudo AS pseudo",
+            )
+            );
+        $this->db->RequestGenericFilter(
+            array($p."rec.user_id",),
+            array($p."users.id"),
+            "AND", false
+        );
+        
         $this->db->RequestGenericFilter($args['filter'], $args['filterval']);
         $this->db->RequestFilterLevels($args['levelset_f'], $args['level_f']);
         $this->db->RequestGenericFilter("folder", get_folder_by_name("oldones"));
@@ -249,7 +290,7 @@ class Nvrtbl
     {
       $this->dialog->NavBar($args['page'], $config['limit'], $total);
       $diff = $args['diffview']=="on" ? true : false;
-      $this->dialog->Table($result1, $args, $diff, $total);
+      $this->dialog->Table($result1, $diff, $total);
     }
     else
     {
@@ -382,9 +423,28 @@ class Nvrtbl
   
   function GetLastRecords($order, $folder="contest")
   {
-    global $users_cache;
+    global $config;
 
-    $this->db->RequestInit("SELECT", "rec");
+    $p = $config['bdd_prefix'];
+    $this->db->RequestSelectInit(
+        array("rec", "users" ),
+        array(
+            $p."rec.id AS id",
+            $p."rec.type AS type",
+            $p."rec.levelset AS levelset",
+            $p."rec.level AS level",
+            $p."users.pseudo AS pseudo",
+            $p."rec.time AS time",
+            $p."rec.coins AS coins",
+            $p."rec.timestamp AS timestamp",
+            )
+     );
+     $this->db->RequestGenericFilter(
+        $p."rec.user_id",
+        $p."users.id",
+        "AND", false
+    );
+        
     $this->db->RequestGenericFilter("folder", get_folder_by_name($folder));
     $this->db->RequestSort("old");
     $this->db->RequestLimit($order, 0);
@@ -393,12 +453,10 @@ class Nvrtbl
     $i=0;
     while($val = $this->db->FetchArray())
     {
-      if (empty($val['user_id'])) $pseudo = $val['pseudo'];
-      else $pseudo = $users_cache[$val['user_id']];
       $Records[$i]['id'] = $val['id'];
-      $Records[$i]['title'] = htmlspecialchars(get_type_by_number($val['type'])." ~ ".get_levelset_by_number($val['levelset'])." ".$val['level']." by ".$pseudo,ENT_NOQUOTES);
+      $Records[$i]['title'] = htmlspecialchars(get_type_by_number($val['type'])." ~ ".get_levelset_by_number($val['levelset'])." ".$val['level']." by ".$val['pseudo'],ENT_NOQUOTES);
       $Records[$i]['level'] =  get_levelset_by_number($val['levelset'])." ".$val['level'];
-      $Records[$i]['pseudo'] =  $pseudo;
+      $Records[$i]['pseudo'] =  $val['pseudo'];
       $Records[$i]['time'] = sec_to_friendly_display($val['time']);
       $Records[$i]['coins'] = $val['coins'];
       $Records[$i]['type']  = get_type_by_number($val['type']);
@@ -421,31 +479,6 @@ class Nvrtbl
     return GetDateFromTimestamp($val['timestamp']);
   }
   
-  function getLastComments($order)
-  {
-    global $users_cache;
-
-    $this->db->RequestInit("SELECT", "com");
-    $this->db->RequestSort("old");
-    $this->db->RequestLimit($order, 0);
-    $this->db->Query();
-
-    $i=0;
-    while($val = $this->db->FetchArray())
-    {
-      $pseudo = $users_cache[$val['user_id']];
-      $Comments[$i]['id'] = $val['id'];
-      $Comments[$i]['title'] = htmlspecialchars("New comment from ".$pseudo,ENT_NOQUOTES);
-      $Comments[$i]['pseudo'] =  $pseudo;
-      $Comments[$i]['content'] = $val['content'];
-      $Comments[$i]['date'] = getIsoDate(GetDateFromTimestamp($val['timestamp']));
-    
-      $i++;
-    }
-  return $Comments;
-  }
-
-
   function getProcessTime()
   {
     $time = microtime();

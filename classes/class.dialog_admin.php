@@ -182,7 +182,7 @@ class DialogAdmin
     echo "<th style=\"width: 28px;\"></th>\n";     //days
     echo "<th style=\"width: 28px;\"></th>\n";     //best
     echo "<th style=\"width: 28px;\"></th>\n";     //type
-    echo "<th><a href=\"".$nextargs."&amp;sort=pseudo\">player</a></th>\n";
+    echo "<th><a href=\"".$nextargs."&amp;sort=user\">player</a></th>\n";
     echo "<th><a href=\"".$nextargs."&amp;sort=level\">set</a></th>\n";
     echo "<th><a href=\"".$nextargs."&amp;sort=level\">lvl</a></th>\n";
     echo "<th><a href=\"".$nextargs."&amp;sort=time\">time</a></th>\n";
@@ -524,12 +524,28 @@ class DialogAdmin
   function AddFormAuto()
   {
   }
+
+  function UploadForm($size_limit)
+  {
+    global $nextargs;
+  
+    echo  "<div class=\"nvform\"  style=\"width: 600px;\" >\n";
+    echo  "<form enctype=\"multipart/form-data\" action=\"".$nextargs."&amp;to=upload2\" method=\"POST\">\n";
+    echo  "<table><tr>\n";
+    echo  "<td><input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".$size_limit."\" />\n";
+    echo  "<td><label for=\"uploadfile\">Upload a replay file : </label></td>\n";
+    echo  "<td><input name=\"uploadfile\" type=\"file\" /></td>\n";
+    echo  "<td><input type=\"submit\" value=\"Send File\" /></td>\n";
+    echo  "</tr></table>\n";
+    echo  "</form>\n";
+    echo  "</div>\n\n";
+  }
   
   /*__METHODES PRIVESS__*/
 
   function _RecordLine($i, $fields)
   {
-    global $nextargs, $users_cache;
+    global $nextargs;
 
     $tooltip=Javascriptize(GetShotMini($fields['levelset'], $fields['level'], 128));
 
@@ -537,12 +553,9 @@ class DialogAdmin
     echo  "<tr class=\"".$rowclass."\" onmouseover=\"return escape('".$tooltip."')\">\n";
 
     // select
-    if (!empty($fields['user_id'])) $pseudo = $users_cache[$fields['user_id']];
-    else $pseudo = $fields['pseudo'];
-
     $jsargs  = "'".$fields['id']."',";
     $jsargs .= "'".$fields['user_id']."',";
-    $jsargs .= "'".$pseudo."',";
+    $jsargs .= "'".$fields['pseudo']."',";
     $jsargs .= "'".$fields['levelset']."',";
     $jsargs .= "'".get_level_by_name($fields['level'])."',";
     $jsargs .= "'".$fields['time']."',";
@@ -568,14 +581,13 @@ class DialogAdmin
     echo  "<td>".$this->style->GetImage(get_type_by_number($fields['type']))."</td>\n";
   
     /* pseudo */
-    $pseudo = $users_cache[$fields['user_id']];
     if ($fields['folder'] == get_folder_by_name("incoming"))
     { /* on affiche l'adresse mail */
       $this->db->MatchUserById($fields['user_id']);
       $this->db->Query();
       $val = $this->db->FetchArray();
       echo  "<td><a href=\"mailto:".$val['email']." \">";
-      echo  $pseudo ."</a></td>\n" ;
+      echo  $fields['pseudo'] ."</a></td>\n" ;
     }
     else
     {
@@ -584,7 +596,7 @@ class DialogAdmin
       else
       {
         echo  "<td><a href=\"edit_profile.php?id=".$fields['user_id']."\">";
-        echo  $pseudo ."</a></td>\n" ;
+        echo  $fields['pseudo'] ."</a></td>\n" ;
       }
 
     }

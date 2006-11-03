@@ -147,7 +147,7 @@ class DialogStandard
 
   function SideBar($online_stats=array())
   {
-    global $config, $users_cache;
+    global $config;
 
     $rec = new Record($this->db);
     $bar = new SideBar();
@@ -220,10 +220,8 @@ class DialogStandard
   }
 
 
-  function Table($mysql_results, $args, $diffview=false, $total="")
+  function Table($mysql_results, $diffview=false, $total="")
   {
-    global $nextargs;
-   
     echo "<div class=\"results\">\n";
     echo "<div class=\"results-prelude\">\n";
     if (!empty($total))
@@ -330,6 +328,10 @@ class DialogStandard
     echo "</tr>\n";
 
     /* can be useful in case of print a new added record */
+    $u = new User($this->db);
+    if(!$u->LoadFromId($fields['user_id']))
+        button_error($u->GetError(), 400);
+    $fields['pseudo'] = $u->GetPseudo();
     $this->_RecordLine(0, $fields);
     
     echo "</table>\n";
@@ -338,13 +340,17 @@ class DialogStandard
 
   function RecordLink($fields)
   {
-      global $config, $users_cache;
+      global $config;
+
+      $u = new User($this->db);
+      if(!$u->LoadFromId($fields['user_id']))
+        button_error($u->GetError(), 400);
       
       echo "<div class=\"embedded\">\n";
       echo "<br/>\n";
       $link = "http://".$_SERVER['SERVER_NAME'] ."/".$config['nvtbl_path'] . "?link=".$fields['id'];
       $value =  "[url=".$link."]" .
-                 get_type_by_number($fields['type']) ." by ".$users_cache[$fields['user_id']]." on ". get_levelset_by_number($fields['levelset']) . " " . $fields['level'].
+                 get_type_by_number($fields['type']) ." by ".$u->GetPseudo()." on ". get_levelset_by_number($fields['levelset']) . " " . $fields['level'].
                 "[/url]";
       echo "<center><a href=\"".$link."\"  >bblink : </a>\n";
       echo "<input type=\"text\" size=\"".strlen($value)."\" value=\"".$value."\" readonly />\n";
@@ -570,12 +576,21 @@ class DialogStandard
 
   function CommentForm($replay_id, $content_memory="", $user_id=-1)
   {
-    global $nextargs, $users_cache;
+    global $nextargs;
 
     if ($user_id === -1)
-      $user_id = $_SESSION['user_id'];
-
-    $pseudo = $users_cache[$user_id];
+    {
+        $user_id = $_SESSION['user_id'];
+        $pseudo  = $_SESSION['user_pseudo'];
+    }
+    else
+    {
+      $u = new User($this->db);
+      if ($u->LoadFromId($user_id))
+        $pseudo = $u->GetPseudo();
+      else
+        button_error($u>GetError(), 400);
+    }
 
     echo  "<div class=\"nvform\" style=\"width: 600px;\">\n";
     echo  "<form method=\"post\" action=\"".$nextargs."\" name=\"commentform\">\n";
@@ -748,7 +763,7 @@ class DialogStandard
   
   function _RecordLine($i, $fields, $diffview=false, $diffref=array())
   {
-    global $nextargs, $users_cache, $old_users;
+    global $nextargs, $old_users;
 
     $rowclass = ($i % 2) ? "row1" : "row2";
     $tooltip=Javascriptize(GetShotMini($fields['levelset'], $fields['level'], 128));
@@ -778,17 +793,13 @@ class DialogStandard
     echo  "<td>".$this->style->GetImage(get_type_by_number($fields['type']))."</td>\n";
   
     /* pseudo */
-    if ($fields['user_id'] < 0)  /* utilisateur non inscrit */
-      echo "<td>".$old_users[$fields['user_id']] ."</td>\n" ;
-    else
-    {
-      echo  "<td><a href=\"viewprofile.php?id=".$fields['user_id']."\">";
-      echo  $users_cache[$fields['user_id']] ."</a></td>\n" ;
-    }
+    echo  "<td><a href=\"viewprofile.php?id=".$fields['user_id']."\">";
+    echo  $fields['pseudo'] ."</a></td>\n" ;
+      
     /* set */
     echo  "<td>". get_levelset_by_number($fields['levelset']) ."</td>\n" ;
-    /* level */
     
+    /* level */
     echo  "<td><a href=\"index.php?levelset_f=".$fields['levelset']."&amp;level_f=".$fields['level']."\"> " . $fields['level'] . "</a></td>\n" ;
     /* time */
     if ($diffview && !empty($diffref) && $i>0) {
@@ -896,7 +907,7 @@ class DialogStandard
     echo "<th><a href=\"".$nextargs."&amp;sort=old\">old</a></th>\n"; // days
     echo "<th style=\"width: 28px;\"></th>\n"; // best
     echo "<th style=\"width: 32px;\"></th>\n"; // type
-    echo "<th style=\"width: 100px;\">player</th>\n";
+    echo "<th style=\"width: 100px;\"><a href=\"".$nextargs."&amp;sort=user\">player</a></th>\n";
     echo "<th><a href=\"".$nextargs."&amp;sort=level\">set</a></th>\n";
     echo "<th><a href=\"".$nextargs."&amp;sort=level\">lvl</a></th>\n";
     echo "<th><a href=\"".$nextargs."&amp;sort=time\">time</a></th>\n";

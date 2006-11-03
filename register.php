@@ -154,10 +154,6 @@ if(isset($args['valid']))
     exit;
   }
   
-  $cache = new Cache();
-  if(!$cache->Dirty("users_cache"))
-    button_error($cache->GetError(), 400);
-  
   button("You're registered ! Welcome to Nevertable !", 400);
   button("<a href=\"./\">Return to main page</a>", 200);
   

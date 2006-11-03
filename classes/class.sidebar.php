@@ -109,13 +109,33 @@ class SideBar
     /* Last Comments */
     function AddBlock_LastComments(&$db, &$bbcode, &$smilies)
     {
-      global $users_cache, $config;
+      global $config;
 
       $this->output .=  "<h2>Last comments</h2>\n";
 
-      $db->RequestInit("CUSTOM");
-      $req = "SELECT t1.replay_id AS replay_id,t1.id AS com_id,t1.user_id AS user_id,t1.content AS content, t1.timestamp AS timestamp, t2.levelset AS levelset,t2.level AS level FROM ".$config['bdd_prefix']."com AS t1 LEFT JOIN ".$config['bdd_prefix']."rec AS t2 ON t1.replay_id=t2.id WHERE t2.folder='0' OR t2.folder='3' ORDER BY t1.timestamp DESC LIMIT ".$config['sidebar_comments'];
-      $db->RequestCustom($req);
+      $p = $config['bdd_prefix'];
+      $db->RequestSelectInit(
+        array("rec", "users", "com" ),
+        array(
+            $p."com.replay_id AS replay_id",
+            $p."com.id AS com_id",
+            $p."com.user_id AS user_id",
+            $p."com.content AS content",
+            $p."com.timestamp AS timestamp",
+            $p."rec.levelset AS levelset",
+            $p."rec.level AS level",
+            $p."users.pseudo AS pseudo",
+            )
+      );
+
+      $db->RequestGenericFilter(
+        array($p."com.user_id", $p."com.replay_id"),
+        array($p."users.id", $p."rec.id"),
+        "AND", false
+      );
+      
+      $db->RequestGenericSort(array($p."com.timestamp"), "DESC");
+      $db->RequestLimit($config['sidebar_comments']);
       $res = $db->Query();
 
       if (!$res)
@@ -129,7 +149,7 @@ class SideBar
       {
         $this->output .=  "<tr><td class=\"comPreviewHeader\">\n";
         $this->output .=  "<a href=\"?to=viewprofile&amp;id=".$val['user_id']."\" title=\"View profile of ".$val['pseudo']."\">\n";
-        $this->output .=  $users_cache[$val['user_id']];
+        $this->output .=  $val['pseudo'];
         $this->output .=  "</a>\n";
         $this->output .=  "<a href=\"?levelset_f=".$val['levelset']."&amp;level_f=".$val['level']."\" title=\"Show this level\">\n";
         $this->output .=  "[".get_levelset_by_number($val['levelset'])."&nbsp;".$val['level']."]";

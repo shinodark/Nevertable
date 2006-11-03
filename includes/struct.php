@@ -27,7 +27,6 @@ include_once ROOT_PATH ."libs/lib.cache.php";
 
 $cache = new Cache("array", "cache/");
 /* Cache pour les relation uid -> pseudo, initiailser par la classe nvrtbl */
-$users_cache = array();
 
 $types = array (
     array("name" => "best time"),
@@ -310,5 +309,4 @@ $imagetypes = array (
     15 => "WBMP",
     16 => "XBM",
     );
-
 ?>

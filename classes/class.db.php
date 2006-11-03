@@ -171,7 +171,7 @@ class DB
        }
    }
    
-   function RequestSelectInit($table, $fields_arr)
+   function RequestSelectInit($table_arr, $fields_arr)
    {
      while (($f=array_pop($fields_arr)) != NULL)
      {
@@ -179,8 +179,16 @@ class DB
            $flist .= ",";
        $flist .= $f;
      }
+     
+     while (($f=array_pop($table_arr)) != NULL)
+     {
+       if (!empty($tlist))  
+           $tlist .= ",";
+       $tlist .= $this->db_prefix . $f;
+     }
    
-     $this->request = "SELECT " . $flist . " FROM " . $this->db_prefix . $table . " ";
+   
+     $this->request = "SELECT " . $flist . " FROM " . $tlist . " ";
    }
    
    function RequestUpdateSet($fields_array, $timestamp_conserve=false)
@@ -231,14 +239,11 @@ class DB
      $this->request .= "(" . $flist .") VALUES(" . $vlist . ")";
    }
    
-   function RequestGenericFilter($filter, $filterval, $logic="AND")
+   function RequestGenericFilter($filter, $filterval, $logic="AND", $val_quote=true)
    {
      if(!isset($filter) || !isset($filterval))
         return;
 
-     if ($this->Protect($filter) !== $filter) /* c'est louche ! */
-        return;
-        
      $logic=trim($logic);
 
      /* version récursive */
@@ -265,8 +270,13 @@ class DB
      
          switch($val)
          {
-           case 'none'   : break;
-               default       : $this->request = $flag . $this->request . $command . $val . "='" . $this->Protect($filterval[$key]) . "'"; break;
+         case 'none'   : break;
+         default       : 
+           if ($val_quote)
+             $this->request = $flag . $this->request . $command . $val . "='" . $this->Protect($filterval[$key]) . "'";
+           else
+             $this->request = $flag . $this->request . $command . $val . "=" . $this->Protect($filterval[$key]);
+           break;
          }
        }
        $this->request .= " ) ";
@@ -274,6 +284,9 @@ class DB
      /* version classique */
      else
      {
+       if ($this->Protect($filter) !== $filter) /* c'est louche ! */
+        return;
+        
        $flag = "";
        if ($this->request{0} == "%")
          $command = " ".$logic." ";
@@ -286,7 +299,12 @@ class DB
        switch($filter)
        {
          case 'none'   : break;
-             default       : $this->request = $flag . $this->request . $command . $filter . "='" . $this->Protect($filterval) . "'"; break;
+         default       :
+           if ($val_quote)
+             $this->request = $flag . $this->request . $command . $filter . "='" . $this->Protect($filterval) . "'";
+           else
+             $this->request = $flag . $this->request . $command . $filter . "=" . $this->Protect($filterval);
+         break;
        }
      }
    }
@@ -433,22 +451,30 @@ class DB
    
    function RequestFilterLevels($levelset, $level)
    {
+     global $config;
+     
+     $p = $config['bdd_prefix'];
      if ($levelset > 0)  // -1 is index in list, "all" for levelset
-        $this->RequestGenericFilter("levelset", $levelset);
+        $this->RequestGenericFilter($p."rec.levelset", $levelset);
      if ($level > 0)      // 0 is index in list, "all" for level
-        $this->RequestGenericFilter("level", $level);
+        $this->RequestGenericFilter($p."rec.level", $level);
    }
    
    function RequestFilterType($type)
    {
+     global $config;
+     
      if ($type == get_type_by_name("all"))
        return;
    
-     $this->RequestGenericFilter("type", $type);
+     $p = $config['bdd_prefix'];
+     $this->RequestGenericFilter($p."rec.type", $type);
    }
    
    function RequestFilterNew($newonly)
    {
+     global $config;
+     
      if ($newonly == get_newonly_by_name("off"))
        return;
    
@@ -468,21 +494,42 @@ class DB
      $val = mysql_fetch_array($res);
      $lim = $val['lim'];
    
-     $this->RequestGenericFilter_ge("timestamp", $lim);
+     $p = $config['bdd_prefix'];
+     $this->RequestGenericFilter_ge($p."rec.timestamp", $lim);
+   }
+   
+   function RequestFilterFolder($folder)
+   {
+     global $config;
+     
+     $p = $config['bdd_prefix'];
+     if ($folder >= 0)
+       $this->RequestGenericFilter($p."rec.folder", $folder);
+     else
+     { /* affichage des répertoires oldones et contest, $folder = -1 => all*/
+       $this->RequestGenericFilter(
+           array($p."rec.folder", $p."rec.folder"),
+           array(get_folder_by_name("contest"), get_folder_by_name("oldones")),
+           "OR"
+       );
+     }
    }
    
    function RequestSort($sortP)
    {
+     global $config;
+     
+     $p = $config['bdd_prefix'];
      switch($sortP)
      {
-         case 'user' : $f = array("user"); $o = "ASC";  break;
-         case 'level'  : $f = array("levelset","level","time") ; $o = "ASC"; break;
+         case 'user'   : $f = array($p."rec.pseudo"); $o = "ASC";  break;
+         case 'level'  : $f = array($p."rec.levelset",$p."rec.level",$p."rec.time") ; $o = "ASC"; break;
+         case 'time'   : $f = array($p."rec.time",$p."rec.coins"); $o = array("ASC", "DESC"); break;
+         case 'coins'  : $f = array($p."rec.coins",$p."rec.time"); $o = array("DESC","ASC"); break;
+         case 'type'   : $f = array($p."rec.type"); $o = "ASC"; break;
+         case 'id'     : $f = array($p."rec.id"); $o = "DESC"; break;
          default: 
-         case 'time'   : $f = array("time","coins"); $o = array("ASC", "DESC"); break;
-         case 'coins'  : $f = array("coins","time"); $o = array("DESC","ASC"); break;
-         case 'type'   : $f = array("type"); $o = "ASC"; break;
-         case 'id'     : $f = array("id"); $o = "DESC"; break;
-         case 'old'    : $f = array("timestamp"); $o = "DESC"; break;
+         case 'old'    : $f = array($p."rec.timestamp"); $o = "DESC"; break;
      }
    
      $this->RequestGenericSort($f, $o);

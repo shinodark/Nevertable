@@ -291,16 +291,6 @@ class Record
       return $this->fields['user_id'];
     }
     
-    function GetPlayer()
-    {
-      global $users_cache;
-
-      if (!empty($this->fields['pseudo']))
-        return $this->fields['pseudo'];
-      else
-        return $users_cache[$this->fields['user_id']];
-    }
-    
     function GetTime()
     {
       return $this->fields['time'];

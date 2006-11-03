@@ -46,54 +46,78 @@ $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame");
 <?php   $table->PrintTop();  ?>
 <div id="main">
 <?php
-if (!Auth::Check(get_userlevel_by_name("root")))
+if (!Auth::Check(get_userlevel_by_name("admin")))
 {
-  button_error("You have to be root to access this page.", 400);
+  button_error("You have to be admin to access this page.", 400);
   exit;
 }
 
-else if (isset($args['upmember']))
+/* process de l'upload */
+else if ($args['to'] == 'upload2')
 {
-  if (!Auth::Check(get_userlevel_by_name('root'))) {
-    button_error("Only root can modify member properties.", 400);
+  $id = $args['id'];
+  
+  $rec = new Record($table->db);
+  $rec->LoadFromId($id);
+
+  $replay_name   = basename($_FILES['uploadfile']['name']);
+  $up_dir        = ROOT_PATH . $config['replay_dir'].get_folder_by_number($rec->GetFolder());
+  
+  $f   = new FileManager();
+  $table->PrintRecordByFields($rec->GetFields());
+ 
+  $r=$rec->GetReplay();
+  /* Effacement de l'ancien fichier si il existe */
+  if( !empty($r))
+  {
+      $f->SetFileName($rec->GetReplayRelativePath());
+      $ret = $f->Unlink();
+      if (!$ret)
+         button_error($f->GetError(), 500);
+      else
+         button("Old replay file ". $rec->GetReplayRelativePath()." deleted", 500);
   }
-  else if (!empty($args['id']) && !empty($args['pseudo'])) {
-    $u = new user($table->db);
-    $u->LoadFromId($args['id']);
-    $u->SetFields(array("pseudo" => $args['pseudo'], "level" => $args['authlevel']));
-    if(!$u->Update())
-      button_error($u->GetError(), 400);
-    else
-      button("user #".$args['id']." updated.", 300);
+
+  /* Upload */
+  $ret = $f->Upload($_FILES, 'uploadfile', $up_dir, $replay_name);
+  if(!$ret)
+  {
+    button_error($f->GetError(), 500);
   }
-  button("<a href=\"memberlist.php\">Return to member list</a>", 200);
+  else
+  {
+    button("File uploaded", 500);
+  }
+  
+  /* Modification du record */
+  $rec->SetFields(array("replay" => $f->GetBaseName()));
+  $ret = $rec->Update(true);
+  if(!$ret)
+  {
+    button_error($rec->GetError(), 500);
+  }
+  else
+  {
+    button("Record updated", 500);
+  }
+
+  button("<a href=\"admin.php\">Return to admin panel</a>", 400);
 }
-
-else if (isset($args['delmember']))
-{
-  if (!Auth::Check(get_userlevel_by_name('root'))) {
-    button_error("Only root can modify member properties.", 400);
-  }
-  else if (!empty($args['id'])) {
-    $u = new user($table->db);
-    $u->LoadFromId($args['id']);
-    $u->SetFields(array("pseudo" => $args['pseudo'], "level" => $args['authlevel']));
-    if(!$u->Purge())
-      button_error($u->GetError(), 400);
-    else
-      button("user #".$args['id']." is deleted ! .", 300);
-
-  }
-  button("<a href=\"memberlist.php\">Return to member list</a>", 200);
-}
-
 
 else
 {
-  $table->PrintMemberList($args);
+  $id = $args['id'];
+  
+  $rec = new Record($table->db);
+  $rec->LoadFromId($id);
+  $table->PrintRecordByFields($rec->GetFields());
+  button("Max size of file : ".floor($config['upload_size_max']/1024)."kB.",550);
+  $nextargs = "?id=".$id ;
+  $table->PrintUploadForm();
+
+  button_back();
 }
   
-button("<a href=\"admin.php\">Return to admin panel</a>", 400);
 ?>
 </div> <!-- fin main-->
 <?php

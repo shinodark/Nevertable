@@ -165,12 +165,6 @@ class Comment
       return $this->fields['replay_id'];
     }
 
-    function GetPseudo()
-    {
-      global $users_cache;
-      return $users_cahce[$this->fields['user_id']];
-    }
-
     function GetUserid()
     {
       return $this->fields['user_id'];
