@@ -170,7 +170,7 @@ class DialogStandard
         $menu_sub->AddItem("Management", "admin/management.php");
         $menu_sub->AddItem("Members mgmt", "admin/memberlist.php");
         $menu_sub->AddItem("File explorer", "admin/filexplorer.php");
-        $menu_sub->AddItem("Tagboard moderation", "javascript:child=window.open('/shinotag/moder.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()");
+        $menu_sub->AddItem("Tagboard moderation", "javascript:child=window.open('/shinotag/moder2.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()");
       
         $menu_main->AddSubMenu($menu_sub);
       }
