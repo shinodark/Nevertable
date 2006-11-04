@@ -78,7 +78,6 @@ class Nvrtbl
     {
         if ($_SESSION['options_saved'] == false)
         {
-          echo "LOOOOOOOOOOOOOAD";
           $this->current_user = new User($this->db);
           $this->current_user->LoadFromId($_SESSION['user_id']);
           $this->current_user->LoadOptions();
