@@ -59,12 +59,13 @@ $table = new Nvrtbl("DialogStandard");
 /***************************************************/
 if($args['to'] == 'compreview')
 {
-   $replay_id = $_POST['id'];
-   $content   = $_POST['content'];
-   $user_id   = $_POST['user_id'];
+   $replay_id = $args['id'];
+   $content   = $args['content'];
+   $uid       = $args['user_id'];
    $com_id    = $args['comid'];
 
-   if (empty($user_id) || empty($content))
+
+   if (empty($uid) || empty($content))
    {
      button_error("You can't post an empty message ^-^",400);
     // keep content if exists
@@ -77,7 +78,7 @@ if($args['to'] == 'compreview')
    else{
 
    $o_user = new User($table->db);
-   $o_user->LoadFromId($user_id);
+   $o_user->LoadFromId($uid);
 
    echo "<div class=\"comments\">\n";
    button("This is only a preview, nothing is submitted yet!", 400);
@@ -116,16 +117,16 @@ if($args['to'] == 'compreview')
      case error        :  $nextargs = "record.php"; break;
    }
    $jsfriendly = CleanContentPost($content);
-   $table->PrintCommentForm($replay_id, $jsfriendly, $user_id);
+   $table->PrintCommentForm($replay_id, $jsfriendly, $uid);
 
    button("<a href=\"record.php?id=".$replay_id."\">Return to record</a>", 300);
 }
 
 else if($args['to'] == 'addcomment')
 {
-  $replay_id = $_POST['id'];
-  $content   = $_POST['content'];
-  $user_id   = $_POST['user_id'];
+  $replay_id = $args['id'];
+  $content   = $args['content'];
+  $uid       = $args['user_id'];
 
 
   if (!Auth::Check(get_userlevel_by_name("member")))
@@ -151,7 +152,7 @@ else if($args['to'] == 'addcomment')
      $content = GetContentFromPost($content);
      $com->SetFields(array("id"         => $comid,
                            "replay_id"  => $replay_id,
-                           "user_id"    => $user_id,
+                           "user_id"    => $uid,
                            "content"    => $content)
                     );
 
@@ -164,7 +165,7 @@ else if($args['to'] == 'addcomment')
      else
      {
        $u = new User($table->db);
-       $ret = $u->LoadFromId($user_id);
+       $ret = $u->LoadFromId($uid);
        if ($ret)
          $u->_RecountComments();
        else
@@ -236,11 +237,11 @@ else if($args['to'] == 'comedit2')
 {
    $comid     = $args['comid'];
    $replay_id = $args['id'];
-   $content   = $_POST['content'];
-   $user_id   = $args['user_id'];
+   $content   = $args['content'];
+   $uid       = $args['user_id'];
    $timestamp = $args['timestamp'];
      
-   if (empty($comid) || empty($replay_id) || empty($user_id))
+   if (empty($comid) || empty($replay_id) || empty($uid))
    {
      button_error("URL error",200);
    }
@@ -279,7 +280,7 @@ else if($args['to'] == 'comedit2')
        $content = GetContentFromPost($content);
        $com->SetFields(array("id"       => $comid,
                            "replay_id"  => $replay_id,
-                           "user_id"    => $user_id,
+                           "user_id"    => $uid,
                            "content"    => $content)
                     );
 
@@ -295,7 +296,7 @@ else if($args['to'] == 'comedit2')
      }
 
    /* Reaffichage des commentaires */
-   $table->Post($replay_id);
+     $table->Post($replay_id);
 
      }//fin auth
    }//fin Load comment

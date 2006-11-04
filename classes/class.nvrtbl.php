@@ -255,7 +255,6 @@ class Nvrtbl
         $total1 = $this->db->NumRows();
           
         /* requête pour les records anciens */
-        $p = $config['bdd_prefix'];
         $this->db->RequestSelectInit(
             array("rec", "users", "sets", "maps"),
             array(
@@ -323,7 +322,23 @@ class Nvrtbl
     $results = $this->db->RequestMatchRecords(array("id" => $replay_id));
     if ($results['nb']>0)
     {
-      $results = $this->db->RequestMatchComments($replay_id);
+      $p = $config['bdd_prefix'];
+      $this->db->RequestSelectInit(
+            array("com", "users"),
+            array(
+                $p."com.id AS id",
+                $p."com.replay_id AS replay_id",
+                $p."com.user_id AS user_id",
+                $p."com.content AS content",
+                $p."com.timestamp AS timestamp",
+                $p."users.pseudo AS user_pseudo",
+                $p."users.user_avatar AS user_avatar",
+                ),
+            "SELECT", "com");
+      $this->db->RequestGenericFilter($p."com.user_id", $p."users.id", "AND", false);
+      $this->db->RequestGenericFilter($p."com.replay_id", $replay_id);
+      $this->db->RequestGenericSort(array($p."com.timestamp"), "ASC");
+      $results = $this->db->Query();
       $this->PrintRecordById($replay_id, true); // with link
       $this->dialog->Comments($results, $config['date_format']);
       if (!Auth::Check(get_userlevel_by_name("member")))
@@ -338,6 +353,7 @@ class Nvrtbl
     {
       button_error("Record doesn't exist !", 400);
     }
+
   }
 
   /*__DIALOG WRAPPERS__*/

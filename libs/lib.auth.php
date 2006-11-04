@@ -36,8 +36,8 @@ class Auth
     global $config;
     session_start();
     
-    /* si cookie et pas déjà loggué... */
-    if ( isset($_COOKIE[$config["cookie_name"]]))
+    /* if cookie and not already logged .. */
+    if ( isset($_COOKIE[$config["cookie_name"]]) && ($_SESSION['user_logged']===false))
 	{
       $cookiedata = unserialize(stripslashes($_COOKIE[$config["cookie_name"]]));
       if ($cookiedata["auto"])
@@ -78,7 +78,7 @@ class Auth
 
         if ($cookie)
         {
-          /* création du cookie */
+          /* create cookie */
           $cookiedata["auto"] = true;
           $cookiedata["user"] = $_SESSION['user_pseudo'];
           $cookiedata["md5"]  = $val['passwd'];
@@ -102,7 +102,7 @@ class Auth
     $_SESSION=array();
     session_unset();
     session_destroy();
-    /* autologin à "false" dans le cookie + nettoyage */
+    /* autologin false" in cookie + clean up */
     $cookiedata["auto"] = false;
     $cookiedata["user"] = "";
     $cookiedata["md5"] = "";
@@ -116,7 +116,7 @@ class Auth
   
   function CheckUser($user_id)
   {
-      return ($_SESSION['user_logged'] && $_SESSION['user_level']<=get_userlevel_by_name("member") && $_SESSION['user_id'] === $id);
+    return ($_SESSION['user_logged'] && ($_SESSION['user_level']<=get_userlevel_by_name("member")) && ($_SESSION['user_id'] === $user_id));
   }
 
   function SetError($error)

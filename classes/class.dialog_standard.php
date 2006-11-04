@@ -390,13 +390,12 @@ class DialogStandard
 
   function Comments($mysql_results, $date_format)
   {
+    global $config;
+
     if ($this->db->NumRows($mysql_results)>0)
     {
-      $o_user = new User($this->db);
-      
       while ($val = $this->db->FetchArray($mysql_results))
       {
-        $o_user->LoadFromId($val['user_id']);
         echo "<div class=\"comments\">\n";
         echo "<a name=\"".$val['id']."\"></a>\n";
         /* table générale */
@@ -407,7 +406,7 @@ class DialogStandard
         echo "<div class=\"embedded\">\n";
         echo "<table class=\"com_header\">\n";
         echo "<tr>\n";
-        echo "<td><a href=\"viewprofile.php?id=".$o_user->GetId()."\">".$o_user->GetPseudo()."</a></td><td style=\"text-align: right;\">".date($date_format,GetDateFromTimestamp($val['timestamp']))."</td>\n";
+        echo "<td><a href=\"viewprofile.php?id=".$val['user_id']."\">".$val['user_pseudo']."</a></td><td style=\"text-align: right;\">".date($date_format,GetDateFromTimestamp($val['timestamp']))."</td>\n";
         
         if (Auth::Check(get_userlevel_by_name("moderator")))
         {
@@ -421,7 +420,7 @@ class DialogStandard
           echo "</a></td>\n";
         }
 
-        else if (Auth::CheckUser($o_user->GetId()))
+        else if (Auth::CheckUser($val['user_id']))
         {
           echo "<td style=\"width: 16px;\">";
           echo "<a href=\"?to=comedit&amp;comid=".$val['id']."&amp;id=".$val['replay_id']."\">";
@@ -442,7 +441,9 @@ class DialogStandard
         $content = $this->bbcode->parse($val['content'], "all", false);
         $content = $this->smilies->Apply($content);
         echo "<tr>";
-        echo "<td width=\"130px\" valign=\"top\"><center>".$o_user->GetAvatarHtml()."</center></td>\n";
+        if (!empty($val['user_avatar']))
+          $avatar_html = "<img src=\"".ROOT_PATH.$config['avatar_dir']."/".$val['user_avatar']."\" alt=\"\" />";
+        echo "<td width=\"130px\" valign=\"top\"><center>".$avatar_html."</center></td>\n";
         echo "<td class=\"com_content\">".$content."</td>\n";
         echo "</tr>\n";
         echo "</table>\n";
@@ -618,7 +619,7 @@ class DialogStandard
       if ($u->LoadFromId($user_id))
         $pseudo = $u->GetPseudo();
       else
-        button_error($u>GetError(), 400);
+        button_error($u->GetError(), 400);
     }
 
     echo  "<div class=\"nvform\" style=\"width: 600px;\">\n";
