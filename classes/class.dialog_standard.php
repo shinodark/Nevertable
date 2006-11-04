@@ -240,7 +240,7 @@ class DialogStandard
       /* garde la référence en mémoire pour le diff */
       if ($diffview && $i==0)
         $diffref = $fields;
-      $this->_RecordLine($i, $fields, $diffview, $diffref);
+      $this->_RecordLine($i, $fields, true, $diffview, $diffref);
       $this->_JumpLine(12);
       $i++;
     }
@@ -253,8 +253,29 @@ class DialogStandard
   
   function Level($results_contest, $results_oldones, $args, $total1="", $total2="")
   {
+    global $config;
+
     $level = (integer) $args['level_f'];
     $set   = (integer) $args['levelset_f'];
+
+    /* Récupère le chemin du levelshot */
+    $p = $config['bdd_prefix'];
+    $this->db->RequestSelectInit(
+        array("maps", "sets"),
+        array($p."maps.map_solfile AS map_solfile", $p."sets.set_path AS set_path")
+    );
+    $this->db->RequestGenericFilter(
+        array($p."sets.id"),
+        array($p."maps.set_id"),
+        "AND", false
+    );
+    $this->db->RequestGenericFilter(
+        array($p."maps.set_id", $p."maps.level_num"),
+        array($set, $level)
+    );
+    $this->db->RequestLimit(1);
+    $this->db->Query();
+    $val = $this->db->FetchArray();
 
     /* records du contest */
     echo "<div class=\"results\">\n";
@@ -262,7 +283,7 @@ class DialogStandard
     echo "<table width=\"400px\"><tr>\n";
     echo "<th>Level Shot</th></tr>\n";
     echo "<tr><td>";
-    echo "<center>".GetShot($set, $level)."</center>\n";
+    echo "<center>".GetShot($val['set_path'], $val['map_solfile'])."</center>\n";
     echo "</td></tr>\n";
     echo "</table>\n";
     echo "<br/>\n";
@@ -279,7 +300,7 @@ class DialogStandard
     $i=0;
     while ($fields = $this->db->FetchArray($results_contest))
     {
-      $this->_RecordLine($i, $fields);
+      $this->_RecordLine($i, $fields, false);
       $this->_JumpLine(12);
       $i++;
     }
@@ -300,7 +321,7 @@ class DialogStandard
     $i=0;
     while ($fields = $this->db->FetchArray($results_oldones))
     {
-      $this->_RecordLine($i, $fields);
+      $this->_RecordLine($i, $fields, false);
       $this->_JumpLine(12);
       $i++;
     }
@@ -336,7 +357,7 @@ class DialogStandard
         button_error($u->GetError(), 400);
     $fields['pseudo'] = $u->GetPseudo();
     $fields['set_name'] = $s->GetName();
-    $this->_RecordLine(0, $fields);
+    $this->_RecordLine(0, $fields, false);
     
     echo "</table>\n";
     echo "</div>\n";
@@ -769,16 +790,20 @@ class DialogStandard
 
   /*__METHODES PRIVEES__*/
   
-  function _RecordLine($i, $fields, $diffview=false, $diffref=array())
+  function _RecordLine($i, $fields, $display_shot=true, $diffview=false, $diffref=array())
   {
     global $nextargs, $old_users;
 
     $rowclass = ($i % 2) ? "row1" : "row2";
-    $tooltip=Javascriptize(GetShotMini($fields['levelset'], $fields['level'], 128));
+    if ($display_shot)
+    {
+      $tooltip=Javascriptize(GetShotMini($fields['set_path'], $fields['map_solfile'], 128));
+      $onmouseover = "onmouseover=\"return escape('".$tooltip."')\"";
+    }
     if ($i==0 && $diffview)
-      echo  "<tr class=\"row1\" style=\"font-weight: bold;\"  onmouseover=\"return escape('".$tooltip."')\">\n";
+      echo  "<tr class=\"row1\" style=\"font-weight: bold;\" ".$onmouseover.">\n";
     else
-      echo  "<tr class=\"".$rowclass."\"  onmouseover=\"return escape('".$tooltip."')\">\n";
+      echo  "<tr class=\"".$rowclass."\" ".$onmouseover.">\n";
 
     $days=timestamp_diff_in_days(time(), GetDateFromTimestamp($fields['timestamp']));
        
@@ -854,7 +879,7 @@ class DialogStandard
        echo  "<td><a href=\"record.php?id=".$fields['id']."\">".$str."</a></td>";
   
     /* "attach" */
-    echo "<td><a href=\"?levelset_f=".$fields['levelset']."&amp;level_f=".$fields['level']."&amp;folder=-1\" title=\"Show all records for this level.\">";
+    echo "<td><a href=\"index.php?levelset_f=".$fields['levelset']."&amp;level_f=".$fields['level']."&amp;folder=-1\" title=\"Show all records for this level.\">";
     echo $this->style->GetImage('attach', "Show all records for this level.");
     echo "</a></td>";
      

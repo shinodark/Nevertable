@@ -79,7 +79,7 @@ if($args['to'] == 'autoadd')
     }
 
     /* Analyse */
-    $rep = new Replay($f->GetFileName(), $rec->GetType());
+    $rep = new Replay($table->db, $f->GetFileName(), $rec->GetType());
     if(!$rep->Init())
     { 
       /* erreur lors de l'analyse */

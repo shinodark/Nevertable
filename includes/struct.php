@@ -75,11 +75,6 @@ $levels = array (
     25 => "25",
     );
 
-if (!$cache->Hit("solfiles_cache"))
-  echo "No cache file for solfiles !";
-else
-  $solfiles = $cache->Read("solfiles_cache");
-
 /* Garder pour compatibilité avec les anciens records de joueurs non inscrits */
 $old_users = array(
  -1=> "Pipo",
@@ -102,25 +97,19 @@ $old_users = array(
  -18=> "rodimus",
  );
 
-$shots = array();
-foreach ($solfiles as $sol => $arr_level)
+function GetShot($set_path, $map_solfile)
 {
-  $shots[$arr_level['set']][$arr_level['level']] = dirname($sol)."/".basename($sol, ".sol") . ".jpg";
+    global $config;
+    return "<img src=\"".ROOT_PATH.$config['shot_dir'].$set_path."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" />";
 }
 
-function GetShot($set, $level)
+function GetShotMini($set_path, $map_solfile, $width="")
 {
-    global $config, $shots;
-    return "<img src=\"".ROOT_PATH.$config['shot_dir'].$shots[$set][$level]."\" alt=\"\" />";
-}
-
-function GetShotMini($set, $level, $width="")
-{
-    global $config, $shots;
+    global $config;
     if (empty($width))
-      return GetShot($set, $level);
+      return GetShot($map_solfile);
     else
-      return "<img src=\"".ROOT_PATH.$config['shot_dir'].$shots[$set][$level]."\" alt=\"\" width=\"".$width."\"/>";
+      return "<img src=\"".ROOT_PATH.$config['shot_dir'].$set_path."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" width=\"".$width."\"/>";
 }
 
 function get_level_by_name($name)

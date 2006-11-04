@@ -150,7 +150,7 @@ class Nvrtbl
         /* requête avec tous les champs mais limitée à "limit" */
         $p = $config['bdd_prefix'];
         $this->db->RequestSelectInit(
-            array("rec", "users", "sets"),
+            array("rec", "users", "sets", "maps"),
             array(
               $p."rec.id AS id",
               $p."rec.levelset AS levelset",
@@ -166,11 +166,13 @@ class Nvrtbl
               $p."rec.user_id AS user_id",
               $p."users.pseudo AS pseudo",
               $p."sets.set_name AS set_name",
+              $p."sets.set_path AS set_path",
+              $p."maps.map_solfile AS map_solfile",
             )
             );
         $this->db->RequestGenericFilter(
-            array($p."rec.user_id", $p."rec.levelset"),
-            array($p."users.id", $p."sets.id"),
+            array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
+            array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
             "AND", false
         );
         
@@ -217,7 +219,7 @@ class Nvrtbl
         /* requête pour les records du contest */
         $p = $config['bdd_prefix'];
         $this->db->RequestSelectInit(
-            array("rec", "users", "sets"),
+            array("rec", "users", "sets", "maps"),
             array(
               $p."rec.id AS id",
               $p."rec.levelset AS levelset",
@@ -233,11 +235,13 @@ class Nvrtbl
               $p."rec.user_id AS user_id",
               $p."users.pseudo AS pseudo",
               $p."sets.set_name AS set_name",
+              $p."sets.set_path AS set_path",
+              $p."maps.map_solfile AS map_solfile",
             )
             );
         $this->db->RequestGenericFilter(
-            array($p."rec.user_id", $p."rec.levelset"),
-            array($p."users.id", $p."sets.id"),
+            array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
+            array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
             "AND", false
         );
         
@@ -253,7 +257,7 @@ class Nvrtbl
         /* requête pour les records anciens */
         $p = $config['bdd_prefix'];
         $this->db->RequestSelectInit(
-            array("rec", "users", "sets"),
+            array("rec", "users", "sets", "maps"),
             array(
               $p."rec.id AS id",
               $p."rec.levelset AS levelset",
@@ -269,11 +273,13 @@ class Nvrtbl
               $p."rec.user_id AS user_id",
               $p."users.pseudo AS pseudo",
               $p."sets.set_name AS set_name",
+              $p."sets.set_path AS set_path",
+              $p."maps.map_solfile AS map_solfile",
             )
             );
         $this->db->RequestGenericFilter(
-            array($p."rec.user_id", $p."rec.levelset"),
-            array($p."users.id", $p."sets.id"),
+            array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
+            array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
             "AND", false
         );
         

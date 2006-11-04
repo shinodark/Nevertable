@@ -21,7 +21,7 @@
 #
 # ***** END LICENSE BLOCK *****
 
-define('SQL_DEBUG', 0);
+define('SQL_DEBUG', 1);
 class DB
 {
    var $db_server;

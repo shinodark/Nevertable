@@ -241,7 +241,7 @@ class DialogAdmin
         button_error($u->GetError(), 400);
     $fields['pseudo'] = $u->GetPseudo();
     $fields['set_name'] = $s->GetName();
-    $this->_RecordLine(0, $fields);
+    $this->_RecordLine(0, $fields, false);
     
     echo "</table>\n";
     echo "</div>\n";
@@ -551,14 +551,18 @@ class DialogAdmin
   
   /*__METHODES PRIVESS__*/
 
-  function _RecordLine($i, $fields)
+  function _RecordLine($i, $fields, $display_shot=true)
   {
     global $nextargs;
 
-    $tooltip=Javascriptize(GetShotMini($fields['levelset'], $fields['level'], 128));
+    if ($display_shot)
+    {
+      $tooltip=Javascriptize(GetShotMini($fields['set_path'], $fields['map_solfile'], 128));
+      $onmouseover = "onmouseover=\"return escape('".$tooltip."')\"";
+    }
 
     $rowclass = ($i % 2) ? "row1" : "row2";
-    echo  "<tr class=\"".$rowclass."\" onmouseover=\"return escape('".$tooltip."')\">\n";
+    echo  "<tr class=\"".$rowclass."\" ".$onmouseover.">\n";
 
     // select
     $jsargs  = "'".$fields['id']."',";
