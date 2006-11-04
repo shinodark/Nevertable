@@ -37,7 +37,7 @@ class Auth
     session_start();
     
     /* if cookie and not already logged .. */
-    if ( isset($_COOKIE[$config["cookie_name"]]) && ($_SESSION['user_logged']===false))
+    if ( isset($_COOKIE[$config["cookie_name"]]))
 	{
       $cookiedata = unserialize(stripslashes($_COOKIE[$config["cookie_name"]]));
       if ($cookiedata["auto"])
