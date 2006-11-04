@@ -203,6 +203,10 @@ class User
         $config['sidebar_comments'] = $this->fields['user_sidebar_comments'];
       if (!empty($this->fields['user_sidebar_comlength']))
         $config['sidebar_comlength'] = $this->fields['user_sidebar_comlength'];
+      if (!empty($this->fields['user_sort']))
+        $config['opt_user_sort'] = $this->fields['user_sort'];
+      if (!empty($this->fields['user_theme']))
+        $config['opt_user_theme'] = $this->fields['user_theme'];
     }
 
     function GetId()

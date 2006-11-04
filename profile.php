@@ -176,6 +176,7 @@ else if(isset($args['upavatar']))
   } /* Upload() */
   } /* tempnam() */
 button("<a href=\"profile.php\">Return to profile</a>", 300);
+button("<a href=\"index.php\">Return to table</a>", 300);
 }
 
 else if(isset($args['editinfos']))
@@ -211,6 +212,7 @@ else if(isset($args['editinfos']))
     button_error($u->GetError(), 400);
   }
   button("<a href=\"profile.php\">Return to profile</a>", 300);
+  button("<a href=\"index.php\">Return to table</a>", 300);
   
 }
 
@@ -246,6 +248,10 @@ else if(isset($args['editopts']))
     button_error($u->GetError(), 400);
   }
   button("<a href=\"profile.php\">Return to profile</a>", 300);
+  button("<a href=\"index.php\">Return to table</a>", 300);
+
+  /* reload option next refresh */
+  $_SESSION['options_saved'] = false;
 }
 
 else

@@ -75,6 +75,7 @@ class Auth
         $_SESSION['user_pseudo'] = $login;
         $_SESSION['user_email']  = $val['email'];
         $_SESSION['user_level']  = $val['level'];
+        $_SESSION['options_loaded']  = false;
 
         if ($cookie)
         {
@@ -117,6 +118,27 @@ class Auth
   function CheckUser($user_id)
   {
     return ($_SESSION['user_logged'] && ($_SESSION['user_level']<=get_userlevel_by_name("member")) && ($_SESSION['user_id'] === $user_id));
+  }
+
+  function _SaveUserOptions()
+  {
+    global $config;
+    $_SESSION['opt_limit'] = $config['limit'];
+    $_SESSION['opt_sidebar_comments'] = $config['sidebar_comments'];
+    $_SESSION['opt_sidebar_comlength'] = $config['sidebar_comlength'];
+    $_SESSION['opt_user_sort'] = $config['opt_user_sort'];
+    $_SESSION['opt_user_theme'] = $config['opt_user_theme'];
+    $_SESSION['options_saved'] = true;
+  }
+
+  function _LoadUserOptions()
+  {
+    global $config;
+    $config['limit'] = $_SESSION['opt_limit'];
+    $config['sidebar_comments'] = $_SESSION['opt_sidebar_comments'];
+    $config['sidebar_comlength'] = $_SESSION['opt_sidebar_comlength'];
+    $config['opt_user_sort'] = $_SESSION['opt_user_sort'];
+    $config['opt_user_theme'] = $_SESSION['opt_user_theme'];
   }
 
   function SetError($error)

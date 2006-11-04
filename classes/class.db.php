@@ -522,7 +522,7 @@ class DB
      $p = $config['bdd_prefix'];
      switch($sortP)
      {
-         case 'user'   : $f = array($p."rec.pseudo"); $o = "ASC";  break;
+         case 'user'   : $f = array($p."users.pseudo"); $o = "ASC";  break;
          case 'level'  : $f = array($p."rec.levelset",$p."rec.level",$p."rec.time") ; $o = "ASC"; break;
          case 'time'   : $f = array($p."rec.time",$p."rec.coins"); $o = array("ASC", "DESC"); break;
          case 'coins'  : $f = array($p."rec.coins",$p."rec.time"); $o = array("DESC","ASC"); break;

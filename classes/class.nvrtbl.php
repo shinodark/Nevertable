@@ -69,7 +69,6 @@ class Nvrtbl
     /* Chargement des objets */
     $this->style = new Style();
     $auth = new Auth($this->db);
-    $this->current_user = new User($this->db);
     
     /* Initialisation de la session */
 
@@ -77,9 +76,19 @@ class Nvrtbl
 
     if (Auth::Check(get_userlevel_by_name("member")))
     {
-        $this->current_user->LoadFromId($_SESSION['user_id']);
-        $this->current_user->LoadOptions();
-        $this->style->Select($this->current_user->GetTheme());
+        if ($_SESSION['options_saved'] == false)
+        {
+          echo "LOOOOOOOOOOOOOAD";
+          $this->current_user = new User($this->db);
+          $this->current_user->LoadFromId($_SESSION['user_id']);
+          $this->current_user->LoadOptions();
+          Auth::_SaveUserOptions();
+        }
+        else
+        {
+          Auth::_LoadUserOptions();
+        }
+        $this->style->Select($config['opt_user_theme']);
     }
     else
     {
@@ -120,7 +129,7 @@ class Nvrtbl
     if (empty($args['sort']) && !Auth::Check(get_userlevel_by_name("member")))
       $sort = "old";
     else if (empty($args['sort']) && Auth::Check(get_userlevel_by_name("member")))
-      $sort = $this->current_user->GetSort();
+      $sort = $config['opt_user_sort'];
     else
       $sort = $args['sort'];
 
@@ -424,6 +433,12 @@ class Nvrtbl
     }
   }
   function PrintProfile() {
+      /* if options_saved, need to load user for profile*/
+      if ($_SESSION['options_saved'] == true)
+      {
+        $this->current_user = new User($this->db);
+        $this->current_user->LoadFromId($_SESSION['user_id']);
+      }
       $this->dialog->UserProfile($this->current_user);
   }
   function ViewProfile($id) {
