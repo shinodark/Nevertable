@@ -20,13 +20,9 @@
 #
 # ***** END LICENSE BLOCK *****
 #
-include_once ROOT_PATH ."libs/lib.cache.php";
 /*****************/
 /* TABLE STRUCTS */
 /*****************/
-
-$cache = new Cache("array", "cache/");
-/* Cache pour les relation uid -> pseudo, initiailser par la classe nvrtbl */
 
 $types = array (
     array("name" => "best time"),
