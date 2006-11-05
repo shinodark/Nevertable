@@ -122,6 +122,7 @@ function timestamp_diff_in_secs($u_t1,$u_t2)
 
 function get_arguments($post, $get)
 {
+    $args = array();
     foreach ($get as $arg => $value)
     {
       $args[$arg] = $value;

@@ -305,6 +305,88 @@ td .com_content {
 .menuitem:hover {    background: url(images/curseur.gif) repeat-y left; }
 .menuitem a:hover { color: #335 ; }
 
+/******** Tagform ****************************/
+
+#tagform {
+    margin : 0 auto;
+    width: 160px;
+}
+#tagform table
+{
+    border: 0;
+    background: transparent;
+    width: 100%;
+}
+#tagform td {
+    padding: 1px;
+}
+#tagform label {
+    font-weight: bold;
+    color: #525;
+}
+
+/*********** Tags **************/
+#tagboard {
+    width: 160px;
+    height: 480px;
+}
+
+#tags {
+    margin : 0 auto;
+    margin-top : 5px;
+    font-size: 10px;
+    width: 160px;
+    height: 220px;
+    overflow: auto;
+}
+
+#tags table {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    table-layout: fixed;
+}
+
+#tags td {
+    padding: 0;
+    border: 0;
+}
+
+.tagheader {
+    background: #eee;
+}
+
+.tagmsg1 {
+    background: #fff;   
+}
+
+.tagmsg2 {
+    width: 100%;
+    background: #fff;
+}
+
+.tag_pseudo {
+    color: black;
+    font-weight: bold;
+}
+
+.tag_pseudo a{
+    color: #006;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.tag_date {
+    color: #333;
+    font-style: italic;
+}
+
+.tag_error {
+    color: red;
+    font-weight: bold;
+}
+
+
 /******** Footer ****************************/
 
 #footer

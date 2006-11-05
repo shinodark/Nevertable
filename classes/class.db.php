@@ -571,6 +571,17 @@ class DB
      return $ret;
    }
 
+    function RequestMatchTags()
+   {
+     global $config;
+
+     $this->RequestInit("SELECT", "tags");
+     $this->RequestGenericSort(array("timestamp"), "DESC");
+     $this->RequestLimit($config['tag_limit']);
+     return $this->Query();
+   }
+
+
    function MatchUserByName($name)
    {
      $this->RequestInit("SELECT", "users");

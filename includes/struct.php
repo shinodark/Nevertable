@@ -20,6 +20,9 @@
 #
 # ***** END LICENSE BLOCK *****
 #
+
+include_once "tag.strings.en.php";
+
 /*****************/
 /* TABLE STRUCTS */
 /*****************/

@@ -99,13 +99,6 @@ class SideBar
       $this->output .=  "<br />\n";
     }
     
-    /* TagBoard */
-    function AddBlock_TagBoard(&$style)
-    {
-      $this->output .=  "<h2>Nevertag</h2>\n";
-      $this->output .=  "<iframe name=\"nevertag\" frameborder=\"0\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" width=\"100%\" height=\"500px\" align=\"middle\" src=\"../shinotag/index.php?lang=en&amp;css=".$style.".css&amp;p=".$_SESSION['user_pseudo']."\"></iframe>\n";
-    }
-
     /* Last Comments */
     function AddBlock_LastComments(&$db, &$bbcode, &$smilies)
     {
@@ -178,6 +171,19 @@ class SideBar
       }
   
       $this->output .=  "<br />";
+    }
+    /* Last Comments */
+    function AddBlock_TagBoard(&$db, &$bbcode, &$smilies, &$style)
+    {
+       global $args;
+
+       $tagboard = new TagBoard($db, $bbcode, $smilies, $style);
+       
+       $this->output .=  "<h2>TagBoard</h2>\n";
+
+       $this->output .= "<div id=\"tagboard\">\n";
+       $this->output .= $tagboard->Show($args);
+       $this->output .= "</div>\n";
     }
 
     function AddBlock_Legend(&$style)

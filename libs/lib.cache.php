@@ -89,7 +89,10 @@ class Cache
       $this->SetError("Tring to read a non-existent cache.");
       return false;
     }
-    return $this->_ReadArray();
+    if($this->type === "array") $ret = $this->_ReadArray();
+    else if($this->type === "text") $ret = $this->_ReadText();
+    else $ret = $this->_ReadText();
+    return $ret;
   }
 
   function _ReadArray()
@@ -102,6 +105,17 @@ class Cache
     }
     $cache_arr = unserialize(stripslashes($cache_data));
     return $cache_arr;
+  }
+  
+  function _ReadText()
+  {
+    $cache_data = $this->CacheFile->Read();
+    if ($cache_data === false)
+    {
+      $this->SetError("Error reading cache file " . $this->CacheFile->GetFileName());
+      return false;
+    }
+    return $cache_data;
   }
   
   function SetError($error)

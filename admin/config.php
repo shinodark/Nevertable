@@ -98,6 +98,12 @@ function CheckConfig($conf_arr)
 
   if ( ($conf_arr['profile_quote_max'] < 30) || ($conf_arr['profile_quote_max'] > 10000) )
     { button_error("\"profile_quote_max\" limits are [30..10000]", 300); return false; }
+  
+  if ( ($conf_arr['tag_maxsize'] < 1) || ($conf_arr['tag_maxsize'] > 1024) )
+    { button_error("\"tag_max_size\" limits are [1..1024]", 300); return false; }
+  
+  if ( ($conf_arr['tag_limit'] < 1) || ($conf_arr['tag_limit'] > 50) )
+    { button_error("\"tag_limit\" limits are [1..50]", 300); return false; }
 
   return true;
 }
@@ -123,8 +129,12 @@ if (isset($args['upconfig']))
   }
 
   if ($ok)
+  {
     button("Configuration successfully updated.", 200);
-    button("<a href=\"config.php\">Return to config panel</a>", 400);
+    $cache = new Cache();
+    $cache->Dirty("tags");
+  }
+  button("<a href=\"config.php\">Return to config panel</a>", 400);
 }
 
 else

@@ -170,7 +170,7 @@ class DialogStandard
         $menu_sub->AddItem("Management", "admin/management.php");
         $menu_sub->AddItem("Members mgmt", "admin/memberlist.php");
         $menu_sub->AddItem("File explorer", "admin/filexplorer.php");
-        $menu_sub->AddItem("Tagboard moderation", "javascript:child=window.open('/shinotag/moder2.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()");
+        $menu_sub->AddItem("Tagboard moderation", "admin/tag_moder.php");
       
         $menu_main->AddSubMenu($menu_sub);
       }
@@ -192,7 +192,7 @@ class DialogStandard
       $bar->AddBlock_MenuBar("", $menu_main);
     }
     
-    $bar->AddBlock_TagBoard($this->style->GetStyle());
+    $bar->AddBlock_TagBoard($this->db, $this->bbcode, $this->smilies, $this->style);
     $bar->AddBlock_LastComments($this->db, $this->bbcode, $this->smilies);
     $bar->AddBlock_Legend($this->style);
     $bar->AddBlock_Baneers();
@@ -652,7 +652,7 @@ class DialogStandard
 
     echo "</td><td style=\"text-align: right\"\n";
    
-    echo  "<a href=\"javascript:child=window.open('./smilies.php', 'Smiles', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">Add smiles \o/</a>";
+    echo  "<a href=\"javascript:child=window.open('./smilies.php?referer_form=commentform', 'Smiles', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">Add smiles \o/</a>";
 
     /* fin -- barre d'outils */
     echo  "</td></tr>\n";

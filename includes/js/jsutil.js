@@ -88,3 +88,9 @@ function update_profile_optionform_fields(sortP, themeP) {
 
     document.forms['options'].theme.selectedIndex = themeP;
 }
+
+function update_tagform_fields(pseudoP, linkP, contentP) {
+    document.forms['tagform'].tag_pseudo.value  = pseudoP;
+	document.forms['tagform'].tag_link.value  = linkP;
+	document.forms['tagform'].content.value  = contentP;
+}

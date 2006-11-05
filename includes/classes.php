@@ -32,6 +32,7 @@ include_once ROOT_PATH ."classes/class.smilies.php";
 include_once ROOT_PATH ."classes/class.style.php";
 include_once ROOT_PATH ."classes/class.set.php";
 include_once ROOT_PATH ."classes/class.map.php";
+include_once ROOT_PATH ."classes/class.tag.tagboard.php";
 include_once ROOT_PATH ."libs/lib.filemanager.php";
 include_once ROOT_PATH ."libs/lib.auth.php";
 include_once ROOT_PATH ."libs/lib.mail.php";

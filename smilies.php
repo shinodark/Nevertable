@@ -25,10 +25,10 @@ include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
 
-if(empty($args['css']))
+if(empty($_GET['css']))
       $css = "smilies.css";
     else
-      $css = $css;
+      $css = $_GET['css'];
 
 /* nécessaire pour le chargement de la conf */
 $table = new Nvrtbl("null");
@@ -66,7 +66,7 @@ if ($Smilies->IsLoad()) {
     echo "</tr><tr>\n";
   echo "<td>\n";
 
-  $mes  = "<a href=\"javascript:opener.document.forms['commentform'].content.value+=' ";
+  $mes  = "<a href=\"javascript:opener.document.forms['".$_GET['referer_form']."'].content.value+=' ";
   $mes .= $code . " ';window.focus();\">";
   $mes .= $icon;
   $mes .= "</a>\n";

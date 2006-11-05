@@ -141,7 +141,7 @@ class DialogAdmin
     $menu_main->AddItem("Members List", "memberlist.php");
     $menu_main->AddItem("File explorer", "filexplorer.php");
     $menu_main->AddItem("Purge trash", "purgetrash.php");
-    $menu_main->AddItem("Tagboard moderation", "javascript:child=window.open('/shinotag/moder2.php', 'Tag moderation', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()");
+    $menu_main->AddItem("Tagboard moderation", "tag_moder.php");
     $menu_main->AddItem("Leave admin panel", "../index.php");
 
     $bar->AddBlock_MenuBar("Admin Menu", $menu_main);
