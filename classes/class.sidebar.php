@@ -128,6 +128,12 @@ class SideBar
         "AND", false
       );
       
+      $db->RequestGenericFilter(
+        array($p."rec.folder", $p."rec.folder"),
+        array(get_folder_by_name("contest"), get_folder_by_name("oldones")),
+        "OR"
+      );
+      
       $db->RequestGenericSort(array($p."com.timestamp"), "DESC");
       $db->RequestLimit($config['sidebar_comments']);
       $res = $db->Query();
