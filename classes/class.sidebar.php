@@ -37,7 +37,7 @@ class SideBar
     function End()
     {
        $this->output .=  "</div><!-- sidebar-->\n\n";
-       echo $this->output;
+       return $this->output;
     }
 
     /* Create a MenuBar 

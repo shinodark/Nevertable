@@ -27,6 +27,7 @@ class DialogAdmin
   var $smilies;
   var $bbcode;
   var $style;
+  var $output;
     
   /*__CONSTRUCTEUR__*/
   function DialogAdmin(&$db, $o_style)
@@ -35,48 +36,61 @@ class DialogAdmin
     $this->smilies = new Smilies();
     $this->bbcode = new parse_bbcode();
     $this->style = $o_style;
+    $this->output = "";
+  }
+  
+  function Output($string="")
+  {
+      if (empty($string))
+          echo $this->output;
+      else
+          echo $string;
   }
 
   function HtmlHead($title, $special="")
   {
-    echo "<head>\n";
-    echo "<title>$title</title>\n";
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
-    echo "<link rel=\"stylesheet\" href=\"".$this->style->GetCss()."\" type=\"text/css\" />\n";
-   /* echo "<link rel=\"shortcut icon\" href=\"".ROOT_PATH."favicon.ico\" />\n"; */
-    echo "<script type=\"text/javascript\" src=\"".ROOT_PATH."includes/js/jsutil.js\"></script>\n";
-    echo $special; 
-    echo "</head>\n\n";
+    $this->output  =  "<head>\n";
+    $this->output .=  "<title>$title</title>\n";
+    $this->output .=  "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
+    $this->output .=  "<link rel=\"stylesheet\" href=\"".$this->style->GetCss()."\" type=\"text/css\" />\n";
+   /* $this->output .=  "<link rel=\"shortcut icon\" href=\"".ROOT_PATH."favicon.ico\" />\n"; */
+    $this->output .=  "<script type=\"text/javascript\" src=\"".ROOT_PATH."includes/js/jsutil.js\"></script>\n";
+    $this->output .=  $special; 
+    $this->output .=  "</head>\n\n";
   }
 
   function Top()
   {
-    echo "<div id=\"top\">\n";  
-    echo "<center>";
-    echo  "<a href=\"http://www.nevercorner.net/table/\">".$this->style->GetImage('top')."</a>";
-    echo "</center>";
-    echo  "</div>\n\n";
+    $this->output .=  "<div id=\"top\">\n";  
+    $this->output .=  "<center>";
+    $this->output .=   "<a href=\"http://www.nevercorner.net/table/\">".$this->style->GetImage('top')."</a>";
+    $this->output .=  "</center>";
+    $this->output .=   "</div>\n\n";
+
+    $this->Output();
   }
 
 
   function Prelude()
   {
-    echo  "<div id=\"prelude\">\n";
-    echo  "<center>\n";
-    echo  "<a href=\"?folder=".get_folder_by_name("incoming")."\">";
-    echo  $this->db->RequestCountRecords(get_folder_by_name("incoming"), get_type_by_name("all"));
-    echo  "&nbsp;records in incoming</a> &nbsp; | &nbsp; \n";
-    echo  "<a href=\"?folder=".get_folder_by_name("trash")."\">";
-    echo  $this->db->RequestCountRecords(get_folder_by_name("trash"), get_type_by_name("all"));
-    echo  "&nbsp;records in trash</a> &nbsp; | &nbsp; \n";
-    echo  "<a href=\"?folder=".get_folder_by_name("oldones")."\">";
-    echo  $this->db->RequestCountRecords(get_folder_by_name("oldones"), get_type_by_name("all"));
-    echo  "&nbsp;obsolete records</a> &nbsp; | &nbsp; \n";
-    echo  "<a href=\"?folder=".get_folder_by_name("contest")."\">";
-    echo  $this->db->RequestCountRecords(get_folder_by_name("contest"), get_type_by_name("all"));
-    echo  "&nbsp;records in contest</a>\n";
-    echo  "</center>\n";
-    echo  "</div>\n";
+    $this->output  =   "<div id=\"prelude\">\n";
+    $this->output .=   "<center>\n";
+    $this->output .=   "<a href=\"?folder=".get_folder_by_name("incoming")."\">";
+    $this->output .=   $this->db->RequestCountRecords(get_folder_by_name("incoming"), get_type_by_name("all"));
+    $this->output .=   "&nbsp;records in incoming</a> &nbsp; | &nbsp; \n";
+    $this->output .=   "<a href=\"?folder=".get_folder_by_name("trash")."\">";
+    $this->output .=   $this->db->RequestCountRecords(get_folder_by_name("trash"), get_type_by_name("all"));
+    $this->output .=   "&nbsp;records in trash</a> &nbsp; | &nbsp; \n";
+    $this->output .=   "<a href=\"?folder=".get_folder_by_name("oldones")."\">";
+    $this->output .=   $this->db->RequestCountRecords(get_folder_by_name("oldones"), get_type_by_name("all"));
+    $this->output .=   "&nbsp;obsolete records</a> &nbsp; | &nbsp; \n";
+    $this->output .=   "<a href=\"?folder=".get_folder_by_name("contest")."\">";
+    $this->output .=   $this->db->RequestCountRecords(get_folder_by_name("contest"), get_type_by_name("all"));
+    $this->output .=   "&nbsp;records in contest</a>\n";
+    $this->output .=   "</center>\n";
+    $this->output .=   "</div>\n";
+    
+    $this->Output();
   }
   
   function Speech()
@@ -89,44 +103,46 @@ class DialogAdmin
 
     if(isset($this->navbar_cache))
     {
-        echo $this->navbar_cache;
+        $this->output  =  $this->navbar_cache;
+        $this->Output();
         return;
     }
 
     $page = (empty($page)) ? 1 : $page;
     $off = (empty($page)) ? 0 : ($page-1)*$limit;
   
-    $str  = "<div class=\"navbar\">\n";
-    $str .= "<center>\n";
+    $this->output  = "<div class=\"navbar\">\n";
+    $this->output .= "<center>\n";
   
     $pages  = ceil($total / $limit);
   
     if ($off > 0)
-      $str .= "<a href=\"".$nextargs."&amp;page=".($page-1)."\">prev</a>\n";
+      $this->output .= "<a href=\"".$nextargs."&amp;page=".($page-1)."\">prev</a>\n";
     else
-      $str .= "prev\n";
+      $this->output .= "prev\n";
 
-    $str .= "&nbsp;|&nbsp;";
+    $this->output .= "&nbsp;|&nbsp;";
  
     for ($i=1; $i<=$pages; $i++)
     {
       if ($i != $page)  
-         $str .= "<a href=\"".$nextargs."&amp;page=".$i."\">".$i."</a>";
+         $this->output .= "<a href=\"".$nextargs."&amp;page=".$i."\">".$i."</a>";
       else
-         $str .= "<b>" . $i . "</b>";
-      $str .= "&nbsp;\n";
+         $this->output .= "<b>" . $i . "</b>";
+      $this->output .= "&nbsp;\n";
     }
 
-    $str .= "&nbsp;|&nbsp;";
+    $this->output .= "&nbsp;|&nbsp;";
     if ($off+$limit <= $total)
-      $str .= "<a href=\"".$nextargs."&amp;page=".($page+1)."\">next</a>\n";
+      $this->output .= "<a href=\"".$nextargs."&amp;page=".($page+1)."\">next</a>\n";
     else
-      $str .= "next\n";
+      $this->output .= "next\n";
     
-    $str .= "</center>\n";
-    $str .= "</div>\n";
-    $this->navbar_cache = $str;
-    echo $str;
+    $this->output .= "</center>\n";
+    $this->output .= "</div>\n";
+    $this->navbar_cache = $this->output;
+    
+    $this->Output();
   }
 
   function SideBar()
@@ -146,24 +162,27 @@ class DialogAdmin
 
     $bar->AddBlock_MenuBar("Admin Menu", $menu_main);
     
-    $bar->End();
+    $this->output = $bar->End();
+    $this->Output();
   }
   
   function Footer($version, $time="")
   {
-    echo  "<div id=\"stats\">\n";
+    $this->output  =   "<div id=\"stats\">\n";
     if (!empty($time))
-        echo  "Page generated in ".$time."s using ".$this->db->GetReqCount()." queries\n";
+        $this->output .=   "Page generated in ".$time."s using ".$this->db->GetReqCount()." queries\n";
     else
-        echo  "Page generated using ".$this->db->GetReqCount()." queries\n";
-    echo  "</div>\n\n";
+        $this->output .=   "Page generated using ".$this->db->GetReqCount()." queries\n";
+    $this->output .=   "</div>\n\n";
  
-    echo  "<div id=\"footer\">\n";
-    echo  "nevertable ".$version." powered by <a href=\"http://shinobufan.free.fr/dotclear\">shino</a>\n";
-    echo  "</div>\n\n";
+    $this->output .=   "<div id=\"footer\">\n";
+    $this->output .=   "nevertable ".$version." powered by <a href=\"http://shinobufan.free.fr/dotclear\">shino</a>\n";
+    $this->output .=   "</div>\n\n";
     
     /* wz_tooltip */
-    echo "<script type=\"text/javascript\" src=\"".ROOT_PATH."includes/js/wz_tooltip.js\"></script>\n";
+    $this->output .=  "<script type=\"text/javascript\" src=\"".ROOT_PATH."includes/js/wz_tooltip.js\"></script>\n";
+    
+    $this->Output();
   }
 
 
@@ -171,41 +190,43 @@ class DialogAdmin
   {
     global $nextargs;
     
-    echo "<div class=\"results-prelude\">\n";
-    echo "active folder: ".get_folder_by_number($args['folder'])."&nbsp;(".GetFolderDescription($args['folder']).")\n";
-    echo "</div>\n";
-    echo "<div class=\"results\">\n";
+    $this->output  =  "<div class=\"results-prelude\">\n";
+    $this->output .=  "active folder: ".get_folder_by_number($args['folder'])."&nbsp;(".GetFolderDescription($args['folder']).")\n";
+    $this->output .=  "</div>\n";
+    $this->output .=  "<div class=\"results\">\n";
   
-    echo "<table>\n";
-    echo "<tr><th style=\"width: 16px;\"></th>\n"; // select
-    echo "<th><a href=\"".$nextargs."&amp;sort=id\">id</a></th>\n"; //id
-    echo "<th style=\"width: 28px;\"></th>\n";     //days
-    echo "<th style=\"width: 28px;\"></th>\n";     //best
-    echo "<th style=\"width: 28px;\"></th>\n";     //type
-    echo "<th><a href=\"".$nextargs."&amp;sort=user\">player</a></th>\n";
-    echo "<th><a href=\"".$nextargs."&amp;sort=level\">set</a></th>\n";
-    echo "<th><a href=\"".$nextargs."&amp;sort=level\">lvl</a></th>\n";
-    echo "<th><a href=\"".$nextargs."&amp;sort=time\">time</a></th>\n";
-    echo "<th><a href=\"".$nextargs."&amp;sort=coins\">cns</a></th>\n";
-    echo "<th>replay</th>\n";
-    echo "<th style=\"width: 16px;\"></th>\n";    // delete icon
+    $this->output .=  "<table>\n";
+    $this->output .=  "<tr><th style=\"width: 16px;\"></th>\n"; // select
+    $this->output .=  "<th><a href=\"".$nextargs."&amp;sort=id\">id</a></th>\n"; //id
+    $this->output .=  "<th style=\"width: 28px;\"></th>\n";     //days
+    $this->output .=  "<th style=\"width: 28px;\"></th>\n";     //best
+    $this->output .=  "<th style=\"width: 28px;\"></th>\n";     //type
+    $this->output .=  "<th><a href=\"".$nextargs."&amp;sort=user\">player</a></th>\n";
+    $this->output .=  "<th><a href=\"".$nextargs."&amp;sort=level\">set</a></th>\n";
+    $this->output .=  "<th><a href=\"".$nextargs."&amp;sort=level\">lvl</a></th>\n";
+    $this->output .=  "<th><a href=\"".$nextargs."&amp;sort=time\">time</a></th>\n";
+    $this->output .=  "<th><a href=\"".$nextargs."&amp;sort=coins\">cns</a></th>\n";
+    $this->output .=  "<th>replay</th>\n";
+    $this->output .=  "<th style=\"width: 16px;\"></th>\n";    // delete icon
     if ($args['folder'] != get_folder_by_name("contest"))
-      echo "<th style=\"width: 16px;\"></th>\n";    // undo icon
+      $this->output .=  "<th style=\"width: 16px;\"></th>\n";    // undo icon
     if ($args['folder'] == get_folder_by_name("incoming"))
-      echo "<th style=\"width: 16px;\"></th>\n";    // undo icon avec overwrite
-    echo "<th></th>\n"; // goto same records
-    echo "</tr>\n";
+      $this->output .=  "<th style=\"width: 16px;\"></th>\n";    // undo icon avec overwrite
+    $this->output .=  "<th></th>\n"; // goto same records
+    $this->output .=  "</tr>\n";
 
     $i=0;
     while ($fields = $this->db->FetchArray($mysql_results))
     {
-      /*echo "<tr><td colspan=\"12\" style=\"background: #fff; height: 1px;\"></td></tr>\n";*/
+      /*$this->output .=  "<tr><td colspan=\"12\" style=\"background: #fff; height: 1px;\"></td></tr>\n";*/
       $this->_RecordLine($i, $fields);
       $this->_JumpLine(14);
       $i++;
     }
-    echo "</table>\n";
-    echo "</div>\n\n";
+    $this->output .=  "</table>\n";
+    $this->output .=  "</div>\n\n";
+    
+    $this->Output();
   }
 
   function Level($results_contest, $results_oldones, $args, $total1="", $total2="")
@@ -214,24 +235,24 @@ class DialogAdmin
 
   function Record($fields)
   {
-    echo "<div class=\"oneresult\">\n";
-    echo "<table><tr>\n";
-    echo "<tr><th style=\"width: 16px;\"></th>\n"; // select
-    echo "<th><a href=\"".$nextargs."&amp;sort=id\">id</a></th>\n"; //id
-    echo "<th style=\"width: 28px;\"></th>\n"; // days
-    echo "<th style=\"width: 28px;\"></th>\n"; // best
-    echo "<th style=\"width: 32px;\"></th>\n"; // type
-    echo "<th style=\"width: 100px;\">player</th>\n"; // player
-    echo "<th>set</th>\n";
-    echo "<th>lvl</th>\n";
-    echo "<th>time</th>\n";
-    echo "<th>cns</th>\n";
-    echo "<th></th>\n"; // replay
-    echo "<th style=\"width: 16px;\"></th>\n";    // delete icon
+    $this->output  =  "<div class=\"oneresult\">\n";
+    $this->output .=  "<table><tr>\n";
+    $this->output .=  "<tr><th style=\"width: 16px;\"></th>\n"; // select
+    $this->output .=  "<th><a href=\"".$nextargs."&amp;sort=id\">id</a></th>\n"; //id
+    $this->output .=  "<th style=\"width: 28px;\"></th>\n"; // days
+    $this->output .=  "<th style=\"width: 28px;\"></th>\n"; // best
+    $this->output .=  "<th style=\"width: 32px;\"></th>\n"; // type
+    $this->output .=  "<th style=\"width: 100px;\">player</th>\n"; // player
+    $this->output .=  "<th>set</th>\n";
+    $this->output .=  "<th>lvl</th>\n";
+    $this->output .=  "<th>time</th>\n";
+    $this->output .=  "<th>cns</th>\n";
+    $this->output .=  "<th></th>\n"; // replay
+    $this->output .=  "<th style=\"width: 16px;\"></th>\n";    // delete icon
     if ($fields['folder'] != get_folder_by_name("contest"))
-      echo "<th style=\"width: 16px;\"></th>\n";    // undo icon
-    echo "<th></th>\n"; // goto same records
-    echo "</tr>\n";
+      $this->output .=  "<th style=\"width: 16px;\"></th>\n";    // undo icon
+    $this->output .=  "<th></th>\n"; // goto same records
+    $this->output .=  "</tr>\n";
 
     $u = new User($this->db);
     $s = new Set($this->db);
@@ -243,8 +264,10 @@ class DialogAdmin
     $fields['set_name'] = $s->GetName();
     $this->_RecordLine(0, $fields, false);
     
-    echo "</table>\n";
-    echo "</div>\n";
+    $this->output .=  "</table>\n";
+    $this->output .=  "</div>\n";
+    
+    $this->Output();
   }
 
   function RecordLink($replay_id)
@@ -258,29 +281,31 @@ class DialogAdmin
 
   function MemberList($mysql_results)
   {
-    echo "<center>\n";
-    echo "<div class=\"results\" style=\"width:100%; float: none;\">\n";
-    echo "<table style=\"text-align: center;\"><tr>\n";
-    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=id>#</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=pseudo>Name</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=records>Records number</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=best>Best records</a></th>\n";
-    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=comments>Comments</a></th>\n";
-    echo "<th style=\"text-align: center;\">Mail</th>\n";
-    echo "<th style=\"text-align: center;\"><a href=memberlist.php?sort=cat>Auth Level</a></th>\n";
-    echo "<th></th>\n"; // update
-    echo "<th></th>\n"; // delete
-    echo "</tr>\n";
+    $this->output  =  "<center>\n";
+    $this->output .=  "<div class=\"results\" style=\"width:100%; float: none;\">\n";
+    $this->output .=  "<table style=\"text-align: center;\"><tr>\n";
+    $this->output .=  "<th style=\"text-align: center;\"><a href=memberlist.php?sort=id>#</a></th>\n";
+    $this->output .=  "<th style=\"text-align: center;\"><a href=memberlist.php?sort=pseudo>Name</a></th>\n";
+    $this->output .=  "<th style=\"text-align: center;\"><a href=memberlist.php?sort=records>Records number</a></th>\n";
+    $this->output .=  "<th style=\"text-align: center;\"><a href=memberlist.php?sort=best>Best records</a></th>\n";
+    $this->output .=  "<th style=\"text-align: center;\"><a href=memberlist.php?sort=comments>Comments</a></th>\n";
+    $this->output .=  "<th style=\"text-align: center;\">Mail</th>\n";
+    $this->output .=  "<th style=\"text-align: center;\"><a href=memberlist.php?sort=cat>Auth Level</a></th>\n";
+    $this->output .=  "<th></th>\n"; // update
+    $this->output .=  "<th></th>\n"; // delete
+    $this->output .=  "</tr>\n";
     $i=0;
     while ($fields = $this->db->FetchArray($mysql_results))
     {
-      echo "<tr><td colspan=\"7\" style=\"background: #fff; height: 1px;\"></td></tr>\n";
+      $this->output .=  "<tr><td colspan=\"7\" style=\"background: #fff; height: 1px;\"></td></tr>\n";
       $this->_MemberLine($i, $fields);
       $i++;
     }
-    echo "</table>\n";
-    echo "</div>\n";
-    echo "</center>\n";
+    $this->output .=  "</table>\n";
+    $this->output .=  "</div>\n";
+    $this->output .=  "</center>\n";
+    
+    $this->Output();
   }
   
   function UserProfile($o_user)
@@ -303,101 +328,103 @@ class DialogAdmin
     $web = $o_user->GetWebHtml();
 
     
-    echo "<div class=\"nvform\" style=\"width: 700px;\">\n";
-    echo "<table><th colspan=\"2\">Profile ".$pseudo."</th>\n";
-    echo "<tr><td>\n";
+    $this->output  =  "<div class=\"nvform\" style=\"width: 700px;\">\n";
+    $this->output .=  "<table><th colspan=\"2\">Profile ".$pseudo."</th>\n";
+    $this->output .=  "<tr><td>\n";
 
     /* table interne de pagination */
-    echo "<div class=\"embedded\">\n";
-    echo "<table>\n";
-    echo "<tr><td width=130px valign=\"top\">\n";
-    echo "<center>".$avatar."</center>\n";
-    echo "<br/>";
-    echo "<center>".get_userlevel_by_number($level)."</center>\n";
-    echo "<br/>\n";
-    echo "<center>";
+    $this->output .=  "<div class=\"embedded\">\n";
+    $this->output .=  "<table>\n";
+    $this->output .=  "<tr><td width=130px valign=\"top\">\n";
+    $this->output .=  "<center>".$avatar."</center>\n";
+    $this->output .=  "<br/>";
+    $this->output .=  "<center>".get_userlevel_by_number($level)."</center>\n";
+    $this->output .=  "<br/>\n";
+    $this->output .=  "<center>";
     for($i=0; $i<CalculRank($records); $i++)
-      echo $this->style->GetImage('rank');
-    echo "</center>\n";
-    echo "</td><td>\n";
+      $this->output .=  $this->style->GetImage('rank');
+    $this->output .=  "</center>\n";
+    $this->output .=  "</td><td>\n";
     
     /* infos */
-    echo "<table>\n";
-    echo "<tr>\n";
-    echo "<td class=\"row2\" width=\"150px\">Localisation  </td>\n";
-    echo "<td class=\"row1\">".$location."</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-    echo "<td class=\"row2\">Web </td>\n";
-    echo "<td class=\"row1\">".$web."</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-    echo "<td class=\"row2\">Quote </td>\n";
-    echo "<td class=\"row1\">".$speech."</td>\n";
-    echo "</tr>\n";
-    echo "</table>\n";
+    $this->output .=  "<table>\n";
+    $this->output .=  "<tr>\n";
+    $this->output .=  "<td class=\"row2\" width=\"150px\">Localisation  </td>\n";
+    $this->output .=  "<td class=\"row1\">".$location."</td>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "<tr>\n";
+    $this->output .=  "<td class=\"row2\">Web </td>\n";
+    $this->output .=  "<td class=\"row1\">".$web."</td>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "<tr>\n";
+    $this->output .=  "<td class=\"row2\">Quote </td>\n";
+    $this->output .=  "<td class=\"row1\">".$speech."</td>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "</table>\n";
     /* fin infos */
     
-    echo "<br/>\n";
+    $this->output .=  "<br/>\n";
 
     /* stats */
-    echo "<table>\n";
-    echo "<tr>\n";
-    echo "<td class=\"row2\" width=\"150px\">Total Records </td>\n";
-    echo "<td class=\"row1\">".$records."</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-    echo "<td class=\"row2\">Best Records </td>\n";
-    echo "<td class=\"row1\">".$records_best."</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-    echo "<td class=\"row2\">Best Time</td>\n";
-    echo "<td class=\"row1\">";
+    $this->output .=  "<table>\n";
+    $this->output .=  "<tr>\n";
+    $this->output .=  "<td class=\"row2\" width=\"150px\">Total Records </td>\n";
+    $this->output .=  "<td class=\"row1\">".$records."</td>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "<tr>\n";
+    $this->output .=  "<td class=\"row2\">Best Records </td>\n";
+    $this->output .=  "<td class=\"row1\">".$records_best."</td>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "<tr>\n";
+    $this->output .=  "<td class=\"row2\">Best Time</td>\n";
+    $this->output .=  "<td class=\"row1\">";
     for ($i=0; $i<$records_besttime; $i++)
-      echo $this->style->GetImage('best time');
-    echo "</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-    echo "<td class=\"row2\">Most coins</td>\n";
-    echo "<td class=\"row1\">";
+      $this->output .=  $this->style->GetImage('best time');
+    $this->output .=  "</td>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "<tr>\n";
+    $this->output .=  "<td class=\"row2\">Most coins</td>\n";
+    $this->output .=  "<td class=\"row1\">";
     for ($i=0; $i<$records_mostcoins; $i++)
-      echo $this->style->GetImage('most coins');
-    echo "</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-    echo "<td class=\"row2\">Freestyle</td>\n";
-    echo "<td class=\"row1\">";
+      $this->output .=  $this->style->GetImage('most coins');
+    $this->output .=  "</td>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "<tr>\n";
+    $this->output .=  "<td class=\"row2\">Freestyle</td>\n";
+    $this->output .=  "<td class=\"row1\">";
     for ($i=0; $i<$records_freestyle; $i++)
-      echo $this->style->GetImage('freestyle');
-    echo "</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-    echo "<td class=\"row2\">Comments </td>\n";
-    echo "<td class=\"row1\">". $comments . "</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-    echo "<td colspan=\"2\">\n";
-    echo "</td>\n";
-    echo "</tr>\n";
-    echo "</table>\n";
+      $this->output .=  $this->style->GetImage('freestyle');
+    $this->output .=  "</td>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "<tr>\n";
+    $this->output .=  "<td class=\"row2\">Comments </td>\n";
+    $this->output .=  "<td class=\"row1\">". $comments . "</td>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "<tr>\n";
+    $this->output .=  "<td colspan=\"2\">\n";
+    $this->output .=  "</td>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "</table>\n";
     /* fin stats */
 
-    echo "</td></tr>\n";
-    echo "<tr><td colspan=\"2\">\n";
+    $this->output .=  "</td></tr>\n";
+    $this->output .=  "<tr><td colspan=\"2\">\n";
 
-    echo "<center>";
-    echo "<a href=\"".ROOT_PATH."index.php?folder=-1&filter=pseudo&filterval=".$pseudo." \">View all records of ".$pseudo."</a>\n";
-    echo "<br/><a href=\"".ROOT_PATH."index.php?folder=".get_folder_by_name("contest")."&filter=pseudo&filterval=".$pseudo." \">View all records (contest only)</a>\n";
-    echo "</center>\n";
+    $this->output .=  "<center>";
+    $this->output .=  "<a href=\"".ROOT_PATH."index.php?folder=-1&filter=pseudo&filterval=".$pseudo." \">View all records of ".$pseudo."</a>\n";
+    $this->output .=  "<br/><a href=\"".ROOT_PATH."index.php?folder=".get_folder_by_name("contest")."&filter=pseudo&filterval=".$pseudo." \">View all records (contest only)</a>\n";
+    $this->output .=  "</center>\n";
     
-    echo "</td></tr>\n";
-    echo "</table>\n";
-    echo "</div>\n";
+    $this->output .=  "</td></tr>\n";
+    $this->output .=  "</table>\n";
+    $this->output .=  "</div>\n";
     /* fin table interne pagination */
 
-    echo "</td></tr>\n";
-    echo "</table>\n";
-    echo  "</div>\n";
+    $this->output .=  "</td></tr>\n";
+    $this->output .=  "</table>\n";
+    $this->output .=   "</div>\n";
+    
+    $this->Output();
   }
 
   function CommentForm($replay_id, $content_memory, $user_id="")
@@ -408,125 +435,128 @@ class DialogAdmin
   {
     global $types, $levels, $folders, $newonly;
   
-    echo  "<div class=\"nvform\" style=\"width: 700px;\">\n";
-    echo  "<form method=\"post\" action=\"?\" name=\"typeform_admin\">\n";
-    echo  "<table><tr>\n";
-    echo  "<td><label for=\"table\">table select : </label>\n";
-    echo  "<select name=\"type\" id=\"table\">\n";
+    $this->output  =   "<div class=\"nvform\" style=\"width: 700px;\">\n";
+    $this->output .=   "<form method=\"post\" action=\"?\" name=\"typeform_admin\">\n";
+    $this->output .=   "<table><tr>\n";
+    $this->output .=   "<td><label for=\"table\">table select : </label>\n";
+    $this->output .=   "<select name=\"type\" id=\"table\">\n";
   
     foreach ($types as $nb => $value)
-      echo  "<option value=\"".$nb."\">".$types[$nb]["name"]."</option>\n";
+      $this->output .=   "<option value=\"".$nb."\">".$types[$nb]["name"]."</option>\n";
   
-    echo  "</select></td>\n";
+    $this->output .=   "</select></td>\n";
   
-    echo  "<td><label for=\"folder\">folder select : </label>\n";
-    echo  "<select name=\"folder\" id=\"folder\">\n";
+    $this->output .=   "<td><label for=\"folder\">folder select : </label>\n";
+    $this->output .=   "<select name=\"folder\" id=\"folder\">\n";
   
     foreach ($folders as $nb => $value)
-      echo  "<option value=\"".$nb."\">".$folders[$nb]["name"]."</option>\n";
+      $this->output .=   "<option value=\"".$nb."\">".$folders[$nb]["name"]."</option>\n";
   
-    echo  "</select></td>\n";
-    echo  "</tr><tr><td></td></tr><tr>\n";
+    $this->output .=   "</select></td>\n";
+    $this->output .=   "</tr><tr><td></td></tr><tr>\n";
   
-    echo  "<td><label for=\"bestonly\">Print only best records </label>\n";
-    echo  "<input type=\"checkbox\" name=\"bestonly\" id=\"bestonly\" value=\"on\" /></td>\n";
-    echo  "<td><label for=\"bestonly\">Print only new records </label>\n";
-    echo  "<select name=\"newonly\" id=\"newonly\">\n";
+    $this->output .=   "<td><label for=\"bestonly\">Print only best records </label>\n";
+    $this->output .=   "<input type=\"checkbox\" name=\"bestonly\" id=\"bestonly\" value=\"on\" /></td>\n";
+    $this->output .=   "<td><label for=\"bestonly\">Print only new records </label>\n";
+    $this->output .=   "<select name=\"newonly\" id=\"newonly\">\n";
   
     foreach ($newonly as $nb => $name)
-      echo  "<option value=\"".$nb."\">".$name."</option>\n";
+      $this->output .=   "<option value=\"".$nb."\">".$name."</option>\n";
   
-    echo  "</select></td>\n";
-    echo  "</tr><tr><td></td></tr><tr>\n";
+    $this->output .=   "</select></td>\n";
+    $this->output .=   "</tr><tr><td></td></tr><tr>\n";
 
-    echo  "<td><label for=\"levelset_f\">levelset: </label>\n";
-    echo  "<select name=\"levelset_f\" id=\"levelset_f\">\n";
-    echo  "<option value=\"0\">all</option>\n";
+    $this->output .=   "<td><label for=\"levelset_f\">levelset: </label>\n";
+    $this->output .=   "<select name=\"levelset_f\" id=\"levelset_f\">\n";
+    $this->output .=   "<option value=\"0\">all</option>\n";
     foreach ($this->db->GetSets() as $id => $name)
     {
-      echo  "<option value=\"".$id."\">".$name."</option>\n";
+      $this->output .=   "<option value=\"".$id."\">".$name."</option>\n";
     }
-    echo  "</select></td>\n";
-    echo  "<td><label for=\"level_f\">level: </label>\n";
-    echo  "<select name=\"level_f\" id=\"level_f\">\n";
-    echo  "<option value=\"0\">all</option>\n";
+    $this->output .=   "</select></td>\n";
+    $this->output .=   "<td><label for=\"level_f\">level: </label>\n";
+    $this->output .=   "<select name=\"level_f\" id=\"level_f\">\n";
+    $this->output .=   "<option value=\"0\">all</option>\n";
     foreach ($levels as $name => $value)
     {
-      echo  "<option value=\"".$value."\">".$name."</option>\n";
+      $this->output .=   "<option value=\"".$value."\">".$name."</option>\n";
     }
-    echo  "</select></td>\n";
-    echo  "</tr><tr><td></td></tr><tr>\n";
+    $this->output .=   "</select></td>\n";
+    $this->output .=   "</tr><tr><td></td></tr><tr>\n";
   
-    echo  "<td colspan=\"4\"><center><input type=\"submit\" value=\"Change\" /></center>\n";
-    echo  "</td></tr></table>\n";
-    echo  "</form>\n";
-    echo  "</div>\n\n";
-    echo "<script type=\"text/javascript\">update_typeform_fields_admin(".$args['type'].",".$args['folder'].",\"".$args['bestonly']."\",".$args['newonly'].",".$args['levelset_f'].",".$args['level_f'].")</script>\n";
-
+    $this->output .=   "<td colspan=\"4\"><center><input type=\"submit\" value=\"Change\" /></center>\n";
+    $this->output .=   "</td></tr></table>\n";
+    $this->output .=   "</form>\n";
+    $this->output .=   "</div>\n\n";
+    $this->output .=  "<script type=\"text/javascript\">update_typeform_fields_admin(".$args['type'].",".$args['folder'].",\"".$args['bestonly']."\",".$args['newonly'].",".$args['levelset_f'].",".$args['level_f'].")</script>\n";
+    
+    $this->Output();
   }
   
   function EditForm()
   {
     global $types, $levels, $nextargs;
     
-    echo  "<div class=\"nvform\" style=\"width: 600px;\">\n";
-    echo  "<form method=\"post\" action=\"".$nextargs."\" name=\"editform\">\n";
-    echo  "<table><tr>\n";
-    echo  "<th colspan=\"6\">Record Editor</th></tr><tr>\n";
-    echo  "<td><label for=\"id\">id:</label></td>\n";
-    echo  "<td><input type=\"text\" id=\"id\" name=\"id\" size=\"3\" readonly />\n";
-    echo  "</td></tr><tr>\n";
+    $this->output  =   "<div class=\"nvform\" style=\"width: 600px;\">\n";
+    $this->output .=   "<form method=\"post\" action=\"".$nextargs."\" name=\"editform\">\n";
+    $this->output .=   "<table><tr>\n";
+    $this->output .=   "<th colspan=\"6\">Record Editor</th></tr><tr>\n";
+    $this->output .=   "<td><label for=\"id\">id:</label></td>\n";
+    $this->output .=   "<td><input type=\"text\" id=\"id\" name=\"id\" size=\"3\" readonly />\n";
+    $this->output .=   "</td></tr><tr>\n";
     /* pseudo est donné à titre indicatif, non utilisé */
-    echo  "<td><label for=\"pseudo\">pseudo: </label></td>\n";
-    echo  "<td><input type=\"text\" id=\"pseudo\" name=\"pseudo_info\" size=\"15\" readonly /></td>\n";
-    echo  "<td><label for=\"user_id\"> # </label></td>\n";
-    echo  "<td><input type=\"text\" id=\"user_id\" name=\"user_id\" size=\"5\" readonly /></td><td colspan=\"2\"></td></tr>\n<tr>";
-    echo  "<td><label for=\"levelset\">levelset: </label></td>\n";
-    echo  "<td><select name=\"levelset\" id=\"levelset\">\n";
+    $this->output .=   "<td><label for=\"pseudo\">pseudo: </label></td>\n";
+    $this->output .=   "<td><input type=\"text\" id=\"pseudo\" name=\"pseudo_info\" size=\"15\" readonly /></td>\n";
+    $this->output .=   "<td><label for=\"user_id\"> # </label></td>\n";
+    $this->output .=   "<td><input type=\"text\" id=\"user_id\" name=\"user_id\" size=\"5\" readonly /></td><td colspan=\"2\"></td></tr>\n<tr>";
+    $this->output .=   "<td><label for=\"levelset\">levelset: </label></td>\n";
+    $this->output .=   "<td><select name=\"levelset\" id=\"levelset\">\n";
   
     foreach ($this->db->GetSets() as $id => $name)
     {
-      echo  "<option value=\"".$id."\">".$name."</option>\n";
+      $this->output .=   "<option value=\"".$id."\">".$name."</option>\n";
     }
   
-    echo  "</select></td>\n";
-    echo  "<td><label for=\"level\">level: </label></td>\n";
-    echo  "<td><select name=\"level\" id=\"level\">\n";
+    $this->output .=   "</select></td>\n";
+    $this->output .=   "<td><label for=\"level\">level: </label></td>\n";
+    $this->output .=   "<td><select name=\"level\" id=\"level\">\n";
   
     foreach ($levels as $name => $value)
     {
-      echo  "<option value=\"".$value."\">".$name."</option>\n";
+      $this->output .=   "<option value=\"".$value."\">".$name."</option>\n";
     }
   
-    echo  "</select>\n</td>\n";
-    echo  "<td><label for=\"type\">type: </label></td>\n";
-    echo  "<td><select id=\"type\" name=\"type\">\n";
+    $this->output .=   "</select>\n</td>\n";
+    $this->output .=   "<td><label for=\"type\">type: </label></td>\n";
+    $this->output .=   "<td><select id=\"type\" name=\"type\">\n";
   
     foreach ($types as $nb => $value)
     {
       if ($types[$nb]["name"] != "all")
-          echo  "<option value=\"".$nb."\">".$types[$nb]["name"]."</option>\n";
+          $this->output .=   "<option value=\"".$nb."\">".$types[$nb]["name"]."</option>\n";
     }
   
-    echo  "</select>\n</td></tr><tr>\n";
+    $this->output .=   "</select>\n</td></tr><tr>\n";
 
-    echo  "<td colspan=\"3\"><label for=\"time\">time(s), >=9999 if goal not reached: </label></td>\n";
-    echo  "<td><input type=\"text\" id=\"time\" name=\"time\" size=\"7\" /></td>\n";
-    echo  "<td><label for=\"coins\">coins: </label></td>\n";
-    echo  "<td><input type=\"text\" id=\"coins\" name=\"coins\" size=\"5\"/></td></tr>\n<tr>";
-    echo  "<td><label for=\"replay\">replay file: </label></td>\n";
-    echo  "<td colspan=\"5\"><input type=\"text\" id=\"replay\" name=\"replay\" size=\"50\" />\n";
+    $this->output .=   "<td colspan=\"3\"><label for=\"time\">time(s), >=9999 if goal not reached: </label></td>\n";
+    $this->output .=   "<td><input type=\"text\" id=\"time\" name=\"time\" size=\"7\" /></td>\n";
+    $this->output .=   "<td><label for=\"coins\">coins: </label></td>\n";
+    $this->output .=   "<td><input type=\"text\" id=\"coins\" name=\"coins\" size=\"5\"/></td></tr>\n<tr>";
+    $this->output .=   "<td><label for=\"replay\">replay file: </label></td>\n";
+    $this->output .=   "<td colspan=\"5\"><input type=\"text\" id=\"replay\" name=\"replay\" size=\"50\" />\n";
   
-    echo  "</td></tr><tr>\n";
+    $this->output .=   "</td></tr><tr>\n";
 
-    echo  "<td colspan=\"2\"><center><input type=\"submit\" value=\"Modify !\" /></center></td>\n";
-    echo  "<td colspan=\"2\"><center><input type=\"reset\" value=\"Clear form\" /></center></td>\n";
-    echo  "<td><input type=\"hidden\" id=\"to\" name=\"to\" value=\"edit\" /></td>\n";
-    echo  "</tr>\n";
+    $this->output .=   "<td colspan=\"2\"><center><input type=\"submit\" value=\"Modify !\" /></center></td>\n";
+    $this->output .=   "<td colspan=\"2\"><center><input type=\"reset\" value=\"Clear form\" /></center></td>\n";
+    $this->output .=   "<td><input type=\"hidden\" id=\"to\" name=\"to\" value=\"edit\" /></td>\n";
+    $this->output .=   "</tr>\n";
   
-    echo  "</table>\n";
-    echo  "</form>\n";
-    echo  "</div>\n\n";
+    $this->output .=   "</table>\n";
+    $this->output .=   "</form>\n";
+    $this->output .=   "</div>\n\n";
+    
+    $this->Output();
   }
   
   function AddFormAuto()
@@ -537,16 +567,18 @@ class DialogAdmin
   {
     global $nextargs;
   
-    echo  "<div class=\"nvform\"  style=\"width: 600px;\" >\n";
-    echo  "<form enctype=\"multipart/form-data\" action=\"".$nextargs."&amp;to=upload2\" method=\"POST\">\n";
-    echo  "<table><tr>\n";
-    echo  "<td><input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".$size_limit."\" />\n";
-    echo  "<td><label for=\"uploadfile\">Upload a replay file : </label></td>\n";
-    echo  "<td><input name=\"uploadfile\" type=\"file\" /></td>\n";
-    echo  "<td><input type=\"submit\" value=\"Send File\" /></td>\n";
-    echo  "</tr></table>\n";
-    echo  "</form>\n";
-    echo  "</div>\n\n";
+    $this->output  =   "<div class=\"nvform\"  style=\"width: 600px;\" >\n";
+    $this->output .=   "<form enctype=\"multipart/form-data\" action=\"".$nextargs."&amp;to=upload2\" method=\"POST\">\n";
+    $this->output .=   "<table><tr>\n";
+    $this->output .=   "<td><input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".$size_limit."\" />\n";
+    $this->output .=   "<td><label for=\"uploadfile\">Upload a replay file : </label></td>\n";
+    $this->output .=   "<td><input name=\"uploadfile\" type=\"file\" /></td>\n";
+    $this->output .=   "<td><input type=\"submit\" value=\"Send File\" /></td>\n";
+    $this->output .=   "</tr></table>\n";
+    $this->output .=   "</form>\n";
+    $this->output .=   "</div>\n\n";
+    
+    $this->Output();
   }
   
   /*__METHODES PRIVESS__*/
@@ -562,7 +594,7 @@ class DialogAdmin
     }
 
     $rowclass = ($i % 2) ? "row1" : "row2";
-    echo  "<tr class=\"".$rowclass."\" ".$onmouseover.">\n";
+    $this->output .=   "<tr class=\"".$rowclass."\" ".$onmouseover.">\n";
 
     // select
     $jsargs  = "'".$fields['id']."',";
@@ -574,23 +606,23 @@ class DialogAdmin
     $jsargs .= "'".$fields['coins']."',";
     $jsargs .= "'".$fields['replay']."',";
     $jsargs .= "'".$fields['type']."'";
-    echo  "<td style=\"width:16px;\">".$this->style->GetImage('arrow', "", "", "onclick=\"change_editform(".$jsargs.")\"")."</td>\n";
+    $this->output .=   "<td style=\"width:16px;\">".$this->style->GetImage('arrow', "", "", "onclick=\"change_editform(".$jsargs.")\"")."</td>\n";
 
     //id
-    echo  "<td><a href=\"admin.php?link=".$fields['id']."\">".$fields['id']."</a></td>";
+    $this->output .=   "<td><a href=\"admin.php?link=".$fields['id']."\">".$fields['id']."</a></td>";
        
     /* old */
     $days=timestamp_diff_in_days(time(), GetDateFromTimestamp($fields['timestamp']));
-    echo "<td>".$days."&nbsp;d</td>\n";
+    $this->output .=  "<td>".$days."&nbsp;d</td>\n";
 
     /* best ? */
     if($fields['isbest']==1)
-      echo "<td>".$this->style->GetImage('best')."</td>\n";
+      $this->output .=  "<td>".$this->style->GetImage('best')."</td>\n";
     else
-        echo "<td></td>\n";
+        $this->output .=  "<td></td>\n";
       
     /* type image */
-    echo  "<td>".$this->style->GetImage(get_type_by_number($fields['type']))."</td>\n";
+    $this->output .=   "<td>".$this->style->GetImage(get_type_by_number($fields['type']))."</td>\n";
   
     /* pseudo */
     if ($fields['folder'] == get_folder_by_name("incoming"))
@@ -598,43 +630,43 @@ class DialogAdmin
       $this->db->MatchUserById($fields['user_id']);
       $this->db->Query();
       $val = $this->db->FetchArray();
-      echo  "<td><a href=\"mailto:".$val['email']." \">";
-      echo  $fields['pseudo'] ."</a></td>\n" ;
+      $this->output .=   "<td><a href=\"mailto:".$val['email']." \">";
+      $this->output .=   $fields['pseudo'] ."</a></td>\n" ;
     }
     else
     {
       if (!empty($fields['pseudo'])) /* utilisateur non inscrit */
-        echo "<td>".$fields['pseudo'] ."</td>\n" ;
+        $this->output .=  "<td>".$fields['pseudo'] ."</td>\n" ;
       else
       {
-        echo  "<td><a href=\"edit_profile.php?id=".$fields['user_id']."\">";
-        echo  $fields['pseudo'] ."</a></td>\n" ;
+        $this->output .=   "<td><a href=\"edit_profile.php?id=".$fields['user_id']."\">";
+        $this->output .=   $fields['pseudo'] ."</a></td>\n" ;
       }
 
     }
     /* levelset */
-    echo  "<td>". $fields['set_name'] ."</td>\n" ;
+    $this->output .=   "<td>". $fields['set_name'] ."</td>\n" ;
     /* level */
-    echo  "<td>" . $fields['level'] . "</td>\n" ;
+    $this->output .=   "<td>" . $fields['level'] . "</td>\n" ;
     /* time */
-    echo  "<td>" . sec_to_friendly_display($fields['time']) . "</td>\n" ;
+    $this->output .=   "<td>" . sec_to_friendly_display($fields['time']) . "</td>\n" ;
     /* coins */
-    echo  "<td>" . $fields['coins'] . "</td>\n" ;
+    $this->output .=   "<td>" . $fields['coins'] . "</td>\n" ;
 
     /* replay */
     if(empty($fields["replay"]))
     {
-      echo  "<td><a href=\"upload.php?id=".$fields['id']."\">upload file</a></td>\n" ;
+      $this->output .=   "<td><a href=\"upload.php?id=".$fields['id']."\">upload file</a></td>\n" ;
     }
     else 
     {
-      echo  "<td><a href=\"upload.php?id=".$fields['id']."\" title=\"".$fields["replay"]."\">replace file</a>\n" ;
+      $this->output .=   "<td><a href=\"upload.php?id=".$fields['id']."\" title=\"".$fields["replay"]."\">replace file</a>\n" ;
       $replay  = replay_link($fields['folder'], $fields['replay']);
-      echo  "&nbsp;|&nbsp; <a href=" . $replay . " type=\"application/octet-stream\">replay</a></td>\n" ;
+      $this->output .=   "&nbsp;|&nbsp; <a href=" . $replay . " type=\"application/octet-stream\">replay</a></td>\n" ;
     }
 
     /* trash */
-    echo "<td style=\"width: 16px;\">";
+    $this->output .=  "<td style=\"width: 16px;\">";
     if ($fields['folder'] == get_folder_by_name("trash")) {
       $action="recpurge";
       $img="del";
@@ -645,36 +677,36 @@ class DialogAdmin
       $action="rectrash";
       $bull="Send to trash";
     }
-    echo "<a href=\"?to=".$action."&amp;id=".$fields['id']."\">";
-    echo $this->style->GetImage($img, $bull);
-    echo "</a></td>\n";
+    $this->output .=  "<a href=\"?to=".$action."&amp;id=".$fields['id']."\">";
+    $this->output .=  $this->style->GetImage($img, $bull);
+    $this->output .=  "</a></td>\n";
 
     /* to contest */
     if ($fields['folder'] != get_folder_by_name("contest") && $fields['folder'] != get_folder_by_name("incoming"))
     {
-      echo "<td style=\"width: 16px;\">";
-      echo "<a href=\"?to=repcontest&amp;id=".$fields['id']."\">";
-      echo $this->style->GetImage('undo', "Reinject in contest");
-      echo "</a></td>\n";
+      $this->output .=  "<td style=\"width: 16px;\">";
+      $this->output .=  "<a href=\"?to=repcontest&amp;id=".$fields['id']."\">";
+      $this->output .=  $this->style->GetImage('undo', "Reinject in contest");
+      $this->output .=  "</a></td>\n";
     }
     else if ($fields['folder'] == get_folder_by_name("incoming"))
     {
-      echo "<td style=\"width: 16px;\">";
-      echo "<a href=\"?to=repcontest&amp;id=".$fields['id']."\">";
-      echo $this->style->GetImage('tocontest+', "Reinject in contest, always add");
-      echo "</a></td>\n";
-      echo "<td style=\"width: 16px;\">";
-      echo "<a href=\"?to=repcontest&amp;overwrite=on&amp;id=".$fields['id']."\">";
-      echo $this->style->GetImage('tocontestx', "Reinject in contest, update an existing record");
-      echo "</a></td>\n";
+      $this->output .=  "<td style=\"width: 16px;\">";
+      $this->output .=  "<a href=\"?to=repcontest&amp;id=".$fields['id']."\">";
+      $this->output .=  $this->style->GetImage('tocontest+', "Reinject in contest, always add");
+      $this->output .=  "</a></td>\n";
+      $this->output .=  "<td style=\"width: 16px;\">";
+      $this->output .=  "<a href=\"?to=repcontest&amp;overwrite=on&amp;id=".$fields['id']."\">";
+      $this->output .=  $this->style->GetImage('tocontestx', "Reinject in contest, update an existing record");
+      $this->output .=  "</a></td>\n";
     }
   
     /* "attach" */
-    echo "<td><a href=\"?levelset_f=".$fields['levelset']."&amp;level_f=".$fields['level']."&amp;folder=-1\" title=\"Show all records for this level.\">";
-    echo $this->style->GetImage('attach', "Show all records for this level.");
-    echo "</a></td>";
+    $this->output .=  "<td><a href=\"?levelset_f=".$fields['levelset']."&amp;level_f=".$fields['level']."&amp;folder=-1\" title=\"Show all records for this level.\">";
+    $this->output .=  $this->style->GetImage('attach', "Show all records for this level.");
+    $this->output .=  "</a></td>";
      
-    echo  "</tr>\n";
+    $this->output .=   "</tr>\n";
   }
 
   function _MemberLine($i, $fields)
@@ -684,80 +716,80 @@ class DialogAdmin
     $readonly = Auth::Check(get_userlevel_by_name("root")) ? "" : "readonly" ;
     
     $rowclass = ($i % 2) ? "row1" : "row2";
-    echo  "<tr class=\"".$rowclass."\">\n";
+    $this->output .=   "<tr class=\"".$rowclass."\">\n";
     
-    echo "<form name=\"memberform_".$fields['id']."\" method=\"post\" action=\"memberlist.php?upmember&amp;id=".$fields['id']."\" >\n";
+    $this->output .=  "<form name=\"memberform_".$fields['id']."\" method=\"post\" action=\"memberlist.php?upmember&amp;id=".$fields['id']."\" >\n";
 
     /* id */
-    echo "<td>";
-    echo "<a href=\"edit_profile.php?id=".$fields['id']."\" >".$fields['id']."</a>";
-    echo "</td>\n";
+    $this->output .=  "<td>";
+    $this->output .=  "<a href=\"edit_profile.php?id=".$fields['id']."\" >".$fields['id']."</a>";
+    $this->output .=  "</td>\n";
 
     /* Name */
-    echo "<td>";
-    echo "<input type=\"text\" name=\"pseudo\" value=\"".$fields['pseudo']."\" size=\"15\" ".$readonly." />\n";
-    echo "</td>\n";
+    $this->output .=  "<td>";
+    $this->output .=  "<input type=\"text\" name=\"pseudo\" value=\"".$fields['pseudo']."\" size=\"15\" ".$readonly." />\n";
+    $this->output .=  "</td>\n";
 
     /* Record number */
-    echo "<td>";
-    echo $fields['stat_total_records'];
-    echo "</td>\n";
+    $this->output .=  "<td>";
+    $this->output .=  $fields['stat_total_records'];
+    $this->output .=  "</td>\n";
 
     /* Best records */
-    echo "<td>";
-    echo $fields['stat_best_records'];
-    echo "</td>\n";
+    $this->output .=  "<td>";
+    $this->output .=  $fields['stat_best_records'];
+    $this->output .=  "</td>\n";
 
     /* Comments */
-    echo "<td>";
-    echo $fields['stat_comments'];
-    echo "</td>\n";
+    $this->output .=  "<td>";
+    $this->output .=  $fields['stat_comments'];
+    $this->output .=  "</td>\n";
     
     /* Mail */
-    echo "<td>";
-    echo "<a href=\"mailto:".$fields['email']."\">".$fields['email']."<mailto/>";
-    echo "</td>\n";
+    $this->output .=  "<td>";
+    $this->output .=  "<a href=\"mailto:".$fields['email']."\">".$fields['email']."<mailto/>";
+    $this->output .=  "</td>\n";
 
     /* Auth level  */
-    echo "<td>\n";
+    $this->output .=  "<td>\n";
   
     $i=0;
 
     if (Auth::Check(get_userlevel_by_name("root")))
     {
-      echo  "<select name=\"authlevel\" readonly>\n";
+      $this->output .=   "<select name=\"authlevel\" readonly>\n";
       foreach ($userlevel as $nb => $value)
       {
-        echo  "<option value=\"".$nb."\">".$userlevel[$nb]."</option>\n";
+        $this->output .=   "<option value=\"".$nb."\">".$userlevel[$nb]."</option>\n";
         if ($nb < $fields['level'])
           $i++;
       }
-      echo  "</select>\n";
+      $this->output .=   "</select>\n";
     }
     else
-      echo get_userlevel_by_number($fields['level']);
+      $this->output .=  get_userlevel_by_number($fields['level']);
   
     
     /* Update */
-    echo "</td>\n";
-    echo "<td>";
-    echo "<input type=\"submit\" value=\"Update\" />";
-    echo "</td>\n";
-    echo "</form>\n";
+    $this->output .=  "</td>\n";
+    $this->output .=  "<td>";
+    $this->output .=  "<input type=\"submit\" value=\"Update\" />";
+    $this->output .=  "</td>\n";
+    $this->output .=  "</form>\n";
 
     /* Delete */
-    echo "<form name=\"memberdelete_".$fields['id']."\" method=\"post\" action=\"memberlist.php?delmember&amp;id=".$fields['id']."\" >\n";
-    echo "<td>";
-    echo "<input type=\"submit\" value=\"Delete\" />";
-    echo "</td>\n";
-    echo "</form>\n";
+    $this->output .=  "<form name=\"memberdelete_".$fields['id']."\" method=\"post\" action=\"memberlist.php?delmember&amp;id=".$fields['id']."\" >\n";
+    $this->output .=  "<td>";
+    $this->output .=  "<input type=\"submit\" value=\"Delete\" />";
+    $this->output .=  "</td>\n";
+    $this->output .=  "</form>\n";
 
-    echo "</tr>\n";
-    echo "<script type=\"text/javascript\">update_memberform_fields(\"".$fields['id']."\",".$i.")</script>\n";
+    $this->output .=  "</tr>\n";
+    $this->output .=  "<script type=\"text/javascript\">update_memberform_fields(\"".$fields['id']."\",".$i.")</script>\n";
   }
   
   function _JumpLine($colspan)
   {
-    echo "<tr><td colspan=\"".$colspan."\" style=\"background: #fff; height: 2px;\"></td></tr>\n";
+    $this->output .=  "<tr><td colspan=\"".$colspan."\" style=\"background: #fff; height: 2px;\"></td></tr>\n";
   }
 }
