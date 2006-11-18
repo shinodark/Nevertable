@@ -675,6 +675,7 @@ class DialogStandard
     global $toolbar_el;
 
     $this->output .=  "<script type=\"text/javascript\" src=\"".ROOT_PATH."includes/js/toolbar.js\"></script>\n";
+    $this->output .=  "<script type=\"text/javascript\">setTextArea(document.forms['commentform'].content)</script>\n";
 
     foreach($toolbar_el as $key => $func)
     {
@@ -685,7 +686,7 @@ class DialogStandard
 
     $this->output .=  "</td><td style=\"text-align: right\"\n";
    
-    $this->output .=   "<a href=\"javascript:child=window.open('./smilies.php?referer_form=commentform', 'Smiles', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">Add smiles \o/</a>";
+    $this->output .=   "<a href=\"javascript:child=window.open('./popup_smilies.php?referer_form=commentform', 'Smiles', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=200,left='+(Math.floor(screen.width/2)-140));child.focus()\">(smiles)</a>";
 
     /* fin -- barre d'outils */
     $this->output .=   "</td></tr>\n";
@@ -694,6 +695,8 @@ class DialogStandard
     $this->output .=   "</div>\n\n";
 
     $this->output .=  "<script type=\"text/javascript\">update_commentform_fields('".$pseudo."','".addcslashes($content_memory, "\0..\37")."')</script>\n";
+
+    $this->Output();
   }
 
   function TypeForm($args)

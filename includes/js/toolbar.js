@@ -19,11 +19,13 @@
 #
 # ***** END LICENSE BLOCK *****/
 
-/*  /!\
-Some code here come from dotclear, (c) Olivier Meunier
+/*
+Some code here come from dotclear, Olivier Meunier
 */
 
-var textarea = document.forms['commentform'].content;
+function setTextArea(P) {
+ textarea = P;
+}
 
 function encloseSelection(prefix, suffix) {
 	textarea.focus();
@@ -38,12 +40,10 @@ function encloseSelection(prefix, suffix) {
 		sel = textarea.value.substring(start, end);
 	}
 	
-    /* incompatible konqueror !
 	if (sel.match(/ $/)) { // exclude ending space char, if any
 		sel = sel.substring(0, sel.length - 1);
 		suffix = suffix + " ";
 	}
-    */
 
 	var res = (sel) ? sel : '';
 	

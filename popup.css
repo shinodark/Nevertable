@@ -12,11 +12,15 @@ img {
     border: 0;
 }
 
-/******** Smilies ****************************/
-#smilies td {
+table {
+    width: 180px;
+}
+
+td, tr {
     width: 100%;
 }
 
+/******** Smilies ****************************/
 .smiliesHeader {
 	background-color: #469;
     color : white;

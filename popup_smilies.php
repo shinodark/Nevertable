@@ -26,7 +26,7 @@ include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
 
 if(empty($_GET['css']))
-      $css = "smilies.css";
+      $css = "popup.css";
     else
       $css = $_GET['css'];
 
@@ -46,7 +46,6 @@ $table = new Nvrtbl("null");
 <script type=\"text/javascript\" src=\"jsutil.js\"></script>
 </head>
 <body>
- <div id="smilies">
  <table><tr>
  <td colspan="5" class="smiliesHeader">
    Smilies
@@ -85,7 +84,6 @@ else
     <a href="javascript:window.close()">Close</a>
 </td></tr>
 </table>
-</div>
 <?php $table->Close(); ?>
 </body>
 </html>
