@@ -131,7 +131,7 @@ r></td></tr>\n";
     $this->out .=   "<tr><td><label for=\"content\">";
     $this->out .=   $strings['tagform_content']."&nbsp;";
     $this->out .=   "<a href=\"javascript:child=window.open('".ROOT_PATH."popup_tagtools.php?referer_form=tagform', 'Smiles', 'fullscreen=no,toolbar=
-no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=340,
+no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=300,
 left='+(Math.floor(screen.width/2)-140));child.focus()\">(extras)</a>";
     $this->out .=   "</label></td></tr>\n";
     $this->out .=   "<tr><td><center><textarea id=\"content\" name=\"content\" rows=\"5\"></textarea></center>
