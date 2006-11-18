@@ -43,7 +43,7 @@ $table = new Nvrtbl("null");
 <title>Smilies</title>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>
 <?php echo "<link rel=\"stylesheet\" href=\"".$css."\" type=\"text/css\" />\n";?>
-<script type=\"text/javascript\" src=\"jsutil.js\"></script>
+<script type="text/javascript" src="jsutil.js"></script>
 </head>
 <body>
  <table><tr>
