@@ -104,8 +104,7 @@ function tbImg() {
 	var href = window.prompt('Enter image URL:','http://');
 	if (!href) { return; }
 			
-	var stag = '[img='+href;
-	stag = stag+']';
+	var stag = '[img]'+href;
 	
     etag = '[/img]';
 	
