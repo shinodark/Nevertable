@@ -112,7 +112,7 @@ class Auth
 
   function Check($level)
   {
-    return ($_SESSION['user_logged'] && $_SESSION['user_level']<=$level);
+    return (isset($level) && $_SESSION['user_logged'] && $_SESSION['user_level']<=$level);
   }
   
   function CheckUser($user_id)

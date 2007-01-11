@@ -81,7 +81,9 @@ class Tagboard
       $fields = array (
         "pseudo"      => $pseudo,
         "content"     => $tag,
-        "link"        => $link,
+        //"link"        => $link,
+        "link"        => "",
+	"ip_log"      => $_SERVER['REMOTE_ADDR'],
         );
       $this->db->RequestInit("INSERT", "tags");
       $this->db->RequestInsert($fields);

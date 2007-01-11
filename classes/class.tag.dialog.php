@@ -78,12 +78,21 @@ class Tag_Dialog
                   $this->style->GetImage('edit', "Edit this comments" ).
                    "</a>\n";
           }
+	/*
           if (empty($val['link']))
             $pseudo = $val['pseudo'];
           else
             $pseudo = "<a href=\"".$val['link']."\" target=\"_blank\">".$val['pseudo']."</a>";
-
-          $data .= "<span class=\"tag_pseudo\">".$pseudo."</span><br />\n";
+	*/
+          $pseudo = $val['pseudo'];
+	  if (Auth::Check(get_userlevel_by_name("moderator")))
+	  {
+	     $data .= "<span class=\"tag_pseudo\" onmouseover=\"return escape('".$val["ip_log"]."')\">".$pseudo."</span><br />\n";
+          }
+          else
+   	  { 
+	     $data .= "<span class=\"tag_pseudo\">".$pseudo."</span><br />\n";
+          } 
         
           $data .= "<span class=\"tag_date\">".date($config['date_format'],GetDateFromTimestamp($val['timestamp']))."</span>\n";
           $data .= "</td>\n";
@@ -104,8 +113,9 @@ class Tag_Dialog
      $data .= "</table>\n";
      $data .= "</div>\n";
 
-     if (!$moder)
+    /* if (!$moder)
          $this->cache->Create($id, $data);
+    */
     } // end cache
     $this->out .= $data;
   }
@@ -125,9 +135,6 @@ class Tag_Dialog
     $this->out .=   "<td><label for=\"tag_pseudo\">".$strings['tagform_pseudo']."</label></td></tr>\n";
     $this->out .=   "<tr><td><center><input type=\"text\" id=\"tag_pseudo\" name=\"tag_pseudo\" maxlength=\"14\" value
 =\"".$default_pseudo."\" /></center></td></tr>\n";
-    $this->out .=   "<tr><td><label for=\"tag_link\">".$strings['tagform_link']."</label></td></tr>\n";
-    $this->out .=   "<tr><td><center><input type=\"text\" id=\"tag_link\" name=\"tag_link\" maxlength=\"64\" /></cente
-r></td></tr>\n";
     $this->out .=   "<tr><td><label for=\"content\">";
     $this->out .=   $strings['tagform_content']."&nbsp;";
     $this->out .=   "<a href=\"javascript:child=window.open('".ROOT_PATH."popup_tagtools.php?referer_form=tagform', 'Smiles', 'fullscreen=no,toolbar=
