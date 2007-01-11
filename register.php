@@ -140,6 +140,7 @@ if(isset($args['valid']))
       'passwd' => md5($args['passwd1']),
       'email' => addslashes($args['email']),
       'level' => $level,
+      'user_theme' => 'Sulfur',
   );
 
   //ajout dans la base
