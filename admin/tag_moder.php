@@ -117,7 +117,7 @@ if($args['to'] == "edit")
     $val = $tagboard->db->FetchArray();
     echo "<script type=\"text/javascript\">update_tagform_fields('".
         JavaScriptize($val['pseudo'])."','".
-        JavaScriptize($val['link'])."','".
+       // JavaScriptize($val['link'])."','".
         JavaScriptize($val['content'])."')</script>\n";
 }
 
