@@ -187,10 +187,17 @@ class DialogStandard
         $menu_sub->AddItem("Management", "admin/management.php");
         $menu_sub->AddItem("Members mgmt", "admin/memberlist.php");
         $menu_sub->AddItem("File explorer", "admin/filexplorer.php");
-        $menu_sub->AddItem("Tagboard moderation", "admin/tag_moder.php");
       
         $menu_main->AddSubMenu($menu_sub);
       }
+      if (Auth::Check(get_userlevel_by_name("admin")))
+      {
+        $menu_main->AddItem("Moderator Panel", "");
+        $menu_sub = new Menu(1);
+        $menu_sub->AddItem("Tagboard moderation", "admin/tag_moder.php");
+        $menu_main->AddSubMenu($menu_sub);
+      }
+
       $menu_main->AddItem("Upload a record", "upload.php");
       $menu_main->AddItem("Member list", "memberlist.php");
       $menu_main->AddItem("Your profile", "profile.php");
