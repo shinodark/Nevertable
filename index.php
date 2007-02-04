@@ -25,7 +25,6 @@ include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
 
-session_start();
 //args process
 $args = get_arguments($_POST, $_GET);
 
