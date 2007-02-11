@@ -198,9 +198,9 @@ class Tagboard
 	   strstr($tag, '[url') == FALSE 
 	&& strstr($tag, 'sex') == FALSE
       )
-        $ok = false;
+        $ok = true;
       else
-	$ok = true;
+	$ok = false;
     }
     else
 	$ok = true;
