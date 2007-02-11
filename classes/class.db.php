@@ -354,6 +354,15 @@ class DB
            default       : $this->request = $flag . $this->request . $command . $filter . "<='" . $this->Protect($filterval) . "'"; break;
      }
    }
+
+   function RequestGenericFilter_ge_timestamp($seconds)
+   {
+     $res = mysql_query("SELECT DATE_SUB( CURRENT_TIMESTAMP( ) , INTERVAL ".$seconds." SECOND ) +0 AS lim");
+     $val = mysql_fetch_array($res);
+     $lim = $val['lim'];
+     
+     $this->RequestGenericFilter_ge("timestamp", $lim);
+   }
    
    function RequestGenericSort($fields_array, $order)
    {
@@ -407,7 +416,6 @@ class DB
      $res = $this->FetchArray();
      return $res['COUNT(*)'];
    }
-   
 
    function Protect($string)
    {
@@ -570,17 +578,6 @@ class DB
 
      return $ret;
    }
-
-    function RequestMatchTags()
-   {
-     global $config;
-
-     $this->RequestInit("SELECT", "tags");
-     $this->RequestGenericSort(array("timestamp"), "DESC");
-     $this->RequestLimit($config['tag_limit']);
-     return $this->Query();
-   }
-
 
    function MatchUserByName($name)
    {

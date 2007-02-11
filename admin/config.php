@@ -105,6 +105,9 @@ function CheckConfig($conf_arr)
   if ( ($conf_arr['tag_limit'] < 1) || ($conf_arr['tag_limit'] > 50) )
     { button_error("\"tag_limit\" limits are [1..50]", 300); return false; }
 
+  if ( ($conf_arr['tag_flood_limit'] < 1) || ($conf_arr['tag_limit'] > 3600) )
+    { button_error("\"tag_flood_limit\" limits are [1..3600]", 300); return false; }
+
   return true;
 }
   

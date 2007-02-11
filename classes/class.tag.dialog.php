@@ -39,6 +39,11 @@ class Tag_Dialog
     $this->style = &$style;
     $this->out = &$out;
   }
+  
+  function Append($str)
+  {
+     $this->out .= $str;
+  }
 
   function Tags($moder=false)
   {
@@ -58,10 +63,16 @@ class Tag_Dialog
       $data .= "<table>\n";
   
       $i=0;
-      $res = $this->db->RequestMatchTags();
+
+      $this->db->RequestInit("SELECT", "tags");
+      if ($moder == false) $this->db->RequestGenericFilter(array("pub"), "1");
+      $this->db->RequestGenericSort(array("timestamp"), "DESC");
+      $this->db->RequestLimit($config['tag_limit']);
+      $res = $this->db->Query();
+
       if(!$res)
       {
-        button_error($this->db->GetError());
+        button_error($this->db->GetError(), 300);
       }
       else if ($this->db->NumRows()>0)
       {

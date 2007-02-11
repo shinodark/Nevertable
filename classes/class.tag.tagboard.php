@@ -49,11 +49,15 @@ class Tagboard
       }
       else
       {
-         $this->Insert($args['content'], $args['tag_pseudo'], $args['tag_link']);
+	 $ok = $this->AntiFlood();
+	 if ($ok)
+           $this->Insert($args['content'], $args['tag_pseudo'], $args['tag_link']);
       }
     }
+
     $this->dialog->Tags();
     $this->dialog->TagForm();
+    //$this->dialog->Append("<b>Tagboard is closed unti antispam feaetures are implemented.</b>");
     return $this->out;
   }
 
@@ -152,6 +156,36 @@ class Tagboard
     /* Purge du cache */
     $this->cache->Dirty("tags");
     return true;
+  }
+
+  /******
+    GESTION ANTI SPAM
+  ******/
+
+  function AntiFlood()
+  {
+    global $config;
+
+    $this->db->RequestInit("SELECT", "tags", "COUNT(id) AS num" );
+    $this->db->RequestGenericFilter("ip_log", $_SERVER['REMOTE_ADDR']);
+    $this->db->RequestGenericFilter_ge_timestamp($config['tag_flood_limit']);
+    $this->db->RequestGenericSort(array("timestamp"), "DESC");
+    $this->db->RequestLimit($config['tag_limit']);
+    $res = $this->db->Query();
+    echo $this->db->GetRequestString();
+    if (!$res)
+    {
+	button_error($this->db->GetError(), 200);
+	return false;
+    }
+    $val = $this->db->FetchArray();
+    if ($val['num'] > 0)
+    {
+        $this->out .= "<span class=\"tag_error\">You can't flood this tagboard.</span>\n";
+	return false;
+    }
+    else
+        return true;
   }
 
   function SetError($error)
