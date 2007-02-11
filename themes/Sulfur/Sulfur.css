@@ -328,6 +328,7 @@ td .com_content {
 /*********** Tags **************/
 #tagboard {
     width: 160px;
+    margin-bottom: 20px;
 }
 
 #tags {
