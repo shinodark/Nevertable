@@ -49,7 +49,7 @@ class Tagboard
       }
       else
       {
-	 $ok = $this->AntiFlood();
+	 $ok = $this->AntiFlood() && $this->AntiSpam($args['content']);
 	 if ($ok)
            $this->Insert($args['content'], $args['tag_pseudo'], $args['tag_link']);
       }
@@ -172,7 +172,6 @@ class Tagboard
     $this->db->RequestGenericSort(array("timestamp"), "DESC");
     $this->db->RequestLimit($config['tag_limit']);
     $res = $this->db->Query();
-    echo $this->db->GetRequestString();
     if (!$res)
     {
 	button_error($this->db->GetError(), 200);
@@ -186,6 +185,29 @@ class Tagboard
     }
     else
         return true;
+  }
+  
+  function AntiSpam($content)
+  {
+    $tag = GetContentFromPost($content);
+    $ok = false;
+
+    if (!Auth::Check(get_userlevel_by_name("member")))
+    {
+      if (
+	   strstr($tag, '[url') == FALSE 
+	&& strstr($tag, 'sex') == FALSE
+      )
+        $ok = true;
+    }
+    else
+	$ok = false;
+
+    if (!$ok)
+    {
+      $this->out .= "<span class=\"tag_error\">Spam detected. Tag denied.</span>\n";
+    }
+    return $ok;
   }
 
   function SetError($error)
