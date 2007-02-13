@@ -41,7 +41,7 @@ class Tagboard
   {
     global $strings;
 
-    if (isset($args['tag']))
+   /* if (isset($args['tag']))
     {
       if(empty($args['tag_pseudo']) || empty($args['content']))
       {
@@ -54,10 +54,10 @@ class Tagboard
            $this->Insert($args['content'], $args['tag_pseudo'], $args['tag_link']);
       }
     }
-
+*/
     $this->dialog->Tags();
-    $this->dialog->TagForm();
-    //$this->dialog->Append("<b>Tagboard is closed unti antispam feaetures are implemented.</b>");
+  //  $this->dialog->TagForm();
+    $this->dialog->Append("<b>Tagboard is closed.</b>");
     return $this->out;
   }
 
