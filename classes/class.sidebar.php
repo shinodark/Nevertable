@@ -212,9 +212,9 @@ class SideBar
 
       $this->output .=  "<center>";
       $this->output .=  "<a href=\"rss.php\">flux rss&nbsp;<img src=\"".ROOT_PATH.$config['image_dir']."xml.gif\" alt=\"xml\" /></a><br/><br/>\n";
-      $this->output .=  "<a href=\"http://validator.w3.org/check?uri=referer\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-xhtml.png\" alt=\"Valid XHTML 1.0!\" /></a><br/>\n";
-      $this->output .=  "<a href=\"http://jigsaw.w3.org/css-validator/check/referer\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-css2.png\" alt=\"Valid CSS2 !\" /></a><br/><br/>\n";
-      $this->output .=  "<a href=\"http://www.mozilla.org/products/firefox/\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-firefox.png\" alt=\"Valid CSS2 !\" /></a><br/><br/><br/>\n";
+      //$this->output .=  "<a href=\"http://validator.w3.org/check?uri=referer\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-xhtml.png\" alt=\"Valid XHTML 1.0!\" /></a><br/>\n";
+      //$this->output .=  "<a href=\"http://jigsaw.w3.org/css-validator/check/referer\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-css2.png\" alt=\"Valid CSS2 !\" /></a><br/><br/>\n";
+      //$this->output .=  "<a href=\"http://www.mozilla.org/products/firefox/\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-firefox.png\" alt=\"Valid CSS2 !\" /></a><br/><br/><br/>\n";
       $this->output .=  "</center>\n";
     }
 
