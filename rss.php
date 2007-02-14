@@ -21,7 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
-define('NVRTBL_PATH', "http://shinobufan.intuxication.org/nevertable/");
+define('NVRTBL_PATH', "http://www.nevercorner.net/table/");
 define('LEVEL', 30);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
@@ -68,15 +68,15 @@ echo '<?xml version="1.0" encoding="iso-88591" ?>'."\n";
   xmlns:content="http://purl.org/rss/1.0/modules/content/"
   xmlns="http://purl.org/rss/1.0/">
 
-<channel rdf:about="http://shinobufan.intuxication.org/nevertable/">
+<channel rdf:about="http://www.nevercorner.net/table/">
   <title>Nevertable - Neverball Hall of Fame RSS feed</title>
   <description>List of all neverball records</description>
-  <link>http://shinobufan.intuxication.org/nevertable/</link>
+  <link>http://www.nevercorner.net/table/</link>
   <dc:language>en</dc:language>
   <dc:creator></dc:creator>
   <dc:rights></dc:rights>
   <dc:date><?php echo getIsoDate($ts); ?></dc:date>
-  <admin:generatorAgent rdf:resource="http://shinobufan.intuxication.org/nevertable/" />
+  <admin:generatorAgent rdf:resource="http://www.nevercorner.net/table/" />
   
   <sy:updatePeriod>daily</sy:updatePeriod>
   <sy:updateFrequency>1</sy:updateFrequency>
