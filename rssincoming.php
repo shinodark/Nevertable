@@ -59,8 +59,8 @@ if (!empty($Records))
 
 $table->Close();
 
-header('Content-Type: text/xml; charset=iso-88591-1');
-echo '<?xml version="1.0" encoding="iso-88591-1" ?>'."\n";
+header('Content-Type: text/xml; charset=iso-8859-1');
+echo '<?xml version="1.0" encoding="iso-8859-1" ?>'."\n";
 ?>
 
 <rdf:RDF
