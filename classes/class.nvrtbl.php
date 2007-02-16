@@ -883,10 +883,6 @@ class Nvrtbl
           $i++;
         }
       }
-	  /* remet ˆ jour les statistiques du record */
-	  $count = $this->db->RequestCountComments($rec->GetId());
-      $rec->SetFields(array("comments_count" => $count));
-      $rec->Update(true);
     }
     echo $i ." records modified.";
 
@@ -960,13 +956,24 @@ class Nvrtbl
           $i++;
         }
       }
+    }
+    echo $i ." records modified.";
+	
+	/* Parcours tous pour les stats */
+    $this->db->RequestInit("SELECT", "rec");
+    $res = $this->db->Query();
+    if(!$res)
+      button_error($this->db->GetError(), 500);
+
+    $i=0;
+    while ($val = $this->db->FetchArray($res))
+    { 
+	  $rec->LoadFromId($val['id']);
 	  /* remet ˆ jour les statistiques du record */
 	  $count = $this->db->RequestCountComments($rec->GetId());
       $rec->SetFields(array("comments_count" => $count));
       $rec->Update(true);
     }
-    echo $i ." records modified.";
-
 
     /*  recalcule les statistiques utilisateurs */
     echo "<h2>user stats</h2>\n";
