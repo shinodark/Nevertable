@@ -555,7 +555,7 @@ class DialogStandard
     $this->output .=  "<center>".get_userlevel_by_number($level)."</center>\n";
     $this->output .=  "<br/>\n";
     $this->output .=  "<center>";
-    for($i=0; $i<CalculRank($records); $i++)
+    for($i=0; $i<CalculRank($records_best); $i++)
       $this->output .=  $this->style->GetImage('rank');
     $this->output .=  "</center>\n";
     $this->output .=  "</td><td>\n";
