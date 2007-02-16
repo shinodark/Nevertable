@@ -883,6 +883,10 @@ class Nvrtbl
           $i++;
         }
       }
+	  /* remet ˆ jour les statistiques du record */
+	  $count = $this->db->RequestCountComments($rec->GetId());
+      $rec->SetFields(array("comments_count" => $count));
+      $rec->Update(true);
     }
     echo $i ." records modified.";
 
@@ -956,6 +960,10 @@ class Nvrtbl
           $i++;
         }
       }
+	  /* remet ˆ jour les statistiques du record */
+	  $count = $this->db->RequestCountComments($rec->GetId());
+      $rec->SetFields(array("comments_count" => $count));
+      $rec->Update(true);
     }
     echo $i ." records modified.";
 
