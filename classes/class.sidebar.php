@@ -148,7 +148,7 @@ class SideBar
       while($val = $db->FetchArray($res))
       {
         $this->output .=  "<tr><td class=\"comPreviewHeader\">\n";
-        $this->output .=  "<a href=\"?to=viewprofile&amp;id=".$val['user_id']."\" title=\"View profile of ".$val['pseudo']."\">\n";
+        $this->output .=  "<a href=\"viewprofile.php?id=".$val['user_id']."\" title=\"View profile of ".$val['pseudo']."\">\n";
         $this->output .=  $val['pseudo'];
         $this->output .=  "</a>\n";
         $this->output .=  "<a href=\"?levelset_f=".$val['levelset']."&amp;level_f=".$val['level']."\" title=\"Show this level\">\n";
