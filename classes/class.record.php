@@ -264,17 +264,19 @@ class Record
         }
         else if($filedelete) {
           /* purge fichier */
-          $f = new FileManager($this->GetReplayRelativePath());
-          if(!$f->Unlink())
-          {
-            $this->SetError($f->GetError());
-            return false;
+		  if ($this->GetReplayRelativePath())
+		  {
+            $f = new FileManager($this->GetReplayRelativePath());
+            if(!$f->Unlink())
+            {
+              $this->SetError($f->GetError());
+              return false;
+            }
+            else
+            {
+               button("replay file : ".$f->GetBaseName()." deleted from server", 500);
+            }
           }
-          else
-          {
-             button("replay file : ".$f->GetBaseName()." deleted from server", 500);
-          }
-
           $this->_UpdateUserStats();
         }
       }
@@ -319,6 +321,7 @@ class Record
     function GetReplayRelativePath()
     {
       global $config;
+	  if (empty($this->GetReplay()) || empty($this->GetFolder()) ) return false;
       return $config['replay_dir'].get_folder_by_number($this->GetFolder())."/".$this->GetReplay();
     }
     
