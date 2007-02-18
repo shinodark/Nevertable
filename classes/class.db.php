@@ -615,7 +615,11 @@ class DB
 
    function RequestCountUserRecords($user_id)
    {
-     return $this->CountRows("rec", array("user_id"=>$user_id));
+     $this->RequestInit("SELECT", "rec");
+	 /* on ne compte pas les recordes dans trash */
+	 $this->RequestCustom("WHERE user_id=".$user_id." AND folder!=".get_folder_by_name("trash") ." AND folder!=".get_folder_by_name("incoming"));
+	 $this->Query();
+     return $this->NumRows();
    }
    
    function RequestCountUserBest($user_id)

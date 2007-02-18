@@ -179,7 +179,7 @@ class parse_bbcode
   // citation bbcode
   function _quote($text) {
    $text = preg_replace("|\[quote\]|Ui","<blockquote>",$text);
-   $text = preg_replace("|\[quote=[\"']?([^\"']+)[\"']?\]|Ui","<blockquote>\\1 a dit:<br />",$text);
+   $text = preg_replace("|\[quote=[\"']?([^\"']+)[\"']?\]|Ui","<blockquote>\\1 wrote:<br />",$text);
    $text = preg_replace("|\[/quote\]|Ui","</blockquote>",$text);
    RETURN $text;
   }

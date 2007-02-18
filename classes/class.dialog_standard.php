@@ -479,6 +479,8 @@ class DialogStandard
         $this->output .=  "<tr>";
         if (!empty($val['user_avatar']))
           $avatar_html = "<img src=\"".ROOT_PATH.$config['avatar_dir']."/".$val['user_avatar']."\" alt=\"\" />";
+		else
+		  $avatar_html = "";
         $this->output .=  "<td width=\"130px\" valign=\"top\"><center>".$avatar_html."</center></td>\n";
         $this->output .=  "<td class=\"com_content\">".$content."</td>\n";
         $this->output .=  "</tr>\n";
