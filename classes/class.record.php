@@ -321,8 +321,11 @@ class Record
     function GetReplayRelativePath()
     {
       global $config;
-	  if (empty($this->GetReplay()) || empty($this->GetFolder()) ) return false;
-      return $config['replay_dir'].get_folder_by_number($this->GetFolder())."/".$this->GetReplay();
+
+      if ( empty($this->fields['replay']) || empty($this->fields['folder']) )
+	     return false;
+      else
+	     return $config['replay_dir'].get_folder_by_number($this->GetFolder())."/".$this->GetReplay();
     }
     
     function GetType()
