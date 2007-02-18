@@ -147,7 +147,6 @@ class Nvrtbl
         $this->db->RequestFilterType($args['type']);
         $this->db->RequestFilterNew($args['newonly']);
         $this->db->RequestFilterFolder($args['folder']);
-echo $this->db->GetRequestString();
         $result0 =   $this->db->Query();
         if(!$result0)
             echo button_error(  $this->db->GetError(), 500);
