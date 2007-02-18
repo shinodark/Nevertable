@@ -147,6 +147,7 @@ class Nvrtbl
         $this->db->RequestFilterType($args['type']);
         $this->db->RequestFilterNew($args['newonly']);
         $this->db->RequestFilterFolder($args['folder']);
+echo $this->db->GetRequestString();
         $result0 =   $this->db->Query();
         if(!$result0)
             echo button_error(  $this->db->GetError(), 500);
@@ -771,7 +772,7 @@ class Nvrtbl
         $status = "No replay";
       }
     
-      echo "<tr><td><a href=\"admin.php?filter=id&amp;filterval=".$val['id']."&amp;folder=".$val['folder']."\">".$val['id']."</a></td>";
+      echo "<tr><td><a href=\"admin.php?link=".$val['id']."&amp;folder=".$val['folder']."\">".$val['id']."</a></td>";
       echo "<td><a href=\"filexplorer.php?grep=".$val['replay']."\">".$val['replay']."</a></td>";
       echo "<td>".get_folder_by_number($val['folder'])."</td>";
       echo  "<td>".$status."</td></tr>\n";
