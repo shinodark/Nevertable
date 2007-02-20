@@ -154,7 +154,7 @@ class Record
         $f = new FileManager($this->GetReplayRelativePath());
       else
       {
-        button_error("Error in GetReplayRelativePath()", 300);
+        button_error("Error in GetReplayRelativePath(), replay:".$this->fields['replay']. " folder: ".$this->fields['folder'], 500);
         return false;
       }
 
@@ -270,8 +270,8 @@ class Record
         }
         else if($filedelete) {
           /* purge fichier */
-		  if ($this->GetReplayRelativePath())
-		  {
+	  if ($this->GetReplayRelativePath())
+	  {
             $f = new FileManager($this->GetReplayRelativePath());
             if(!$f->Unlink())
             {
@@ -283,6 +283,11 @@ class Record
                button("replay file : ".$f->GetBaseName()." deleted from server", 500);
             }
           }
+	  else
+	  {	
+             button_error("Error in GetReplayRelativePath(), replay:".$this->fields['replay']. " folder: ".$this->fields['folder'], 500);
+             return false;
+	  }
           $this->_UpdateUserStats();
         }
       }
@@ -328,7 +333,8 @@ class Record
     {
       global $config;
 
-      if ( empty($this->fields['replay']) || empty($this->fields['folder']) )
+      $replay_name = get_folder_by_number($this->fields['folder']);
+      if ( empty($this->fields['replay']) || empty($replay_name) )
 	     return false;
       else
 	     return $config['replay_dir'].get_folder_by_number($this->GetFolder())."/".$this->GetReplay();
