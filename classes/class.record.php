@@ -150,7 +150,13 @@ class Record
       if (!$this->isload)
         return false;
      
-      $f = new FileManager($this->GetReplayRelativePath());
+      if ($this->GetReplayRelativePath())
+        $f = new FileManager($this->GetReplayRelativePath());
+      else
+      {
+        button_error("Error in GetReplayRelativePath()", 300);
+        return false;
+      }
 
       /* Déplacement hors du contest -> Plus un best record */
       if ($folder != get_folder_by_name("contest"))
