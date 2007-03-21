@@ -36,7 +36,7 @@ else
     $special="";
 
     
-if (!isset($args['dlcontest']) && !isset($args['dloldones']))
+if (!isset($args['dlcontest']) && !isset($args['dloldones'])  && !isset($args['list']))
 {
 ?>
 
@@ -57,6 +57,9 @@ $table->PrintPrelude();
   echo '<center><h1>Download all replay files</h1></center>' ;
   echo '<center><p><a href="?dlcontest">contest.lst</a></center>';
   echo '<center><p><a href="?dloldones">oldones.lst</a></center>';
+  echo '<center><h1>List records</h1></center>' ;
+  echo '<center><p><a href="?list&amp;folder='.get_folder_by_name("contest").'">contest.txt</a></center>';
+  echo '<center><p><a href="?list&amp;folder='.get_folder_by_name("oldones").'">oldones.txt</a></center>';
 
 
 ?>
@@ -110,5 +113,56 @@ if(isset($args['dloldones']))
 
  echo $lst;
  exit;
+}
+
+if(isset($args['list']))
+{
+	$p = $config['bdd_prefix'];
+        $table->db->RequestSelectInit(
+            array("rec", "users", "sets", "maps"),
+            array(
+              $p."rec.id AS id",
+              $p."rec.levelset AS levelset",
+              $p."rec.level AS level",
+              $p."rec.time AS time",
+              $p."rec.coins AS coins",
+              $p."rec.replay AS replay",
+              $p."rec.type AS type",
+              $p."rec.folder AS folder",
+              $p."rec.timestamp AS timestamp",
+              $p."rec.isbest AS isbest",
+              $p."rec.user_id AS user_id",
+              $p."users.pseudo AS pseudo",
+              $p."sets.set_name AS set_name",
+              $p."maps.map_solfile AS map_solfile",
+            )
+            );
+        $table->db->RequestGenericFilter(
+            array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
+            array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
+            "AND", false
+        );
+	$table->db->RequestFilterFolder($args['folder']);
+	$table->db->RequestGenericSort(array("id"), "ASC");
+
+	$res =   $table->db->Query();
+        if(!$res)
+          echo button_error(  $table->db->GetError(), 500);
+
+	echo "id\tdate\ttype\tmember\tlevel\tset\tcoins\ttime\treplay\n";
+        while ($val = $table->db->FetchArray())
+        {
+	  echo $val['id'] . "\t" .
+	       $val['timestamp'] . "\t" .
+	       get_type_by_number($val['type']) . "\t" .
+	       $val['pseudo'] . "\t" .
+	       $val['level'] . "\t" .
+	       $val['set_name'] . "\t" .
+	       $val['coins'] . "\t" .
+	       $val['time'] . "\t" .
+	       $val['replay'] . "\n" ;
+
+	}
+        exit;
 }
 }
