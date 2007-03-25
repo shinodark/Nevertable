@@ -95,8 +95,9 @@ class Tagboard
       $this->db->RequestInsert($fields);
       if(!$this->db->Query())
       {
-        $this->out .= "<span class=\"tag_error\">".$strings['tag_toolong']."</span>\n";
-      return false;
+        $this->out .= "<span class=\"tag_error\">".$this->db->GetError()."</span>\n";
+        $this->SetError($strings['tag_toolong']);
+        return false;
       }
     }
     /* Purge du cache */
@@ -131,7 +132,7 @@ class Tagboard
       $this->db->RequestGenericFilter("id", $id);
       if(!$this->db->Query())
       {
-        $this->out .= "<span class=\"tag_error\">".$strings['tag_toolong']."</span>\n";
+        $this->out .= "<span class=\"tag_error\">".$this->db->GetError()."</span>\n";
         $this->SetError($this->db->GetError());
         return false;
       }
