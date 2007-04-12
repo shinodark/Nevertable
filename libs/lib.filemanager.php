@@ -210,6 +210,11 @@ class FileManager
     return @stat($this->filename);
   }
 
+  function IsFile()
+  {
+    return @is_file($this->filename);
+  }
+
   function Read()
   {
     $handle = @fopen($this->filename, "r");

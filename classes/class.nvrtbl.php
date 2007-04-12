@@ -447,6 +447,36 @@ class Nvrtbl
       else
         button_error($tmp_user->GetError(), 400);
   }
+
+  function PrintStats() {
+      global $config;
+
+      /* check validity of liste.txt file used by neverstats applet */
+      $f = new FileManager($config['neverstats_liste']);
+      $stat = $f->Stat();
+      $refresh = false;
+      if ($stat != false)
+      {
+	 $t1 = $stat['mtime'];
+	 $days=timestamp_diff_in_days(time(), $t1); 
+	 if ($days > 1)
+	   $refresh = true;
+      }
+      if ($f->IsFile() == false) /* doesn't exist */
+      {
+         $refresh = true;
+      }
+      if ($refresh)
+      {
+        $lst = $this->GetStatsDump("contest");
+        if (!$f->Write($lst))
+	{
+          button_error("Write GestStatsDump : ".$f->GetError(), 300);
+	  return;
+	}
+      }
+      $this->dialog->Stats();
+  }
   
   /*__UTILS__*/
 
@@ -529,6 +559,63 @@ class Nvrtbl
     $this->process_time = timestamp_diff_in_secs($time, $this->start_time);
     /* on ne garde que 3 décimales */
     return substr($this->process_time,0,5);
+  }
+  
+  /* Statistiques */
+  function GetStatsDump($folder)
+  {
+    global $config;
+
+    $lst = "";
+    $p = $config['bdd_prefix'];
+    $this->db->RequestSelectInit(
+            array("rec", "users", "sets", "maps"),
+            array(
+              $p."rec.id AS id",
+              $p."rec.levelset AS levelset",
+              $p."rec.level AS level",
+              $p."rec.time AS time",
+              $p."rec.coins AS coins",
+              $p."rec.replay AS replay",
+              $p."rec.type AS type",
+              $p."rec.folder AS folder",
+              $p."rec.timestamp AS timestamp",
+              $p."rec.isbest AS isbest",
+              $p."rec.user_id AS user_id",
+              $p."users.pseudo AS pseudo",
+              $p."sets.set_name AS set_name",
+              $p."maps.map_solfile AS map_solfile",
+            )
+            );
+     $this->db->RequestGenericFilter(
+            array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
+            array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
+            "AND", false
+        );
+     $this->db->RequestFilterFolder($folder);
+     $this->db->RequestGenericSort(array("id"), "ASC");
+
+     $res =   $this->db->Query();
+     if(!$res)
+        echo button_error(  $this->db->GetError(), 500);
+
+     $lst .= "id\tdate\ttype\tmember\tlevel\tset\tcoins\ttime\treplay\n";
+     while ($val = $this->db->FetchArray())
+     {
+	  $lst .=
+	       $val['id'] . "\t" .
+	       $val['timestamp'] . "\t" .
+	       get_type_by_number($val['type']) . "\t" .
+	       $val['pseudo'] . "\t" .
+	       $val['level'] . "\t" .
+	       $val['set_name'] . "\t" .
+	       $val['coins'] . "\t" .
+	       $val['time'] . "\t" .
+	       $val['replay'] . "\n" ;
+
+     }
+
+     return $lst;
   }
 
   /*__FONCTION DE GESTION__*/

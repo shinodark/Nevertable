@@ -117,52 +117,7 @@ if(isset($args['dloldones']))
 
 if(isset($args['list']))
 {
-	$p = $config['bdd_prefix'];
-        $table->db->RequestSelectInit(
-            array("rec", "users", "sets", "maps"),
-            array(
-              $p."rec.id AS id",
-              $p."rec.levelset AS levelset",
-              $p."rec.level AS level",
-              $p."rec.time AS time",
-              $p."rec.coins AS coins",
-              $p."rec.replay AS replay",
-              $p."rec.type AS type",
-              $p."rec.folder AS folder",
-              $p."rec.timestamp AS timestamp",
-              $p."rec.isbest AS isbest",
-              $p."rec.user_id AS user_id",
-              $p."users.pseudo AS pseudo",
-              $p."sets.set_name AS set_name",
-              $p."maps.map_solfile AS map_solfile",
-            )
-            );
-        $table->db->RequestGenericFilter(
-            array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
-            array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
-            "AND", false
-        );
-	$table->db->RequestFilterFolder($args['folder']);
-	$table->db->RequestGenericSort(array("id"), "ASC");
-
-	$res =   $table->db->Query();
-        if(!$res)
-          echo button_error(  $table->db->GetError(), 500);
-
-	echo "id\tdate\ttype\tmember\tlevel\tset\tcoins\ttime\treplay\n";
-        while ($val = $table->db->FetchArray())
-        {
-	  echo $val['id'] . "\t" .
-	       $val['timestamp'] . "\t" .
-	       get_type_by_number($val['type']) . "\t" .
-	       $val['pseudo'] . "\t" .
-	       $val['level'] . "\t" .
-	       $val['set_name'] . "\t" .
-	       $val['coins'] . "\t" .
-	       $val['time'] . "\t" .
-	       $val['replay'] . "\n" ;
-
-	}
-        exit;
+ echo $table->GetStatsDump($args['folder']);
+ exit;
 }
 }
