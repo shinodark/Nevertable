@@ -645,10 +645,13 @@ class DialogStandard
   
   function Stats()
   {
+    global $config;
+
     $this->output  = "<div>\n";
-    $this->output .= '<center><applet codebase="'.ROOT_PATH.'contrib/neverstats" code="Neverstats.class" width=800 height=550>'."\n";
-    $this->output .= '<param name="width" value="800">'."\n";
-    $this->output .= '<param name="height" value="550">'."\n";
+    $this->output .= '<center><applet codebase="'.ROOT_PATH.'contrib/neverstats" code="Neverstats.class" width=820 height=580>'."\n";
+    $this->output .= '<param name="width" value="820">'."\n";
+    $this->output .= '<param name="height" value="580">'."\n";
+    $this->output .= '<param name="URL" value="http://'.$_SERVER['SERVER_NAME'] .'/'.$config['nvtbl_path'] . $config['neverstats_liste'].'">'."\n";
     $this->output .= '</applet></center>'."\n";
     $this->output .= "</div>\n";
     
