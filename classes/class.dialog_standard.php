@@ -200,6 +200,7 @@ class DialogStandard
 
       $menu_main->AddItem("Upload a record", "upload.php");
       $menu_main->AddItem("Member list", "memberlist.php");
+      $menu_main->AddItem("Stats", "stats.php");
       $menu_main->AddItem("Your profile", "profile.php");
       $menu_main->AddItem("Logout", "login.php?out");
       
@@ -212,6 +213,7 @@ class DialogStandard
       $menu_main->AddItem("Register", "register.php");
       $menu_main->AddItem("Forgot your password ?", "forgot.php");
       $menu_main->AddItem("Member list", "memberlist.php");
+      $menu_main->AddItem("Stats", "stats.php");
       
       $bar->AddBlock_MenuBar("", $menu_main);
     }
