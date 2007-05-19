@@ -858,7 +858,7 @@ class DialogStandard
   
   function _RecordLine($i, $fields, $display_shot=true, $diffview=false, $diffref=array())
   {
-    global $nextargs, $old_users;
+    global $nextargs;
 
     $rowclass = ($i % 2) ? "row1" : "row2";
     if ($display_shot)

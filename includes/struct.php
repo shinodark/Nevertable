@@ -74,28 +74,6 @@ $levels = array (
     25 => "25",
     );
 
-/* Garder pour compatibilité avec les anciens records de joueurs non inscrits */
-$old_users = array(
- -1=> "Pipo",
- -2=> "Joel",
- -3=> "Rg3",
- -4=> "UFX",
- -5=> "Canuck",
- -6=> "Skquinn",
- -7=> "Wolf",
- -8=> "lad",
- -9=> "Harvey",
- -10=> "Silozius",
- -11=> "Gillux",
- -12=> "Bud",
- -13=> "Danguy",
- -14=> "DiThi",
- -15=> "Rod",
- -16=> "CRO",
- -17=> "Jam",
- -18=> "rodimus",
- );
-
 function GetShot($set_path, $map_solfile)
 {
     global $config;
