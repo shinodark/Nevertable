@@ -65,20 +65,6 @@ CREATE TABLE `nvrtbl_rec` (
 -- --------------------------------------------------------
 
 -- 
--- Structure de la table `nvrtbl_sets`
--- 
-
-CREATE TABLE `nvrtbl_sets` (
-  `id` int(11) NOT NULL auto_increment,
-  `set_name` varchar(64) NOT NULL default '',
-  `set_path` varchar(64) NOT NULL default '',
-  `author` varchar(64) NOT NULL default '',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
--- 
 -- Structure de la table `nvrtbl_tags`
 -- 
 
@@ -121,6 +107,28 @@ CREATE TABLE `nvrtbl_users` (
   KEY `ind_pseudo` (`pseudo`(1))
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
+
+
+-- 
+-- Structure de la table `nvrtbl_sets`
+-- 
+
+CREATE TABLE `nvrtbl_sets` (
+  `id` int(11) NOT NULL auto_increment,
+  `set_name` varchar(64) NOT NULL default '',
+  `set_path` varchar(64) NOT NULL default '',
+  `author` varchar(64) NOT NULL default '',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+-- 
+-- Contenu de la table `nvrtbl_sets`
+-- 
+
+INSERT INTO `nvrtbl_sets` (`id`, `set_name`, `set_path`, `author`) VALUES 
+(1, 'Easy', 'map-rlk', 'rlk'),
+(2, 'Hard', 'map-rlk', 'rlk'),
+(3, 'Mehdi', 'map-mym', 'Mym');
 
 -- 
 -- Structure de la table `nvrtbl_conf`
