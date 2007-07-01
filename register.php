@@ -28,96 +28,83 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
+$args['pseudo']  = trim($args['pseudo']);
+
 $table = new Nvrtbl("DialogStandard");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<?php $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame"); ?>
+<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
 function closepage()
 {  global $table;
     echo "</div><!-- fin \"main\" -->\n";
     $table->Close();
-    $table->PrintFooter();
+    $table->dialog->Footer();
     echo "</div><!-- fin \"page\" -->\n";
     echo "</body>\n";
     echo "</html>\n";
+    exit;
 }
     
 if(isset($args['valid']))
 {
   if (empty($args['pseudo']) || empty($args['passwd1']) || empty($args['passwd2']) )
   {
-    button_error("Empty fields. Pseudo, email and password have to be filled.", 400);
-    button_back();
+    gui_button_error($lang['REGISTER_EMPTY_FIELDS'], 400);
+    gui_button_back();
     closepage();
-    exit;
   }
-  
-  $table->db->MatchUserByName($args['pseudo']);
+
+  $table->db->helper->MatchUserByName($args['pseudo']);
   if ($table->db->NumRows() > 0) // dejà existant
   {
-    button_error("This pseudo is already used, please set another one...", 400);
-    button_back();
+    gui_button_error($lang['REGISTER_PSEUDO_EXISTS'], 400);
+    gui_button_back();
     closepage();
-    exit;
   }
   
-  $table->db->MatchUserByMail($args['email']);
+  $table->db->helper->MatchUserByMail($args['email']);
   if ($table->db->NumRows() > 0) // dejà existant
   {
-    button_error("This mail adress is already used, please set another one...", 500);
-    button_back();
+    gui_button_error($lang['REGISTER_MAIL_EXISTS'], 500);
+    gui_button_back();
     closepage();
-    exit;
   }
   
   if (!CheckMail($args['email']))
   {
-    button_error("Email adress is not valid. Try again...", 400);
-    button_back();
+    gui_button_error($lang['REGISTER_MAIL_NOTVALID'], 400);
+    gui_button_back();
     closepage();
-    exit;
   }
   if ($args['passwd1'] != $args['passwd2'])
   {
-    button_error("Passwords don't match. Try again...", 400);
-    button_back();
+    gui_button_error($lang['REGISTER_PASSWD_CHECK'], 400);
+    gui_button_back();
     closepage();
-    exit;
   }
 
   if (strlen($args['passwd1']) <= 4)
   {
-    button_error("Passwords need to be longer than 5 caracters. Try again...", 500);
-    button_back();
+    gui_button_error($lang['REGISTER_PASSWD_LENGTH'], 500);
+    gui_button_back();
     closepage();
-    exit;
   }
-  
-  // test du premier utilisateur, si oui c'est l'admin
-  if ($table->db->CountRows("users") == 0)
-    $level=get_userlevel_by_name("root");
-  else
-    $level=get_userlevel_by_name("member");
-  
-  if ($level == get_userlevel_by_name("root"))
-    button("You're first registered user, you're root ;)", 400);
 
   if (   (addslashes($args['pseudo']) != $args['pseudo'])
       || (addslashes($args['email'])   != $args['email']) )
   {
-    button_error("Please don't use special characters. Try again...", 400);
-    button_back();
+    gui_button_error($lang['REGISTER_SPECIAL_CHARS'], 400);
+    gui_button_back();
     closepage();
-    exit;
   }
 
   //envoie du mail de bienvenue
@@ -133,6 +120,15 @@ if(isset($args['valid']))
   $m->Body( $message);	// set the body
   $m->Send();	// send the mail
 
+  
+  // test du premier utilisateur, si oui c'est l'admin
+  if ($table->db->CountRows("users") == 0)
+    $level=get_userlevel_by_name("root");
+  else
+    $level=get_userlevel_by_name("member");
+  
+  if ($level == get_userlevel_by_name("root"))
+    gui_button($lang['REGISTER_FIRST_REGISTER'], 400);
     
   //protection
   $fields = array(
@@ -140,7 +136,7 @@ if(isset($args['valid']))
       'passwd' => md5($args['passwd1']),
       'email' => addslashes($args['email']),
       'level' => $level,
-      'user_theme' => 'Sulfur',
+      'user_theme' => 'default',
   );
 
   //ajout dans la base
@@ -149,49 +145,39 @@ if(isset($args['valid']))
   $user->SetFields($fields);
   if (!$user->Insert())
   {
-    button_error($user->GetError(),500);
-    button_back();
+    gui_button_error($user->GetError(),500);
+    gui_button_back();
     closepage();
-    exit;
   }
-  
-  button("You're registered ! Welcome to Nevertable !", 400);
-  button("<a href=\"./\">Return to main page</a>", 200);
+
+  gui_button($lang['REGISTER_SUCCESSFUL'], 400);
+  gui_button("<a href=\"./\">".$lang['GUI_BUTTON_MAINPAGE']."</a>", 200);
   
   closepage();
-  exit;
 }
 else
 {
-?>
-      <div class="nvform" style="width: 400px;">
-      <form class="nvform" action="register.php?valid" method="post">
-      <table><tr>
-      <th colspan="2" align="center"> Register form </th></tr>
-      <td><label for=\"pseudo\">name : </label></td>
-      <td><input type="text" id="pseudo" name="pseudo" size="30" /></td>
-      </tr><tr>
-      <td><label for=\"email\">email : </label></td>
-      <td><input type="text" id="email" name="email" size="30" /></td>
-      </tr><tr>
-      <td><label for=\"passwd1\">password : </label></td>
-      <td><input type="password" id="passwd1" name="passwd1" size="30" /></td>
-      </tr><tr>
-      <td><label for=\"passwd2\">password again : </label></td>
-      <td><input type="password" id="passwd2" name="passwd2" size="30" /></td>
-      </tr><tr>
-      <td colspan="2"><center><input type="submit" value="Register" /></center></td>
-      </form>
-      </tr></table>
-      </div>
-<?php
+      $form = new Form("post", "register.php?valid", "resgister", 400);
+      $form->AddTitle($lang['REGISTER_FORM_TITLE']);
+      $form->AddInputText("pseudo", "pseudo", $lang['REGISTER_FORM_PSEUDO']);
+      $form->Br();
+      $form->AddInputText("email", "email", $lang['REGISTER_FORM_EMAIL']);
+      $form->Br();
+      $form->AddInputPassword("passwd1", "passwd1", $lang['REGISTER_FORM_PASSWD1']);
+      $form->Br();
+      $form->AddInputPassword("passwd2", "passwd2", $lang['REGISTER_FORM_PASSWD2']);
+      $form->Br();
+      $form->AddInputSubmit();
+      echo $form->End();
 }
-button("<a href=\"index.php\">Return to table</a>", 300);
+
+gui_button_main_page();
 ?>
+
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

@@ -34,42 +34,37 @@ $table = new Nvrtbl("DialogStandard");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<? $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame"); ?>
+<? $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
 
 function closepage()
 {  global $table;
+    gui_button_back();
     echo "</div><!-- fin \"main\" -->\n";
     $table->Close();
-    $table->PrintFooter();
-    echo "</div><!-- fin \"page\" -->\n";
-    echo "</body>\n";
-    echo "</html>\n";
+    $table->dialog->Footer();
+    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
+    exit;
 }
-
 
 if(isset($args['run']))
 {
   if (empty($args['email']))
   {
-    button_error("Empty field. Email is needed !", 400);
-    button_back();
+    gui_button_error($lang['FORGOT_EMPTY_MAIL'], 400);
     closepage();
-    exit;
   }
   
-  $res = $table->db->MatchUserByMail($args['email']);
+  $res = $table->db->helper->MatchUserByMail($args['email']);
   if ($table->db->NumRows() == 0) // pas trouvé
   {
-    button_error("Sorry, this mail address doesn't exist in the table...", 500);
-    button_back();
+    gui_button_error($lang['FORGOT_INVALID_MAIL'], 500);
     closepage();
-    exit;
   }
   else
     $val = $table->db->FetchArray($res);
@@ -89,10 +84,8 @@ if(isset($args['run']))
   $table->db->RequestGenericFilter("id", $val['id']);
   $table->db->RequestLimit(1);
   if(!$table->db->Query()) {
-    button_error($table->db->GetError(),500);
-    button_back();
+    gui_button_error($table->db->GetError(),500);
     closepage();
-    exit;
   }
 
   //envoie du mail
@@ -107,37 +100,30 @@ if(isset($args['run']))
   $m->Body( $message);	// set the body
   $m->Send();	// send the mail
   
-  
-  button("Email sent.", 400);
-  button("<a href=\"./\">Return to main page</a>", 200);
+  gui_button($lang['FORGOT_EMAIL_SENT'], 400);
+  gui_button_main_page();
     
   echo "</div>\n";
-  $table->Close();
-  $table->PrintFooter();
+  $trombi->Close();
+  $trombi->dialog->Footer();
   exit;
 }
 else
 {
-?>
-      <div class="nvform" style="width: 400px;">
-      <form class="nvform" action="forgot.php?run" method="post">
-      <table><tr>
-      <th colspan="2" align="center"> I've forgot my password ! </th></tr>
-      <td><label for=\"email\">email : </label></td>
-      <td><input type="text" id="email" name="email" size="40" /></td>
-      </tr><tr>
-      <td colspan="2"><center><input type="submit" value="Send" /></center></td>
-      </form>
-      </tr></table>
-      </div>
-<?php
+  $form = new Form("post", "forgot.php?run", "forgot", 400);
+  $form->AddTitle($lang['FORGOT_FORM_TITLE']);
+  $form->Br();
+  $form->AddInputText("email", "email", $lang['REGISTER_FORM_EMAIL'], 40);
+  $form->Br();
+  $form->AddInputSubmit();
+  echo $form->End();
 }
-button("<a href=\"index.php\">Return to table</a>", 300);
+gui_button_main_page();
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

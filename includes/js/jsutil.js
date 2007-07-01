@@ -19,79 +19,21 @@
 #
 # ***** END LICENSE BLOCK *****/
 
-function change_editform(idP,user_idP,pseudoP,levelsetP,levelP,timeP,coinsP,replayP,typeP) {
-	document.forms['editform'].id.value  = idP;
-	document.forms['editform'].user_id.value  = user_idP;
-	document.forms['editform'].pseudo.value  = pseudoP;
-    document.forms['editform'].levelset.selectedIndex = levelsetP-1;
-    document.forms['editform'].level.selectedIndex = levelP;
-    document.forms['editform'].time.value = timeP;
-    document.forms['editform'].coins.value = coinsP;
-    document.forms['editform'].replay.value = replayP;
-    document.forms['editform'].type.selectedIndex = typeP;
+function change_form_input(formP, idP, P) {
+	document.forms[formP].eval(idP).value  = P;
 }
 
-function update_typeform_fields(tableP, folderP, levelsetP, levelP, diffviewP, newonlyP) {
-	document.forms['typeform'].table.selectedIndex  = tableP;
-
-    //hack for hard coded folder value in main page
-	if (folderP==0)
-        document.forms['typeform'].folder.selectedIndex  = 0;
-    else if (folderP == 3)
-        document.forms['typeform'].folder.selectedIndex  = 1;
-    else
-        document.forms['typeform'].folder.selectedIndex  = 2;
-
-	document.forms['typeform'].levelset_f.selectedIndex  = levelsetP;
-	document.forms['typeform'].level_f.selectedIndex  = levelP;
-	if (diffviewP=="on")
-        document.forms['typeform'].diffview.checked  = true;
-    else
-        document.forms['typeform'].diffview.checked  = false;
-	document.forms['typeform'].newonly.selectedIndex  = newonlyP;
+function change_form_select(formP, idP, P) {
+	document.forms[formP].eval(idP).selectedIndex  = P;
 }
 
-function update_typeform_fields_admin(tableP, folderP, bestonlyP, newonlyP, levelsetP, levelP) {
-	document.forms['typeform_admin'].table.selectedIndex  = tableP;
-	document.forms['typeform_admin'].folder.selectedIndex  = folderP;
-	if (bestonlyP=="on")
-        document.forms['typeform_admin'].bestonly.checked  = true;
-    else
-        document.forms['typeform_admin'].bestonly.checked  = false;
-	document.forms['typeform_admin'].newonly.selectedIndex  = newonlyP;
-	document.forms['typeform_admin'].levelset_f.selectedIndex  = levelsetP;
-	document.forms['typeform_admin'].level_f.selectedIndex  = levelP;
+function change_form_textarea(formP, idP, P) {
+	document.forms[formP].eval(idP).value  = P;
 }
 
-function update_commentform_fields(pseudoP, contentP) {
-	document.forms['commentform'].pseudo.value  = pseudoP;
-	document.forms['commentform'].content.value  = contentP;
-}
-
-function update_memberform_fields(formid, levelP) {
-    document.forms['memberform_'+formid].authlevel.selectedIndex = levelP;
-}
-
-function update_profile_optionform_fields(sortP, themeP) {
-    if (sortP == "old")
-      document.forms['options'].sort.selectedIndex = 0;
-    else if (sortP == "pseudo")
-      document.forms['options'].sort.selectedIndex = 1;
-    else if (sortP == "level")
-      document.forms['options'].sort.selectedIndex = 2;
-    else if (sortP == "type")
-      document.forms['options'].sort.selectedIndex = 3;
-    else if (sortP == "time")
-      document.forms['options'].sort.selectedIndex = 4;
-    else if (sortP == "coins")
-      document.forms['options'].sort.selectedIndex = 5;
-
-    document.forms['options'].theme.selectedIndex = themeP;
-}
-
-//function update_tagform_fields(pseudoP, linkP, contentP) {
-function update_tagform_fields(pseudoP, contentP) {
-    document.forms['tagform'].tag_pseudo.value  = pseudoP;
-	//document.forms['tagform'].tag_link.value  = linkP;
-	document.forms['tagform'].content.value  = contentP;
+function change_form_checkbox(formP, idP, P) {
+	if (P == "on")
+  	   document.forms[formP].eval(idP).checked  = true;
+	else
+  	   document.forms[formP].eval(idP).checked  = false;
 }

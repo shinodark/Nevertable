@@ -34,25 +34,48 @@ $table = new Nvrtbl("DialogStandard");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<?php $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame"); ?>
+<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
 <body>
 <div id="page">
 <?php 
-  $table->PrintTop();
-  $table->PrintPrelude();
+  $table->dialog->Top();
+  $table->dialog->Prelude();
 ?>
 <div id="main">
 <?php
 
-  $table->PrintMemberList($args);
-  button("<a href=\"index.php\">Return to table</a>", 200);
+  $table->db->RequestInit("SELECT", "users");
+  /* Contre le problème du osrt=0 si aucun get n'est passé */
+  if (!isset($_GET['sort']))
+     $args['sort'] = 2;
+  switch($args['sort'])
+  {
+     case 0: $table->db->RequestGenericSort(array("pseudo"), "ASC"); break;
+     case 1: $table->db->RequestGenericSort(array("stat_total_records", "stat_best_records"), array("DESC", "DESC"));
+         break;
+     default: 
+     case 2: $table->db->RequestGenericSort(array("stat_best_records", "stat_total_records"), array("DESC", "DESC"));
+         break;
+     case 3: $table->db->RequestGenericSort(array("stat_comments"), "DESC"); break;
+     case 4: $table->db->RequestGenericSort(array("level"), "ASC"); break;
+     case 5: $table->db->RequestGenericSort(array("id"), "ASC"); break;
+  }
+  $res = $table->db->Query();
+  if(!$res) {
+      echo gui_button_error(  $table->db->GetError(), 400);
+  }
+  else
+  {
+    $table->dialog->MemberList($res);
+  }
 
+  gui_button_main_page();
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

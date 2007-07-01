@@ -21,25 +21,26 @@
 # ***** END LICENSE BLOCK *****
 
 define('PATHMAX',64);
+define('MAXNAM',9);
+define('DATELEN',20);
+
+define('MAGIC_1_5', 0x52424EAF); /* version 1.5 */
+define('MAGIC_1_4', 0x4E425250); /* verdion 1.4 */
 	
 class Replay
 {
     var $db;
-	var $replayname;
+    var $replayname;
     var $fp;
-    var $coins;
-    var $time;
-    var $set;
-    var $level;
+    var $struct_replay;
     var $error;
-    var $solfile;
     var $type;
 
 	/*__Constructeur__
 	
 	Cette fonction initialise l'objet Replay.
 	*/
-	function Replay(&$db, $filename, $type)
+    function Replay(&$db, $filename, $type)
     {
         $this->db = $db;
         $this->replayname = $filename;
@@ -50,32 +51,47 @@ class Replay
     {
         global $config;
 
-        if (!file_exists($this->replayname) || !is_readable($this->replayname) )
-        {
-            $this->error = "Replay file doesn't exist or is not readable";
-            return false;
-        }
-        $this->fp  = fopen($this->replayname, "r");
-        if (!$this->fp)
-        {
+	$f = new FileManager($this->replayname);
+
+	if (!$f->Open())
+	{
             $this->error = "Error opening file";
             return false;
-        }
+	}
 
-        $magic = fread($this->fp, 4);
-        if ($magic != "PRBN")
-        {
-            $this->error = "File is probably not a replay file";
+	$this->struct_replay['magic'] = $f->ReadInt();
+        if ($this->struct_replay['magic'] != MAGIC_1_5)
+	{
+	    if ($this->struct_replay['magic'] == MAGIC_1_4)
+               $this->error = "File is replay file from Neverball 1.4. Please convert it to 1.5 before uploading.";
+	    else
+               $this->error = "File is probably not a replay file";
             return false;
         }
 
-        $this->time  = getShort($this->fp) / 100.0;
-        $this->coins = getShort($this->fp);
-        getString($this->fp, PATHMAX);   /* shot */
-        $this->solfile = trim(getString($this->fp, PATHMAX));
+	$this->struct_replay['version'] = $f->ReadInt();
 
-        $map_solfile = basename($this->solfile);
-        $set_path    = dirname($this->solfile);
+        $this->struct_replay['timer']   = $f->ReadInt() / 100.0;
+        $this->struct_replay['coins']   = $f->ReadInt() ;
+        $this->struct_replay['state']   = $f->ReadInt();
+	$this->struct_replay['mode']    = $f->ReadInt() ;
+
+        $this->struct_replay['player']  = trim($f->ReadStringLength(MAXNAM));
+	$this->struct_replay['date']    = trim($f->ReadStringLength(DATELEN));
+
+        $this->struct_replay['shot']    = trim($f->ReadStringLength(PATHMAX));
+	$this->struct_replay['solfile'] = trim($f->ReadStringLength(PATHMAX));
+
+        $this->struct_replay['time']    = $f->ReadInt();
+        $this->struct_replay['goal']    = $f->ReadInt();
+        $this->struct_replay['score']   = $f->ReadInt();
+	$this->struct_replay['balls']   = $f->ReadInt();
+	$this->struct_replay['times']   = $f->ReadInt();
+
+        $f->Close();
+
+        $map_solfile = basename($this->struct_replay['solfile']) ;
+        $set_path    = dirname($this->struct_replay['solfile'] );
         
         /*  Check if this set/level is in the database */
         $p = $config['bdd_prefix'];
@@ -131,26 +147,35 @@ class Replay
             return false;
           }
        }
-
-       fclose($this->fp);
         
        return true;
     }
     
     function GetTime()
     {
-        return $this->time;
+        return $this->struct_replay['timer'];
     }
     
     function GetCoins()
     {
-        return $this->coins;
+        return $this->struct_replay['coins'];
     }
 
     function GetSolFile()
     {
-        return $this->solfile;
+        return $this->struct_replay['solfile'];
     }
+
+    function GetMode()
+    {
+        return $this->struct_replay['mode'];
+    }
+    
+    function GetState()
+    {
+        return $this->struct_replay['state'];
+    }
+
 
     function GetSet()
     {
@@ -165,11 +190,29 @@ class Replay
     function GetFields()
     {
         return array(
-            "time"      => $this->time,
-            "coins"     => $this->coins,
+            "time"      => $this->struct_replay['timer'],
+            "coins"     => $this->struct_replay['coins'],
             "levelset"  => $this->set,
             "level"     => $this->level,
             );
+    }
+    
+    function GetStruct()
+    {
+	return $this->struct_replay;
+    }
+
+    function IsGoalReached()
+    {
+       if ($this->struct_replay['state'] == get_replay_state_by_name('goal')
+        || $this->struct_replay['state'] == get_replay_state_by_name('spec'))
+       {
+	       return true;
+       }
+       else
+       {
+	       return false;
+       }
     }
 
     function GetError()

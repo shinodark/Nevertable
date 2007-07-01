@@ -76,17 +76,21 @@ class SideBar
     /* Welcome Message */
     function AddBlock_Welcome()
     {
+      global $lang;
+
       if (Auth::Check(get_userlevel_by_name("member")))
-      $this->output .= "<center>Welcome <b><a href=\"profile.php?id=".$_SESSION['user_id']."\">".$_SESSION['user_pseudo']."</a></b></center><br /><br />\n";
+      $this->output .= "<center>".sprintf($lang['SIDEBAR_WELCOME'],"<b><a href=\"profile.php?id=".$_SESSION['user_id']."\">".$_SESSION['user_pseudo']."</a></b>")."</center><br/><br/>\n";
     }
 
     /* Login form */
     function AddBlock_LoginForm()
     {
+      global $lang;
+
       $this->output .=  "<form action=\"login.php\" method=\"post\" name=\"login\">\n";
       $this->output .=  "<table>\n";
       $this->output .=  "<tr>\n";
-      $this->output .=  "<th>Ready ?</th>\n";
+      $this->output .=  "<th>".$lang['SIDEBAR_LOGIN']."</th>\n";
       $this->output .=  "</tr>\n";
       $this->output .=  "<tr>\n";
       $this->output .=  "<td><center><input type=\"text\" id=\"pseudo\" name=\"pseudo\" size=\"10\" value=\"Login\" onfocus=\"if (this.value=='Login') this.value=''\" /></center></td>\n";
@@ -96,15 +100,15 @@ class SideBar
       $this->output .=  "<td><center><input type=\"submit\" value=\"Go!\" /></center><br/></td>\n";
       $this->output .=  "</tr></table>\n";
       $this->output .=  "</form>\n";
-      $this->output .=  "<br />\n";
+      $this->output .=  "<br/>\n";
     }
     
     /* Last Comments */
     function AddBlock_LastComments(&$db, &$bbcode, &$smilies)
     {
-      global $config;
+      global $config, $lang;
 
-      $this->output .=  "<h2>Last comments</h2>\n";
+      $this->output .=  "<h2>".$lang['SIDEBAR_LAST_COMMENTS']."</h2>\n";
 
       $p = $config['bdd_prefix'];
       $db->RequestSelectInit(
@@ -140,7 +144,7 @@ class SideBar
 
       if (!$res)
       {
-       button_error("Error fetching comments.", 200);
+       gui_button_error("Error fetching comments.", 200);
       } else {
 
       $this->output .=  "<table>\n";
@@ -165,7 +169,7 @@ class SideBar
         $tooltip = Javascriptize($tooltip);
         if (strlen($contentout) > $config['sidebar_comlength'])
             $contentout = substr($contentout,0,$config['sidebar_comlength']) . "...";
-        $contentout = wordwrap($contentout, $config['sidebar_autowrap'], "<br />", 1);
+        $contentout = wordwrap($contentout, $config['sidebar_autowrap'], "<br/>", 1);
         $this->output .=  "<div class=\"menuitem\" onmouseover=\"return escape('".$tooltip."')\">\n";
         $this->output .=  "<a href=\"record?id=".$val['replay_id']."#".$val['com_id']."\">\n";
         $this->output .=  $contentout;
@@ -176,7 +180,7 @@ class SideBar
 
       }
   
-      $this->output .=  "<br />";
+      $this->output .=  "<br/>";
     }
     /* Last Comments */
     function AddBlock_TagBoard(&$db, &$bbcode, &$smilies, &$style)
@@ -194,14 +198,16 @@ class SideBar
 
     function AddBlock_Legend(&$style)
     {
+      global $lang;
+
       $this->output .=  "<table><tr>\n";
-      $this->output .=  "<td>".$style->GetImage('best')."</td><td>Best record for this level. It can be a best time, or a most coins.</td>\n";
+      $this->output .=  "<td>".$style->GetImage('best')."</td><td>".$lang['SIDEBAR_LEGEND_BEST']."</td>\n";
       $this->output .=  "</tr><tr>\n";
-      $this->output .=  "<td>".$style->GetImage('best time')."</td><td>Best time records.</td>\n";
+      $this->output .=  "<td>".$style->GetImage('best time')."</td><td>".$lang['SIDEBAR_LEGEND_BEST_TIME'] ."</td>\n";
       $this->output .=  "</tr><tr>\n";
-      $this->output .=  "<td>".$style->GetImage('most coins')."</td><td>Most coins records.</td>\n";
+      $this->output .=  "<td>".$style->GetImage('most coins')."</td><td>".$lang['SIDEBAR_LEGEND_MOST_COINS']."</td>\n";
       $this->output .=  "</tr><tr>\n";
-      $this->output .=  "<td>".$style->GetImage('freestyle')."</td><td>Freestyle records.</td>\n";
+      $this->output .=  "<td>".$style->GetImage('freestyle')."</td><td>".$lang['SIDEBAR_LEGEND_FREESTYLE']."</td>\n";
       $this->output .=  "</tr>\n";
       $this->output .=  "</table>\n";
     }

@@ -29,12 +29,12 @@ class DB
    var $db_prefix;
    var $db_user;
    var $db_passwd;
-   var $prefix;
    var $error;
    var $errno;
    var $con_id;
    var $last_result;
    var $request_count;
+   var $helper;
    
    /******************************************************/
    /*------------ CONSTRUCTOR AND MAIN FUNCTIONS---------*/
@@ -48,6 +48,7 @@ class DB
         $this->db_user   = $user;
         $this->db_passwd = $passwd;
         $this->request_count = 0;
+
    }
    
    function Connect()
@@ -59,6 +60,7 @@ class DB
         return false;
       }
       mysql_select_db($this->db_name);
+      $this->helper = new DBHelper($this);
       return true;
    }
    
@@ -354,15 +356,6 @@ class DB
            default       : $this->request = $flag . $this->request . $command . $filter . "<='" . $this->Protect($filterval) . "'"; break;
      }
    }
-
-   function RequestGenericFilter_ge_timestamp($seconds)
-   {
-     $res = mysql_query("SELECT DATE_SUB( CURRENT_TIMESTAMP( ) , INTERVAL ".$seconds." SECOND ) +0 AS lim");
-     $val = mysql_fetch_array($res);
-     $lim = $val['lim'];
-     
-     $this->RequestGenericFilter_ge("timestamp", $lim);
-   }
    
    function RequestGenericSort($fields_array, $order)
    {
@@ -416,6 +409,7 @@ class DB
      $res = $this->FetchArray();
      return $res['COUNT(*)'];
    }
+   
 
    function Protect($string)
    {
@@ -452,328 +446,4 @@ class DB
       }
       else return $this->Protect($strings_arr);
     }
-
-   /******************************************************/
-   /*------------ DATABASE SIMPLIFIED ACCESS ------------*/
-   /******************************************************/
-   
-   function RequestFilterLevels($levelset, $level)
-   {
-     global $config;
-     
-     $p = $config['bdd_prefix'];
-     if ($levelset > 0)  // -1 is index in list, "all" for levelset
-        $this->RequestGenericFilter($p."rec.levelset", $levelset);
-     if ($level > 0)      // 0 is index in list, "all" for level
-        $this->RequestGenericFilter($p."rec.level", $level);
-   }
-   
-   function RequestFilterType($type)
-   {
-     global $config;
-     
-     if ($type == get_type_by_name("all"))
-       return;
-   
-     $p = $config['bdd_prefix'];
-     $this->RequestGenericFilter($p."rec.type", $type);
-   }
-   
-   function RequestFilterNew($newonly)
-   {
-     global $config;
-     
-     if ($newonly == get_newonly_by_name("off"))
-       return;
-   
-     else if ($newonly == get_newonly_by_name("3 days"))
-       $day = 3;
-     else if ($newonly == get_newonly_by_name("1 week"))
-       $day = 7;
-     else if ($newonly == get_newonly_by_name("2 weeks"))
-       $day = 14;
-     else if ($newonly == get_newonly_by_name("1 month"))
-       $day = 31;
-     else
-       $day = 31;
-  
-
-     $res = mysql_query("SELECT DATE_SUB( CURRENT_TIMESTAMP( ) , INTERVAL ".$day." DAY ) +0 AS lim");
-     $val = mysql_fetch_array($res);
-     $lim = $val['lim'];
-   
-     $p = $config['bdd_prefix'];
-     $this->RequestGenericFilter_ge($p."rec.timestamp", $lim);
-   }
-   
-   function RequestFilterFolder($folder)
-   {
-     global $config;
-     
-     $p = $config['bdd_prefix'];
-     if ($folder >= 0)
-       $this->RequestGenericFilter($p."rec.folder", $folder);
-     else
-     { /* affichage des répertoires oldones et contest, $folder = -1 => all*/
-       $this->RequestGenericFilter(
-           array($p."rec.folder", $p."rec.folder"),
-           array(get_folder_by_name("contest"), get_folder_by_name("oldones")),
-           "OR"
-       );
-     }
-   }
-   
-   function RequestSort($sortP)
-   {
-     global $config;
-     
-     $p = $config['bdd_prefix'];
-     switch($sortP)
-     {
-         case 'user'   : $f = array($p."users.pseudo"); $o = "ASC";  break;
-         case 'level'  : $f = array($p."rec.levelset",$p."rec.level",$p."rec.time") ; $o = "ASC"; break;
-         case 'time'   : $f = array($p."rec.time",$p."rec.coins"); $o = array("ASC", "DESC"); break;
-         case 'coins'  : $f = array($p."rec.coins",$p."rec.time"); $o = array("DESC","ASC"); break;
-         case 'type'   : $f = array($p."rec.type"); $o = "ASC"; break;
-         case 'id'     : $f = array($p."rec.id"); $o = "DESC"; break;
-         default: 
-         case 'old'    : $f = array($p."rec.timestamp"); $o = "DESC"; break;
-     }
-   
-     $this->RequestGenericSort($f, $o);
-   }
-   
-   function RequestMatchComments($replay_id)
-   {
-     $this->RequestInit("SELECT", "com");
-     $this->RequestGenericFilter("replay_id", $replay_id);
-     $this->RequestGenericSort(array("timestamp"), "ASC");
-     return $this->Query();
-   }
-   
-   function RequestMatchCommentById($com_id)
-   {
-     $this->RequestInit("SELECT", "com");
-     $this->RequestGenericFilter("id", $com_id);
-     return $this->Query();
-   }
-   
-   function RequestMatchRecords($fields_arr)
-   {
-     $this->RequestInit("SELECT", "rec");
-     
-     foreach($fields_arr as $f => $v)
-     {
-       $this->RequestGenericFilter($f, $v);
-     }
-     $res = $this->Query();
-     $ret = array();
-     $i=0;
-     while ($val = $this->FetchArray($res))
-     {
-        $ret[$i]['id']=$val['id'];
-        $i++;
-     }
-     $ret['nb'] = $i;
-
-     return $ret;
-   }
-
-   function MatchUserByName($name)
-   {
-     $this->RequestInit("SELECT", "users");
-     $this->RequestGenericFilter("pseudo", $name);
-     return $this->Query();
-   }
-   
-   function MatchUserByMail($mail)
-   {
-     $this->RequestInit("SELECT", "users");
-     $this->RequestGenericFilter("email", $mail);
-     return $this->Query();
-   }
-
-   function MatchUserById($user_id)
-   {
-     $this->RequestInit("SELECT", "users");
-     $this->RequestGenericFilter("id", $user_id);
-     return $this->Query();
-   }
-   
-   function RequestCountComments($replay_id)
-   {
-       return $this->CountRows("com", array("replay_id" => $replay_id));
-   }
-   
-   function RequestCountRecords($folder, $type)
-   {
-     if ($type==get_type_by_name("all"))
-         return  $this->CountRows("rec", array("folder"=>$folder));
-     else
-         return  $this->CountRows("rec", array("folder"=>$folder,"type"=>$type));
-   }
-
-   function RequestCountUserRecords($user_id)
-   {
-     $this->RequestInit("SELECT", "rec");
-	 /* on ne compte pas les recordes dans trash */
-	 $this->RequestCustom("WHERE user_id=".$user_id." AND folder!=".get_folder_by_name("trash") ." AND folder!=".get_folder_by_name("incoming"));
-	 $this->Query();
-     return $this->NumRows();
-   }
-   
-   function RequestCountUserBest($user_id)
-   {
-     return $this->CountRows("rec", array("user_id"=>$user_id, "isbest"=>1));
-   }
-   
-   function RequestCountUserComments($user_id)
-   {
-     return $this->CountRows("com", array("user_id"=>$user_id));
-   }
-   
-   function RequestGetBestRecord($type, $folder="")
-   {
-     $this->RequestInit("CUSTOM");
-     $this->RequestCustom("SELECT MIN(time) AS mintime, MAX(coins) AS maxcoins,levelset,level FROM ". $this->db_prefix ."rec ");
-     
-     /* Si aucun paramètre précisé, on effectue une recherche à la fois dans contest et oldones */
-     if(empty($folder))
-     {
-       if($type != get_type_by_name("all"))
-         $this->RequestCustom("WHERE type=".$type." AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
-       else
-         $this->RequestCustom("WHERE folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones"));
-     }
-     else
-     /* Sinon, on fait dans le "folder" précisé ! */
-     {
-       if($type != get_type_by_name("all"))
-         $this->RequestGenericFilter("type", $type);
-       $this->RequestGenericFilter("folder", $folder);
-     }
-     
-     $this->RequestCustom("GROUP BY levelset,level");
-     $res = $this->Query();
-     
-     $ret = array();
-     
-     while ($val = $this->FetchArray())
-     {
-       $ret[$val['levelset']] [$val['level']] ["time"] = $val['mintime'];
-       $ret[$val['levelset']] [$val['level']] ["coins"] = $val['maxcoins'];
-     }
-   
-     return $ret;
-   }
-   
-   /* Gestion des meilleurs records d'un certain level/set/type */
-   /* @return :
-            $ret['nb']: nb of records seen as "best" ones 
-            $ret['beaten']: nb of records moved to "oldones" folder
-            $ret['imports']: nb of records moved to "oldones" folder
-   */
-   function RequestSetBestRecordByFields($level, $levelset, $type)
-   {
-     $rec = new Record($this);
-
-     $this->RequestInit("SELECT", "rec");
-     $this->RequestGenericFilter("level", (integer)$level);
-     $this->RequestGenericFilter("levelset", (integer)$levelset);
-     $this->RequestGenericFilter("type", (integer)$type);
-     $this->RequestGenericFilter("folder", get_folder_by_name("contest"));
-     $res = $this->Query();
-     
-     /* set all record for this level/levelset/type/folder at isbest=0 */
-     $this->RequestInit("UPDATE", "rec");
-     $my  = array("isbest" => 0);
-     /* update conserving timestamp */
-     $this->RequestUpdateSet($my, true);
-     $this->RequestGenericFilter("level", (integer)$level);
-     $this->RequestGenericFilter("levelset", (integer)$levelset);
-     $this->RequestGenericFilter("type", (integer)$type);
-     $this->RequestGenericFilter("folder", get_folder_by_name("contest"));
-     $this->Query();
-   
-     switch ($type)
-     {
-       case get_type_by_name("best time") : $critera = "time"; break;
-       case get_type_by_name("most coins"): $critera = "coins"; break;
-       default: $critera = "none"; break;
-     }
-   
-     $best = $this->RequestGetBestRecord($type, get_folder_by_name("contest"));
-     
-     $ret['nb'] = 0;
-     $ret['beaten'] = 0;
-     $ret['imports'] = 0; /* imported records from "oldones" */
-
-     while ($val = $this->FetchArray($res))
-     {
-       $rec->LoadFromId($val['id']);
-       if (is_a_best_record($val, $best, $critera))
-       {
-         $rec->SetIsBest(1);
-         $rec->Update();
-         /* a best record found, but continue, in case of equals */
-         $ret['nb']++;
-       }
-        else /* a recent beaten record is sent to "oldones" folder */
-       {
-         if($rec->GetType() != get_type_by_name("freestyle")) 
-         {
-           $rec->Move(get_folder_by_name("oldones"));
-           $ret['beaten']++;
-         }
-       }
-     }
-   
-     if ($ret['nb']==0) /* no best records found, try moving up one from "oldones" */
-     {
-       $this->RequestInit("SELECT", "rec");
-       $this->RequestGenericFilter("level", (integer)$level);
-       $this->RequestGenericFilter("levelset", (integer)$levelset);
-       $this->RequestGenericFilter("type", (integer)$type);
-       $this->RequestGenericFilter("folder", get_folder_by_name("oldones"));
-       $res = $this->Query();
-       
-       $best = $this->RequestGetBestRecord($type, get_folder_by_name("oldones"));
-       while ($val = $this->FetchArray($res))
-       {
-         if (is_a_best_record($val, $best, $critera))
-         {
-           $rec->LoadFromId($val['id']);
-           $rec->Move(get_folder_by_name("contest"));
-           $rec->SetIsBest(1);
-           $rec->Update();
-           $ret['imports']++;
-         }
-       }
-     }
-   
-     return $ret;
-   }
-   
-   function RecordSetIsBest($id, $isbest)
-   {
-     /* set new best record */
-     $this->RequestInit("UPDATE", "rec");
-     $my  = array("isbest" => $isbest);
-     /* update conserving timestamp */
-     $this->RequestUpdateSet($my, true);
-     $this->RequestGenericFilter("id", $id);
-     $this->RequestLimit(1);
-     $this->Query();
-   }
-
-   function GetSets()
-   {
-     $this->RequestInit("SELECT", "sets");
-     $this->Query();
-     $sets = array();
-     while ($val = $this->FetchArray())
-       $sets[$val['id']] = $val['set_name'];
-     return $sets;
-   }
 }
-?>

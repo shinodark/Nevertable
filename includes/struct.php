@@ -21,30 +21,40 @@
 # ***** END LICENSE BLOCK *****
 #
 
-include_once "tag.strings.en.php";
-
 /*****************/
 /* TABLE STRUCTS */
 /*****************/
 
-$types = array (
-    array("name" => "best time"),
-    array("name" => "most coins"),
-    array("name" => "freestyle"),
-    array("name" => "all"), //use by admin
-    );
-$folders = array (
-    array("name" => "contest"),
-    array("name" => "incoming"),
-    array("name" => "trash"),
-    array("name" => "oldones"),
-    );
+$types     = array ("all", "best time", "most coins", "freestyle");
 
-$newonly = array ("off", "3 days", "1 week", "2 weeks", "1 month");
+$folders   = array ("all", "contest", "incoming", "trash", "oldones");
+
+$newonly   = array ("off", "3 days", "1 week", "2 weeks", "1 month");
+
+$sort_type = array ("id", "old", "pseudo", "level", "type", "time", "coins");
 
 $userlevel = array (0=>"root", 1=>"admin", 10=>"moderator", 20=>"member", 30=>"guest");
 
-$rank = array("5", "10", "20", "40");
+$rank      = array("5", "10", "20", "40");
+
+$langs     = array("en", "fr");
+
+/* Champs pour un fichier replay, défini dans level.h */
+
+$replay_mode = array (
+	1 => "challenge",
+	2 => "normal",
+	3 => "practice",
+	4 => "single",
+);
+
+$replay_state = array (
+	0 => "none",
+	1 => "time",
+	2 => "goal",
+	3 => "fall",
+	4 => "spec",
+);
 
 $levels = array (
     1 => "01",
@@ -72,7 +82,7 @@ $levels = array (
     23 => "23",
     24 => "24",
     25 => "25",
-    );
+);
 
 function GetShot($set_path, $map_solfile)
 {
@@ -100,7 +110,7 @@ function get_type_by_name($name)
     
     foreach ($types as $nb => $value)
     {
-        if  (strcmp($types[$nb]["name"],$name) == 0)
+        if  (strcmp($types[$nb],$name) == 0)
             return $nb;
     }
 
@@ -108,13 +118,20 @@ function get_type_by_name($name)
     exit;
 }
 
+function get_type_by_number($nb)
+{
+    global $types;
+    return $types[$nb];
+}
+
+
 function get_folder_by_name($name)
 {
     global $folders;
     
     foreach ($folders as $nb => $value)
     {
-        if  (strcmp($folders[$nb]["name"],$name) == 0)
+        if  (strcmp($folders[$nb],$name) == 0)
             return $nb;
     }
 
@@ -125,13 +142,7 @@ function get_folder_by_name($name)
 function get_folder_by_number($nb)
 {
     global $folders;
-    return $folders[$nb]["name"];
-}
-
-function get_type_by_number($nb)
-{
-    global $types;
-    return $types[$nb]["name"];
+    return $folders[$nb];
 }
 
 function get_newonly_by_name($name)
@@ -145,6 +156,19 @@ function get_newonly_by_number($nb)
     global $newonly;
     return $newonly[$nb];
 }
+
+function get_sort_by_name($name)
+{
+    global $sort_type;
+    return array_search($name, $sort_type);
+}
+
+function get_sort_by_number($nb)
+{
+    global $sort_type;
+    return $sort_type[$nb];
+}
+
 
 function get_userlevel_by_name($name)
 {
@@ -163,6 +187,44 @@ function get_userlevel_by_number($nb)
     global $userlevel;
     return $userlevel[$nb];
 }
+
+function get_replay_mode_by_number($nb)
+{
+    global $replay_mode;
+    return $replay_mode[$nb];
+}
+
+function get_replay_mode_by_name($name)
+{
+    global $replay_mode;
+    return array_search($name, $replay_mode);
+}
+
+function get_replay_state_by_number($nb)
+{
+    global $replay_state;
+    return $replay_state[$nb];
+}
+
+function get_replay_state_by_name($name)
+{
+    global $replay_state;
+    return array_search($name, $replay_state);
+}
+
+function get_lang_by_number($nb)
+{
+    global $langs;
+    return $langs[$nb];
+}
+
+function get_lang_by_name($name)
+{
+    global $langs;
+    return array_search($name, $langs);
+}
+
+
 
 function CalculRank($this_record)
 {
@@ -196,9 +258,7 @@ $toolbar_el = array (
     );
 
 $themes = array(
-    "Sulfur",
-    "Oxygen",
-    "Lithium",
+    "default",
     );
 
 $icons = array (
@@ -224,6 +284,12 @@ function get_theme_by_name($name)
 {
     global $themes;
     return array_search($name, $themes);
+}
+
+function get_theme_by_num($num)
+{
+    global $themes;
+    return $themes[$num];
 }
 
 

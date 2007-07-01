@@ -39,27 +39,25 @@ class Tagboard
 
   function Show($args)
   {
-    global $strings;
+    global $lang;
 
-    if (isset($args['tag']) && Auth::Check(get_userlevel_by_name("member")))
+    if (isset($args['tag']))
     {
-      if(empty($args['tag_pseudo']) || empty($args['content']))
+      if(empty($args['tag_pseudo']))
       {
-         $this->out .= "<span class=\"tag_error\">".$strings['tag_emptyfield']."</span>\n";
+         $this->out .= "<span class=\"tag_error\">".$lang['TAG_EMPTY_PSEUDO']."</span>\n";
+      }
+      else if (empty($args['content']))
+      {
+         $this->out .= "<span class=\"tag_error\">".$lang['TAG_EMPTY_CONTET']."</span>\n";
       }
       else
       {
-	 $ok = $this->AntiFlood() && $this->AntiSpam($args['content']);
-	 if ($ok)
-           $this->Insert($args['content'], $args['tag_pseudo'], $args['tag_link']);
+         $this->Insert($args['content'], $args['tag_pseudo'], $args['tag_link']);
       }
     }
-
     $this->dialog->Tags();
-    if (Auth::Check(get_userlevel_by_name("member")))
-	    $this->dialog->TagForm();
-    else
-	    $this->dialog->Append("<b>Tagboard is closed.</b>");
+    $this->dialog->TagForm();
     return $this->out;
   }
 
@@ -70,12 +68,12 @@ class Tagboard
 
   function Insert($content, $pseudo, $link)
   {
-    global $config, $strings;
+    global $config, $lang;
 
     $tag = GetContentFromPost($content);
     if(strlen($tag) > $config['tag_maxsize'])
     {
-      $this->out .= "<span class=\"tag_error\">".$strings['tag_toolong']."</span>\n";
+      $this->out .= "<span class=\"tag_error\">".$lang['TAG_TOO_LONG']."</span>\n";
       return false;
     }
     else
@@ -95,9 +93,8 @@ class Tagboard
       $this->db->RequestInsert($fields);
       if(!$this->db->Query())
       {
-        $this->out .= "<span class=\"tag_error\">".$this->db->GetError()."</span>\n";
-        $this->SetError($strings['tag_toolong']);
-        return false;
+        $this->out .= "<span class=\"tag_error\">".$lang['TAG_TOO_LONG']."</span>\n";
+      return false;
       }
     }
     /* Purge du cache */
@@ -107,13 +104,13 @@ class Tagboard
 
   function Update($id, $content, $pseudo, $link)
   {
-    global $config, $strings;
+    global $config, $lang;
 
     $tag = GetContentFromPost($content);
     if(strlen($tag) > $config['tag_maxsize'])
     {
-        $this->out .= "<span class=\"tag_error\">".$strings['tag_toolong']."</span>\n";
-        $this->SetError($strings['tag_toolong']);
+        $this->out .= "<span class=\"tag_error\">".$lang['TAG_TOO_LONG']."</span>\n";
+        $this->SetError($lang['TAG_TOO_LONG']);
         return false;
     }
     else
@@ -132,7 +129,6 @@ class Tagboard
       $this->db->RequestGenericFilter("id", $id);
       if(!$this->db->Query())
       {
-        $this->out .= "<span class=\"tag_error\">".$this->db->GetError()."</span>\n";
         $this->SetError($this->db->GetError());
         return false;
       }
@@ -159,60 +155,6 @@ class Tagboard
     /* Purge du cache */
     $this->cache->Dirty("tags");
     return true;
-  }
-
-  /******
-    GESTION ANTI SPAM
-  ******/
-
-  function AntiFlood()
-  {
-    global $config;
-
-    $this->db->RequestInit("SELECT", "tags", "COUNT(id) AS num" );
-    $this->db->RequestGenericFilter("ip_log", $_SERVER['REMOTE_ADDR']);
-    $this->db->RequestGenericFilter_ge_timestamp($config['tag_flood_limit']);
-    $this->db->RequestGenericSort(array("timestamp"), "DESC");
-    $this->db->RequestLimit($config['tag_limit']);
-    $res = $this->db->Query();
-    if (!$res)
-    {
-	button_error($this->db->GetError(), 200);
-	return false;
-    }
-    $val = $this->db->FetchArray();
-    if ($val['num'] > 0)
-    {
-        $this->out .= "<span class=\"tag_error\">You can't flood this tagboard.</span>\n";
-	return false;
-    }
-    else
-        return true;
-  }
-  
-  function AntiSpam($content)
-  {
-    $tag = GetContentFromPost($content);
-    $ok = false;
-
-    if (!Auth::Check(get_userlevel_by_name("member")))
-    {
-      if (
-	   strstr($tag, '[url') == FALSE 
-	&& strstr($tag, 'sex') == FALSE
-      )
-        $ok = true;
-      else
-	$ok = false;
-    }
-    else
-	$ok = true;
-
-    if (!$ok)
-    {
-      $this->out .= "<span class=\"tag_error\">Spam detected. Tag denied.</span>\n";
-    }
-    return $ok;
   }
 
   function SetError($error)

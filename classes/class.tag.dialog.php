@@ -39,11 +39,6 @@ class Tag_Dialog
     $this->style = &$style;
     $this->out = &$out;
   }
-  
-  function Append($str)
-  {
-     $this->out .= $str;
-  }
 
   function Tags($moder=false)
   {
@@ -63,16 +58,10 @@ class Tag_Dialog
       $data .= "<table>\n";
   
       $i=0;
-
-      $this->db->RequestInit("SELECT", "tags");
-      if ($moder == false) $this->db->RequestGenericFilter(array("pub"), "1");
-      $this->db->RequestGenericSort(array("timestamp"), "DESC");
-      $this->db->RequestLimit($config['tag_limit']);
-      $res = $this->db->Query();
-
+      $res = $this->db->helper->RequestMatchTags();
       if(!$res)
       {
-        button_error($this->db->GetError(), 300);
+        gui_button_error($this->db->GetError(), 400);
       }
       else if ($this->db->NumRows()>0)
       {
@@ -89,23 +78,18 @@ class Tag_Dialog
                   $this->style->GetImage('edit', "Edit this comments" ).
                    "</a>\n";
           }
-	/*
-          if (empty($val['link']))
-            $pseudo = $val['pseudo'];
-          else
-            $pseudo = "<a href=\"".$val['link']."\" target=\"_blank\">".$val['pseudo']."</a>";
-	*/
-          $pseudo = $val['pseudo'];
+          
+	  $pseudo = $val['pseudo'];
 	  if (Auth::Check(get_userlevel_by_name("moderator")))
 	  {
-	     $data .= "<span class=\"tag_pseudo\" onmouseover=\"return escape('".$val["ip_log"]."')\">".$pseudo."</span><br />\n";
+	     $data .= "<span class=\"tag_pseudo\" onmouseover=\"return escape('".$val["ip_log"]."')\">".$pseudo."</span>\n";
           }
           else
    	  { 
-	     $data .= "<span class=\"tag_pseudo\">".$pseudo."</span><br />\n";
+	     $data .= "<span class=\"tag_pseudo\">".$pseudo."</span>\n";
           } 
         
-          $data .= "<span class=\"tag_date\">".date($config['date_format'],GetDateFromTimestamp($val['timestamp']))."</span>\n";
+          $data .= "<span class=\"tag_date\">".GetDateLang_mini(GetDateFromTimestamp($val['timestamp']))."</span>\n";
           $data .= "</td>\n";
           $data .= "</tr>\n";
 
@@ -122,7 +106,7 @@ class Tag_Dialog
        }
      }
      $data .= "</table>\n";
-     $data .= "</div>\n";
+     $data .= "</div><!-- fin tags -->\n";
 
     /* if (!$moder)
          $this->cache->Create($id, $data);
@@ -133,29 +117,26 @@ class Tag_Dialog
 
   function TagForm()
   {
-    global $nextargs, $strings;
+    global $nextargs, $lang;
 
     if (isset($_SESSION['user_pseudo'])) $default_pseudo = $_SESSION['user_pseudo'];
 
     if   (empty($nextargs)) $a="index.php?tag";
     else $a = $nextargs . "&amp;tag";
 
-    $this->out .= "<div id=\"tagform\"\n>";
-    $this->out .=   "<form method=\"post\" action=\"".$a."\" name=\"tagform\" id=\"tagform\">\n";
+    $this->out .= '<div id="tagform">'."\n";
+    $this->out .=   "<form method=\"post\" action=\"".$a."\" name=\"tagpostform\" id=\"tagpostform\">\n";
     $this->out .=   "<table><tr>\n";
-    $this->out .=   "<td><label for=\"tag_pseudo\">".$strings['tagform_pseudo']."</label></td></tr>\n";
-    $this->out .=   "<tr><td><center><input type=\"text\" id=\"tag_pseudo\" name=\"tag_pseudo\" maxlength=\"14\" value
-=\"".$default_pseudo."\" /></center></td></tr>\n";
+    $this->out .=   "<td><label for=\"tag_pseudo\">".$lang['TAG_FORM_PSEUDO'] ."</label></td></tr>\n";
+    $this->out .=   "<tr><td><center><input type=\"text\" id=\"tag_pseudo\" name=\"tag_pseudo\" maxlength=\"14\" value=\"".$default_pseudo."\" /></center></td></tr>\n";
     $this->out .=   "<tr><td><label for=\"content\">";
-    $this->out .=   $strings['tagform_content']."&nbsp;";
-    $this->out .=   "<a href=\"javascript:child=window.open('".ROOT_PATH."popup_tagtools.php?referer_form=tagform', 'Smiles', 'fullscreen=no,toolbar=
-no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=300,
-left='+(Math.floor(screen.width/2)-140));child.focus()\">(extras)</a>";
+    $this->out .=   $lang['TAG_FORM_CONTENT']."&nbsp;";
+    $this->out .=   "<a href=\"javascript:child=window.open('".ROOT_PATH."popup_tagtools.php?referer_form=tagpostform', 'Smiles', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=300,left='+(Math.floor(screen.width/2)-140));child.focus();\">(extras)</a>";
     $this->out .=   "</label></td></tr>\n";
-    $this->out .=   "<tr><td><center><textarea id=\"content\" name=\"content\" rows=\"5\"></textarea></center>
+    $this->out .=   "<tr><td><textarea id=\"content\" name=\"content\" rows=\"5\"></textarea>
 \n";
     $this->out .=   "</td></tr>\n";
-    $this->out .=   "<tr><td><center><input type=\"submit\" value=\"".$strings['tagform_submit']."\" /></center></td></tr>\n";
+    $this->out .=   "<tr><td><center><input type=\"submit\" value=\"".$lang['TAG_FORM_SUBMIT']."\" /></center></td></tr>\n";
     $this->out .=   "</table>\n";
     $this->out .=   "</form>\n";
     $this->out .=  "</div>\n";

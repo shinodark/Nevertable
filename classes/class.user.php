@@ -87,17 +87,23 @@ class User
       }
     }
 
-    function Update($conservative=false,$id="")
+    function Update($conservative=true)
     {
-      if (!$this->isload)
+      if(!$this->isload)
+      {
+        $this->error = "Set is not loaded!";
+	return false;
+      }
+      if(empty($this->fields['id']))
+      {
+        $this->error = "Trying to update with no id specified!";
         return false;
-      if(empty($id))
-        $id = $this->fields['id'];
+      }
 
       $this->_CleanFields();
       $this->db->RequestInit("UPDATE", "users");
       $this->db->RequestUpdateSet($this->fields, $conservative);
-      $this->db->RequestGenericFilter("id", $id);
+      $this->db->RequestGenericFilter("id", $this->fields['id']);
       $this->db->RequestLimit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
@@ -108,26 +114,56 @@ class User
       }
     }
 
-    function Purge($id="")
+    function Purge()
     {
-      if (!$this->isload)
-        return false;
-      if(empty($id))
-        $id = $this->fields['id'];
-      if ($this->GetTotalRecords() > 0)
+      if(!$this->isload)
       {
-        $this->SetError("User deletion deactivated. Need to implement record deletion too.");
+        $this->error = "Set is not loaded!";
+	return false;
+      }
+      if(empty($this->fields['id']))
+      {
+        $this->error = "Trying to purge with no id specified!";
+        return false;
+      }
+      
+      /* efface les records */
+      $this->db->RequestInit("SELECT", "rec");
+      $this->db->RequestGenericFilter("user_id", $this->fields['id']);
+      $res = $this->db->Query();
+      if(!$res) {
+        $this->SetError($this->db->GetError());
         return false;
       }
 
-      $this->db->RequestInit("DELETE", "users");
-      $this->db->RequestGenericFilter("id", $id);
-      $this->db->RequestLimit(1);
-      if(!$this->db->Query())
+      $rec = new Record($this->db);
+
+      /* boucle sur tous les records */
+      while ($val = $this->db->FetchArray($res))
       {
-        $this->SetError($this->db->GetError(), 400);
+        if(!$rec->LoadFromId($val['id']))
+        {
+          $this->SetError($rec->GetError());
+          return false;
+        }
+	if (!$rec->Purge(true))
+	{
+          $this->SetError($rec->GetError());
+          return false;
+	}
+        $this->db->helper->RequestSetBestRecordByFields($rec->GetLevel(), $rec->GetSet(), $rec->GetType());
+      }
+      
+      /* efface le user */
+      $this->db->RequestInit("DELETE", "users");
+      $this->db->RequestGenericFilter("id", $this->fields['id']);
+      $this->db->RequestLimit(1);
+      if(!$this->db->Query()) {
+        $this->SetError($this->db->GetError());
         return false;
       }
+
+      $this->isload = false;
       return true;
     }
 
@@ -143,6 +179,19 @@ class User
         $this->SetError($this->db->GetError());
         return false;
       }
+      /* le but ici est de récupérer le nouveau user pour mise à jour des infos */
+      /* cela permet d'avoir le bon id surtout, pour un affichage correct */
+      $this->db->RequestInit("SELECT", "users");
+      $this->db->RequestGenericSort(array("id"), "DESC");
+      $this->db->RequestLimit(1);
+      if($this->db->Query())
+        $this->SetFields($this->db->FetchArray());
+      else
+      {
+        $this->SetError($this->db->GetError());
+        return false;
+      }
+
       return true;
     }
 
@@ -150,7 +199,7 @@ class User
     {
       if (!$this->isload)
         return false;
-      $total_records = $this->db->RequestCountUserRecords($this->GetId());
+      $total_records = $this->db->helper->RequestCountUserRecords($this->GetId());
       $this->SetFields(array("stat_total_records" => $total_records));
       $this->Update();
       return $total_records;
@@ -160,7 +209,7 @@ class User
     {
       if (!$this->isload)
         return false;
-      $best_records = $this->db->RequestCountUserBest($this->GetId());
+      $best_records = $this->db->helper->RequestCountUserBest($this->GetId());
       $this->SetFields(array("stat_best_records" => $best_records));
       $this->Update();
       return $best_records;
@@ -170,7 +219,7 @@ class User
     {
       if (!$this->isload)
         return false;
-      $comments = $this->db->RequestCountUserComments($this->GetId());
+      $comments = $this->db->helper->RequestCountUserComments($this->GetId());
       $this->SetFields(array("stat_comments" => $comments));
       $this->Update();
       return $comments;
@@ -199,6 +248,8 @@ class User
 
       if (!empty($this->fields['user_limit']))
         $config['limit'] = $this->fields['user_limit'];
+      if (!empty($this->fields['user_comments_limit']))
+        $config['comments_limit'] = $this->fields['user_comments_limit'];
       if (!empty($this->fields['user_sidebar_comments']))  
         $config['sidebar_comments'] = $this->fields['user_sidebar_comments'];
       if (!empty($this->fields['user_sidebar_comlength']))
@@ -207,6 +258,8 @@ class User
         $config['opt_user_sort'] = $this->fields['user_sort'];
       if (!empty($this->fields['user_theme']))
         $config['opt_user_theme'] = $this->fields['user_theme'];
+      if (!empty($this->fields['user_lang']))
+        $config['opt_user_lang'] = $this->fields['user_lang'];
     }
 
     function GetId()
@@ -228,6 +281,11 @@ class User
     {
       return $this->fields['level'];
     }
+
+    function GetMail()
+    {
+      return $this->fields['email'];
+    }
     
     function GetLocalisation()
     {
@@ -235,14 +293,14 @@ class User
     }
     function GetAvatarHtml()
     {
-      global $config;
+      global $config, $lang;
 
       if (!$this->isload)
         return "";
       if (!empty($this->fields['user_avatar']))
         return "<img src=\"".ROOT_PATH.$config['avatar_dir']."/".$this->fields['user_avatar']."\" alt=\"\" />";
       else
-        return "<i>No Avatar</i>";
+        return "<i>".$lang['MEMBER_NO_AVATAR']."</i>";
     }
     
     function GetSpeech()
@@ -276,6 +334,16 @@ class User
         return "default";
     }
     
+    function GetLang()
+    {
+      global $config;
+
+      if (!empty($this->fields['user_lang']))
+        return $this->fields['user_lang'];
+      else
+        return $config['default_lang'];
+    }
+    
     function GetLimit()
     {
       global $config;
@@ -284,6 +352,16 @@ class User
       else
         return $config['limit'];
     }
+    
+    function GetCommentsLimit()
+    {
+      global $config;
+      if (!empty($this->fields['user_comments_limit']))
+        return $this->fields['user_comments_limit'];
+      else
+        return $config['comments_limit'];
+    }
+    
     
     function GetSidebarComments()
     {
@@ -334,10 +412,12 @@ class User
              || $name == "passwd"
              || $name == "email"
              || $name == "user_limit"
+             || $name == "user_comments_limit"
              || $name == "user_sidebar_comments"
              || $name == "user_sidebar_comlength"
              || $name == "user_sort"
              || $name == "user_theme"
+             || $name == "user_lang"
              || $name == "user_avatar"
              || $name == "user_speech"
              || $name == "user_localisation"

@@ -38,50 +38,62 @@ $table = new Nvrtbl("DialogAdmin");
 <?php
 
 
-$table->PrintHtmlHead("Nevertable - Neverball Hall of Fame");
+$table->dialog->Head("Nevertable - Neverball Hall of Fame");
 ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
+
+function closepage()
+{   global $table;
+    gui_button_back();
+    echo "</div><!-- fin \"main\" -->\n";
+    $table->Close();
+    $table->dialog->Footer();
+    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
+    exit;
+}
+
 if (!Auth::Check(get_userlevel_by_name("admin")))
 {
-  button_error("You have to be admin to access this page.", 400);
-  exit;
+  gui_button_error($lang['NOT_ADMIN'], 400);
+  closepage();;
 }
-  
+
 if (isset($args['reallypurge']))
 {
   $table->db->RequestInit("SELECT", "rec");
   $table->db->RequestGenericFilter("folder", get_folder_by_name("trash"));
   $res = $table->db->Query();
   if(!$res)
-    button_error($this->db->GetError());
-  else
   {
-    $rec = new Record($table->db);
-    while($val = $table->db->FetchArray($res))
-    {
-      $rec->LoadFromId($val['id']);
-      $rec->Purge(true); /* avec fichier attaché */
-      button("Record #".$val['id']." totally erased.", 200);
-    }
+	  gui_button_error($this->db->GetError());
+	  closepage();
+  }
+  $rec = new Record($table->db);
+  while($val = $table->db->FetchArray($res))
+  {
+    $rec->LoadFromId($val['id']);
+    $rec->Purge(true); /* avec fichier attaché */
+    gui_button("Record #".$val['id']." totally erased.", 200);
   }
 }
 
 else
 {
-    button("<b>Are tou sure you want to purge all trash folder ?</b>", 500);
-    button("<a href=\"?reallypurge\"  style=\"color: red;\">YES</a>", 100);
+    gui_button("<b>".$lang['ADMIN_PURGETRASH_SURE']."</b>", 500);
+    gui_button("<a href=\"?reallypurge\"  style=\"color: red;\">".$lang['GUI_YES']."</a>", 100);
 }
-button("<a href=\"admin.php\">Return to admin panel</a>", 400);
+
+gui_button_main_page_admin();
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

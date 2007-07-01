@@ -34,25 +34,50 @@ $table = new Nvrtbl("DialogStandard");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<?php $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame"); ?>
+<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
 <body>
 <div id="page">
 <?php 
-  $table->PrintTop();
-  $table->PrintPrelude();
+  $table->dialog->Top();
+  $table->dialog->Prelude();
 ?>
 <div id="main">
 <?php
 
-  $table->PrintStats();
-  button("<a href=\"index.php\">Return to table</a>", 200);
+  /* check validity of liste.txt file used by neverstats applet */
+  $f = new FileManager($config['neverstats_liste']);
+  $stat = $f->Stat();
+  $refresh = false;
+  if ($stat != false)
+  {
+     $t1 = $stat['mtime'];
+     $days=timestamp_diff_in_days(time(), $t1); 
+     if ($days > 1)
+        $refresh = true;
+  }
+  if ($f->Exists() == false) /* doesn't exist */
+  {
+     $refresh = true;
+  }
+  if ($refresh)
+  {
+    $lst = $table->GetStatsDump("contest");
+    if (!$f->Write($lst))
+    {
+        gui_button_error("Write GestStatsDump : ".$f->GetError(), 300);
+        return;
+    }
+  }
+
+  $table->dialog->NeverStats();
+  gui_button_main_page();
 
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

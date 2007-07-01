@@ -38,155 +38,167 @@ $replay_path = ROOT_PATH.$config['replay_dir'];
 <html>
 <?php
 
-
-$table->PrintHtmlHead("Nevertable - Neverball Hall of Fame");
+$table->dialog->Head("Nevertable - Neverball Hall of Fame");
 ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
+
+function closepage()
+{   global $table;
+    gui_button_back();
+    echo "</div><!-- fin \"main\" -->\n";
+    $table->Close();
+    $table->dialog->Footer();
+    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
+    exit;
+}
+
 if (!Auth::Check(get_userlevel_by_name("admin")))
 {
-  button_error("You have to be admin to access this page.", 400);
-  exit;
+  gui_button_error($lang['NOT_ADMIN'], 400);
+  closepage();
 }
 
 /** RENOMMER **/
-if (isset($args['rename']))
+if (isset($args['filecation']) && isset($args['rename']))
 {
   $folder_name = $args['folder'];
   $replay = $args['replay'];
   $newname = $args['newname'];
   if (empty($newname) || empty($replay))
-    button_error("Internal error in argument folder or replay", 500);
-  else
   {
-    /* recherche les records auxquels appartiennent ce fichier */
-    $table->db->RequestInit("SELECT", "rec");
-    $table->db->RequestGenericFilter("replay", $replay);
-    $table->db->RequestGenericFilter("folder", $args['folder']);
-    $res = $table->db->Query();
-    if(!$res)
-      button_error($this->db->GetError());
-    else
-    { 
-      /* affichage des records concernés par la modif */
-      if ($table->db->NumRows()>0)
-      {
-        echo "<br/><center><b>Record using that file : </b></center>\n";
-        $nextargs="admin.php";
-        $table->dialog->Table($res, array());
-      }
-      else 
-        button("No record is using that file ", 400);
-
-      /* déplacement du fichier */
-      $f = new FileManager($config['replay_dir'].$folder_name."/".$replay);
-      if (!$f->Rename($newname))
-        button_error($f->GetError(), 400);
-
-      /* modifications des records concernés */
-      else
-      {
-        echo button("File is renamed.", 200);
-        $rec = new Record($table->db);
-        /* recherche les records auxquels appartiennent ce fichier */
-        /* on recommence, le fetcharray a déjà été  fait par l'affichage */
-        /* de la table ! */
-        $table->db->RequestInit("SELECT", "rec");
-        $table->db->RequestGenericFilter("replay", $replay);
-        $table->db->RequestGenericFilter("folder", $args['folder']);
-        $res = $table->db->Query();
-        if(!$res)
-          button_error($this->db->GetError());
-        else
-        {
-          while($val = $table->db->FetchArray($res))
-          {
-            $rec->LoadFromId($val['id']);
-            $rec->SetFields(array("replay" => $newname));
-            $ret = $rec->Update(true);
-            if (!$ret)
-              button_error($rec->GetError());
-            else
-              echo button("record #".$val['id']." updated.", 400);
-          }
-        }
-      }
-    }
+	  gui_button_error("Internal error in argument folder or replay", 500);
+	  closepage();
   }
-  button("<a href=\"filexplorer.php\">Return to file explorer panel</a>", 400);
+  
+  /* recherche les records auxquels appartiennent ce fichier */
+  $table->db->RequestInit("SELECT", "rec");
+  $table->db->RequestGenericFilter("replay", $replay);
+  $table->db->RequestGenericFilter("folder", $args['folder']);
+  $res = $table->db->Query();
+  if(!$res)
+  {
+	  guibutton_error($this->db->GetError());
+	  closepage();
+  }
+
+  /* affichage des records concernés par la modif */
+  if ($table->db->NumRows()>0)
+  {
+    echo "<br/><center><b>Record using that file : </b></center>\n";
+    $nextargs="admin.php";
+    $table->dialog->Table($res, array());
+  }
+  else 
+     gui_button("No record is using that file ", 400);
+
+  /* déplacement du fichier */
+  $f = new FileManager($config['replay_dir'].$folder_name."/".$replay);
+  if (!$f->Rename($newname))
+  {
+	  gui_button_error($f->GetError(), 400);
+	  closepage();
+  }
+
+  /* modifications des records concernés */
+  gui_button("File is renamed.", 200);
+  $rec = new Record($table->db);
+  /* recherche les records auxquels appartiennent ce fichier */
+  /* on recommence, le fetcharray a déjà été  fait par l'affichage */
+  /* de la table ! */
+  $table->db->RequestInit("SELECT", "rec");
+  $table->db->RequestGenericFilter("replay", $replay);
+  $table->db->RequestGenericFilter("folder", $args['folder']);
+  $res = $table->db->Query();
+  if(!$res)
+  {
+	  gui_button_error($this->db->GetError());
+	  closepage();
+  }
+  while($val = $table->db->FetchArray($res))
+  {
+    $rec->LoadFromId($val['id']);
+    $rec->SetFields(array("replay" => $newname));
+    $ret = $rec->Update(true);
+    if (!$ret)
+    {
+      	  gui_button_error($rec->GetError());
+	  closepage();
+    }
+    gui_button("record #".$val['id']." updated.", 400);
+  }
 }
 
 /** EFFACER **/
-else if (isset($args['delete']))
+if (isset($args['fileaction']) && isset($args['delete']))
 {
   $folder_name = $args['folder'];
   $replay = $args['replay'];
   if (empty($replay))
-    button_error("Internal error in argument folder or replay", 500);
-  else
   {
-    /* recherche les records auxquels appartiennent ce fichier */
-    $table->db->RequestInit("SELECT", "rec");
-    $table->db->RequestGenericFilter("replay", $replay);
-    $table->db->RequestGenericFilter("folder", $args['folder']);
-    $res = $table->db->Query();
-    if(!$res)
-      button_error($this->db->GetError());
-    else
-    { 
-      /* affichage des records concernés par la modif */
-      if ($table->db->NumRows()>0)
-      {
-        echo "<br/><center><b>Record using that file : </b></center>\n";
-        $nextargs="admin.php";
-        $table->dialog->Table($res, array());
-      }
-      else 
-        button("No record is using that file ", 400);
-
-      /* effacement du fichier */
-      $f = new FileManager($config['replay_dir'].$folder_name."/".$replay);
-      if (!$f->Unlink())
-        button_error($f->GetError(), 400);
-      /* modifications des records concernés */
-      else
-      {
-        button("File is deleted !", 200);
-        $rec = new Record($table->db);
-        /* recherche les records auxquels appartiennent ce fichier */
-        /* on recommence, le fetcharray a déjà été  fait par l'affichage */
-        /* de la table ! */
-        $table->db->RequestInit("SELECT", "rec");
-        $table->db->RequestGenericFilter("replay", $replay);
-        $table->db->RequestGenericFilter("folder", $args['folder']);
-        $res = $table->db->Query();
-        if(!$res)
-          button_error($this->db->GetError());
-        else
-        {
-          while($val = $table->db->FetchArray($res))
-          {
-            $ret = $rec->LoadFromId($val['id']);
-            $rec->SetFields(array("replay" => ""));
-            $ret = $rec->Update(true);
-            if (!$ret)
-              button_error($rec->GetError());
-            else
-              echo button("record #".$val['id']." updated.", 400);
-          }
-        }
-      }
-    }
+	  gui_button_error("Internal error in argument folder or replay", 500);
+	  closepage();
   }
-  button("<a href=\"filexplorer.php\">Return to file explorer panel</a>", 400);
+  /* recherche les records auxquels appartiennent ce fichier */
+  $table->db->RequestInit("SELECT", "rec");
+  $table->db->RequestGenericFilter("replay", $replay);
+  $table->db->RequestGenericFilter("folder", $args['folder']);
+  $res = $table->db->Query();
+  if(!$res)
+  {
+	  gui_button_error($this->db->GetError());
+	  closepage();
+  }
+  /* affichage des records concernés par la modif */
+  if ($table->db->NumRows()>0)
+  {
+    echo "<br/><center><b>Record using that file : </b></center>\n";
+    $nextargs="admin.php";
+    $table->dialog->Table($res, array());
+  }
+  else 
+    gui_button("No record is using that file ", 400);
+
+  /* effacement du fichier */
+  $f = new FileManager($config['replay_dir'].$folder_name."/".$replay);
+  if (!$f->Unlink())
+  {
+	  gui_button_error($f->GetError(), 400);
+	  closepage();
+  }
+  gui_button("File is deleted !", 200);
+  $rec = new Record($table->db);
+  /* recherche les records auxquels appartiennent ce fichier */
+  /* on recommence, le fetcharray a déjà été  fait par l'affichage */
+  /* de la table ! */
+  $table->db->RequestInit("SELECT", "rec");
+  $table->db->RequestGenericFilter("replay", $replay);
+  $table->db->RequestGenericFilter("folder", $args['folder']);
+  $res = $table->db->Query();
+  if(!$res)
+  {
+	  gui_button_error($this->db->GetError());
+	  closepage();
+  }
+  while($val = $table->db->FetchArray($res))
+  {
+    $ret = $rec->LoadFromId($val['id']);
+    $rec->SetFields(array("replay" => ""));
+    $ret = $rec->Update(true);
+    if (!$ret)
+    {
+	    gui_button_error($rec->GetError());
+	    closepage();
+    }
+    gui_button("record #".$val['id']." updated.", 400);
+  }
 }
 
 /** main **/
-else {
 
 $f = new FileManager();
 $root = $f->DirList($replay_path);
@@ -199,7 +211,7 @@ foreach ($root["subdir"] as $dir )
   echo "<a href=\"".$nextargs."\">: ".$dir." :</a>\n";
 }
 
-echo "<div class=\"results\" style=\"width: 100%;\">\n";
+echo '<div style="margin-left: auto; margin-right: auto; width: 450px;">'."\n";
 echo "<table>\n";
 echo "<caption>File explorer</caption>\n";
 
@@ -217,20 +229,18 @@ foreach ($root["subdir"] as $dir )
         continue;
       
       $rowclass=($i%2)?"row1":"row2"; $i++;
-      echo "<tr class=\"".$rowclass."\"><td style=\"width:15%;\">&nbsp;&nbsp;$file</td>\n";
+      echo "<tr class=\"".$rowclass."\"><td>&nbsp;&nbsp;$file</td>\n";
       $f->SetFilename($config['replay_dir'].$dir."/".$file);
-      echo "<td style=\"width: 35%;\">". $f->GetSize("ko") ." ko</td>";
-      echo "<form action=\"?rename\" method=\"post\"><td style=\"width:30%;\">";
-      echo "<input type=\"text\" name=\"newname\" value=\"".$file."\" size=\"10\" />";
-      echo "<input type=\"hidden\" name=\"folder\" value=\"".$dir."\" />";
-      echo "<input type=\"hidden\" name=\"replay\" value=\"".$file."\" />";
-      echo "<input type=\"submit\" value=\"rename\" />";
-      echo "</td></form>\n";
-      echo "<form action=\"?delete\" method=\"post\"><td style=\"width:10%;\">";
-      echo "<input type=\"hidden\" name=\"folder\" value=\"".$dir."\" />";
-      echo "<input type=\"hidden\" name=\"replay\" value=\"".$file."\" />";
-      echo "<input type=\"submit\" value=\"delete\" />";
-      echo "</td></form>\n";
+      echo "<td>". $f->GetSize("ko") ." ko</td>\n";
+      echo '<td style="text-align: right;">'."\n";
+         echo "<form action=\"?fileaction\" method=\"post\">\n";
+         echo "<input type=\"text\" name=\"newname\" value=\"".$file."\" size=\"10\" />\n";
+         echo "<input type=\"hidden\" name=\"folder\" value=\"".$dir."\" /\n>";
+         echo "<input type=\"hidden\" name=\"replay\" value=\"".$file."\" />\n";
+         echo "<input type=\"submit\" value=\"rename\" name=\"rename\" />\n";
+         echo "<input type=\"submit\" value=\"delete\" name=\"delete\" />\n";
+         echo "</form>\n";
+      echo "</td>\n";
       echo "</tr>\n";
       echo "<tr><td colspan=\"4\" style=\"background: #fff; height: 1px;\"></td></tr>\n";
     }
@@ -238,14 +248,14 @@ foreach ($root["subdir"] as $dir )
 
 echo "</table>\n";
 echo "</div>\n";
-button("<a href=\"admin.php\">Return to admin panel</a>", 400);
-}
+
+gui_button_main_page_admin();
 
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

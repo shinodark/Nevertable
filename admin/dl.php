@@ -30,12 +30,6 @@ $args = get_arguments($_POST, $_GET);
 
 $table = new Nvrtbl("DialogStandard");
 
-if(isset($args['link']))
-  $special="<meta http-equiv=\"refresh\" content=\"0;URL=record.php?id=".$args['link']."\" />\n";
-else
-    $special="";
-
-    
 if (!isset($args['dlcontest']) && !isset($args['dloldones'])  && !isset($args['list']))
 {
 ?>
@@ -44,15 +38,15 @@ if (!isset($args['dlcontest']) && !isset($args['dloldones'])  && !isset($args['l
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <?php
-    $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame", $special);
+  $table->dialog->Head("Nevertable - Neverball Hall of Fame");
 ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
-$table->PrintPrelude();
+$table->dialog->Prelude();
 
   echo '<center><h1>Download all replay files</h1></center>' ;
   echo '<center><p><a href="?dlcontest">contest.lst</a></center>';
@@ -61,15 +55,15 @@ $table->PrintPrelude();
   echo '<center><p><a href="?list&amp;folder='.get_folder_by_name("contest").'">contest.txt</a></center>';
   echo '<center><p><a href="?list&amp;folder='.get_folder_by_name("oldones").'">oldones.txt</a></center>';
 
+gui_button_main_page_admin();
 
 ?>
-
 </div><!-- fin "main" -->
 
 <?php
 /* Close avant le footer, car db inutile et pour les statistiques de temps */
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

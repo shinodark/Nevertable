@@ -37,23 +37,36 @@ $table = new Nvrtbl("DialogAdmin");
 <html>
 <?php
 
-
-$table->PrintHtmlHead("Nevertable - Neverball Hall of Fame");
+$table->dialog->Head("Nevertable - Neverball Hall of Fame");
 ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
+
+function closepage()
+{   global $table;
+    gui_button_back();
+    echo "</div><!-- fin \"main\" -->\n";
+    $table->Close();
+    $table->dialog->Footer();
+    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
+    exit;
+}
+
 if (!Auth::Check(get_userlevel_by_name("admin")))
 {
-  button_error("You have to be admin to access this page.", 400);
-  exit;
+  gui_button_error($lang['NOT_ADMIN'], 400);
+  closepage();;
 }
+
 
 function CheckConfig($conf_arr)
 { 
+  $err = true;
+
   if ( $conf_arr['nvtbl_path'][strlen($conf_arr['nvtbl_path'])-1] !== '/'
     || $conf_arr['replay_dir'][strlen($conf_arr['replay_dir'])-1] !== '/'
     || $conf_arr['image_dir'][strlen($conf_arr['image_dir'])-1] !== '/'
@@ -66,49 +79,23 @@ function CheckConfig($conf_arr)
     || $conf_arr['cookie_path'][strlen($conf_arr['cookie_path'])-1] !== '/'
      )
   {
-    button_error("Directories name have to finish by a /", 300); return false;
+    gui_button_error("Directories name have to finish by a /", 300); return false;
   }
 
-  if ( ($conf_arr['limit'] < 0) || ($conf_arr['limit'] > 100) )
-    { button_error("\"limit\" limits are [1..100]", 300); return false; }
-    
-  if ( ($conf_arr['sidebar_comments'] < 0) || ($conf_arr['sidebar_comments'] > 30) )
-    { button_error("\"sidebar_comments\" limits are [1..30]", 300); return false; }
-    
-  if ( ($conf_arr['sidebar_comlength'] < 0) || ($conf_arr['sidebar_comlength'] > 300) )
-    { button_error("\"sidebar_comlength\" limits are [1..300]", 300); return false; }
-    
-  if ( ($conf_arr['sidebar_autowrap'] < 0) || ($conf_arr['sidebar_autowrap'] > 50) )
-    { button_error("\"sidebar_autowrap\" limits are [1..50]", 300); return false; }
-    
-  if ( ($conf_arr['upload_size_max'] < 1024) || ($conf_arr['upload_size_max'] > 10485760) )
-    { button_error("\"upload_size_max\" limits are [1024..10485760]", 300); return false; }
+  $err = $err & CheckLimitInterval($conf_arr['limit'], 0, 100, 'limit' );
+  $err = $err & CheckLimitInterval($conf_arr['sidebar_comments'], 0, 30, 'sidebar_comments' );
+  $err = $err & CheckLimitInterval($conf_arr['sidebar_comlength'], 0, 300, 'sidebar_comlength' );
+  $err = $err & CheckLimitInterval($conf_arr['sidebar_autowrap'], 0, 50, 'sidebar_autowrap' );
+  $err = $err & CheckLimitInterval($conf_arr['upload_size_max'], 1024, 10485760, 'upload_size_max' );
+  $err = $err & CheckLimitInterval($conf_arr['avatar_size_max'], 1024, 50*1024, 'avatar_size_max' );
+  $err = $err & CheckLimitInterval($conf_arr['avatar_width_max'], 8, 512, 'avatar_width_max' );
+  $err = $err & CheckLimitInterval($conf_arr['avatar_height_max'], 8, 512, 'avatar_height_max' );
+  $err = $err & CheckLimitInterval($conf_arr['profile_quote_max'], 30, 10000, 'profile_quote_max' );
+  $err = $err & CheckLimitInterval($conf_arr['tag_maxsize'], 1, 1024, 'tag_maxsize' );
+  $err = $err & CheckLimitInterval($conf_arr['tag_limit'], 1, 50, 'tag_limit' );
+  $err = $err & CheckLimitInterval($conf_arr['tag_flood_limit'], 1, 3600, 'tag_flood_limit' );
 
-  if ( ($conf_arr['avatar_size_max'] < 1000) || ($conf_arr['avatar_size_max'] > 500000) )
-    { button_error("\"avatar_size_max\" limits are [1000..500000]", 300); return false; }
-
-  if ( ($conf_arr['avatar_width_max'] < 8) || ($conf_arr['avatar_width_max'] > 512) )
-    { button_error("\"avatar_width\" limits are [8..512]", 300); return false; }
-
-  if ( ($conf_arr['avatar_height_max'] < 8) || ($conf_arr['avatar_height_max'] > 512) )
-    { button_error("\"avatar_height_max\" limits are [8..512]", 300); return false; }
-
-  if ( ($conf_arr['profile_quote_max'] < 30) || ($conf_arr['profile_quote_max'] > 10000) )
-    { button_error("\"profile_quote_max\" limits are [30..10000]", 300); return false; }
-
-  if ( ($conf_arr['profile_quote_max'] < 30) || ($conf_arr['profile_quote_max'] > 10000) )
-    { button_error("\"profile_quote_max\" limits are [30..10000]", 300); return false; }
-  
-  if ( ($conf_arr['tag_maxsize'] < 1) || ($conf_arr['tag_maxsize'] > 1024) )
-    { button_error("\"tag_max_size\" limits are [1..1024]", 300); return false; }
-  
-  if ( ($conf_arr['tag_limit'] < 1) || ($conf_arr['tag_limit'] > 50) )
-    { button_error("\"tag_limit\" limits are [1..50]", 300); return false; }
-
-  if ( ($conf_arr['tag_flood_limit'] < 1) || ($conf_arr['tag_limit'] > 3600) )
-    { button_error("\"tag_flood_limit\" limits are [1..3600]", 300); return false; }
-
-  return true;
+  return $err;
 }
   
 if (isset($args['upconfig']))
@@ -124,7 +111,7 @@ if (isset($args['upconfig']))
       $table->db->RequestLimit(1);
       if(!$table->db->Query())
       {
-        button_error($table->db->GetError(), 400);
+        gui_button_error($table->db->GetError(), 400);
         $ok=false;
         break;
       }
@@ -133,47 +120,34 @@ if (isset($args['upconfig']))
 
   if ($ok)
   {
-    button("Configuration successfully updated.", 200);
-    $cache = new Cache();
-    $cache->Dirty("tags");
+    gui_button("Configuration successfully updated.", 200);
   }
-  button("<a href=\"config.php\">Return to config panel</a>", 400);
 }
 
-else
-{
   $table->db->RequestInit("SELECT", "conf");
   if(!$table->db->Query())
   {
-    button_error($table->db->GetError(), 400);
+    gui_button_error($table->db->GetError(), 400);
     return false;
   }
-?>
-  <form class="nvform" method="post" action="config?upconfig" style="width: 700px;">
-  <table>
-  <tr><th>Table configuration</th></tr>
-  <tr>
-<?php while ($val = $table->db->FetchArray())
-   {
-     echo "<td>".$val['conf_name']."</td>\n";
-     echo "<td><input type=\"text\" id=\"".$val['conf_name']."\" name=\"".$val['conf_name'].
-                "\" size=\"30\" value=\"".$val['conf_value']."\"/></td>\n";
-     echo "<td>".$val['conf_desc']."</td>\n";
-     echo "<tr>\n";
-   }
-?>  
-  <tr><td colspan="3"><center><input type="submit" value="Apply"></center></td></tr>
-  </table>
-  </form>
+  
+  $form = new Form("post", "config?upconfig", "config_form", 700);
+  $form->AddTitle($lang['ADMIN_CONFIG_FORM_TITLE']);
+  while ($val = $table->db->FetchArray())
+  {
+     $option = 'onmouseover="return escape(\''.$val['conf_desc'].'\')" ';
+     $form->AddInputText($val['conf_name'], $val['conf_name'], $val['conf_name'], 30, $val['conf_value'], $option);
+     $form->Br();
+  }
+  $form->AddInputSubmit();
+  echo $form->End();
 
-<?php
-}
-button("<a href=\"admin.php\">Return to admin panel</a>", 400);
+gui_button_main_page_admin();
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

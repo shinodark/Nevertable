@@ -34,28 +34,37 @@ $table = new Nvrtbl("DialogStandard");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<?php $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame"); ?>
+<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
 <body>
 <div id="page">
 <?php 
-  $table->PrintTop();
-  $table->PrintPrelude();
+  $table->dialog->Top();
+  $table->dialog->Prelude();
 ?>
 <div id="main">
 <?php
 
   if (isset($args['id']))
-    $table->ViewProfile($args['id']);
+  {
+     $user = new User($table->db);
+     if ($user->LoadFromId($args['id']))
+     {
+        $table->dialog->UserProfile($user);
+     }
+     else
+        gui_button_error($user->GetError(), 400);
+  }
   else
-    button_error("URL error.", 300);
-  button_back();
+    gui_button_error("URL error.", 300);
+  
+  gui_button_main_page();
 
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

@@ -35,7 +35,7 @@ class Nvrtbl
     
   function Nvrtbl($mode="DialogStandard")
   {
-    global $config;
+    global $config, $langs;
   
     $this->online_users_registered = 0;
     $this->online_users_guest      = 0;
@@ -51,7 +51,7 @@ class Nvrtbl
                  $config['bdd_passwd']);
     if(!$this->db->Connect())
     {
-      button_error($this->db->GetError(), 500);
+      gui_button_error($this->db->GetError(), 500);
       exit;
     }
 
@@ -59,12 +59,11 @@ class Nvrtbl
     $this->db->RequestInit("SELECT", "conf");
     if(!$this->db->Query())
     {
-      button_error($this->db->GetError(), 500);
+      gui_button_error($this->db->GetError(), 500);
       exit;
-      return false;
     }
     while ($val = $this->db->FetchArray())
-      $config[$val['conf_name']] = $val['conf_value'];
+	    $config[$val['conf_name']] = $val['conf_value'];
     
     /* Chargement des objets */
     $this->style = new Style();
@@ -87,22 +86,35 @@ class Nvrtbl
         {
           Auth::_LoadUserOptions();
         }
-        $this->style->Select($config['opt_user_theme']);
+	$this->style->Select($config['opt_user_theme']);
     }
     else
     {
       $this->AddOnlineGuest();
     }
 
+    /* Chargement de la lang */
+    if (!empty($config['opt_user_lang']))
+       $langcode = $config['opt_user_lang'];
+    else if (!empty($config['default_lang']))
+       $langcode = $config['default_lang'];
+    
+    if (!in_array($langcode, $langs))
+    {
+	gui_button_error("lang is not supported.", 200);
+	exit;
+    }
+    include (ROOT_PATH.$config['lang_dir']."lang.".$langcode.".php");
+
     /* Compte et gère les utilisateur en ligne */
     $this->UpdateOnlineUsers();
     
     if ($mode=="DialogStandard" || $mode=="DialogAdmin")
-      $this->dialog = new $mode($this->db, $this->style);
+      $this->dialog = new $mode($this->db, $this, $this->style);
     else if ($mode == "null")
       $this->dialog = null;
     else
-      $this->dialog = new DialogStandard($this->db, $this->style);
+      $this->dialog = new DialogStandard($this->db, $this, $this->style);
 
     $this->mode = $mode;
   }
@@ -112,372 +124,7 @@ class Nvrtbl
     $this->db->Disconnect();
   }
   
-  function Show(&$args)
-  {
-    global $config;
 
-    /* Affichage supplémentaire dans le cas de l'affichage d'un seul niveau */
-    if (isset($args['level_f']) && isset($args['levelset_f'])
-       && ($args['level_f'] > 0) && ($args['levelset_f'] > 0)
-       && ($args['diffview'] == "off") && $this->mode == "DialogStandard")
-    {
-      $mode_level = true;
-    }
-
-    /* Récupération de l'option utilisateur de l'ordre de tri par défaut */
-    if (empty($args['sort']) && !Auth::Check(get_userlevel_by_name("member")))
-      $sort = "old";
-    else if (empty($args['sort']) && Auth::Check(get_userlevel_by_name("member")))
-      $sort = $config['opt_user_sort'];
-    else
-      $sort = $args['sort'];
-
-    /* Affichage normal */
-    /* ---------------- */
-    if (!$mode_level)
-    {
-        /* COMPTAGE */
-        /* gestion du numéro de page et de l'offset */
-        $off = ($args['page']-1) * $config['limit'];
-
-        /* hack pour faire un count en utilisant tous les filtres de base */
-        $this->db->RequestInit("SELECT", "rec", "COUNT(id)");
-        $this->db->RequestGenericFilter($args['filter'], $args['filterval']);
-        $this->db->RequestFilterLevels($args['levelset_f'], $args['level_f']);
-        $this->db->RequestFilterType($args['type']);
-        $this->db->RequestFilterNew($args['newonly']);
-        $this->db->RequestFilterFolder($args['folder']);
-        $result0 =   $this->db->Query();
-        if(!$result0)
-            echo button_error(  $this->db->GetError(), 500);
-
-        $res = $this->db->FetchArray();
-        $total = $res['COUNT(id)'];
-        /* FIN COMPTAGE */
-        
-        /* requête avec tous les champs mais limitée à "limit" */
-        $p = $config['bdd_prefix'];
-        $this->db->RequestSelectInit(
-            array("rec", "users", "sets", "maps"),
-            array(
-              $p."rec.id AS id",
-              $p."rec.levelset AS levelset",
-              $p."rec.level AS level",
-              $p."rec.time AS time",
-              $p."rec.coins AS coins",
-              $p."rec.replay AS replay",
-              $p."rec.type AS type",
-              $p."rec.folder AS folder",
-              $p."rec.timestamp AS timestamp",
-              $p."rec.isbest AS isbest",
-              $p."rec.comments_count AS comments_count",
-              $p."rec.user_id AS user_id",
-              $p."users.pseudo AS pseudo",
-              $p."sets.set_name AS set_name",
-              $p."sets.set_path AS set_path",
-              $p."maps.map_solfile AS map_solfile",
-            )
-            );
-        $this->db->RequestGenericFilter(
-            array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
-            array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
-            "AND", false
-        );
-        
-        $this->db->RequestGenericFilter($args['filter'], $args['filterval']);
-        $this->db->RequestFilterLevels($args['levelset_f'], $args['level_f']);
-        $this->db->RequestFilterType($args['type']);
-        $this->db->RequestFilterNew($args['newonly']);
-        $this->db->RequestFilterFolder($args['folder']);
-        
-        if($args['bestonly'] == "on")
-          $this->db->RequestGenericFilter("isbest", 1);
-        
-        /* dans le cas du diffview, on trie par pieces, ou par temps */
-        if($args['diffview'] == "on")
-        {
-          /* diff impossible pour type "tous" et "freestyle" */
-          if ($args['type'] == get_type_by_name("all") || $args['type'] == get_type_by_name("freestyle"))
-          {
-            button_error("can't select diff view with type : \"".get_type_by_number($args['type'])."\"", 400);
-            $args['diffview'] = "off";
-          }
-          /* choix automatique de l'ordre de tri */
-          if ($args['type'] == get_type_by_name("best time") )
-            $sort="time";
-          else if ($args['type'] == get_type_by_name("most coins") )
-            $sort="coins";
-
-          /* petit hack pas joli joli pour faire sauter la limite du nombre de record, dans le cas du diff */
-          $config['limit'] = 255;
-        }
-
-        $this->db->RequestSort($sort);
-        $this->db->RequestLimit($config['limit'], $off);
-        //echo $this->db->GetRequestString();
-        $result1 =   $this->db->Query();
-        if(!$result1)
-          echo button_error(  $this->db->GetError(), 500);
-    }
-
-    /* Mode fiche de niveau */
-    /* -------------------- */
-    else 
-    {
-        /* requête pour les records du contest */
-        $p = $config['bdd_prefix'];
-        $this->db->RequestSelectInit(
-            array("rec", "users", "sets", "maps"),
-            array(
-              $p."rec.id AS id",
-              $p."rec.levelset AS levelset",
-              $p."rec.level AS level",
-              $p."rec.time AS time",
-              $p."rec.coins AS coins",
-              $p."rec.replay AS replay",
-              $p."rec.type AS type",
-              $p."rec.folder AS folder",
-              $p."rec.timestamp AS timestamp",
-              $p."rec.isbest AS isbest",
-              $p."rec.comments_count AS comments_count",
-              $p."rec.user_id AS user_id",
-              $p."users.pseudo AS pseudo",
-              $p."sets.set_name AS set_name",
-              $p."sets.set_path AS set_path",
-              $p."maps.map_solfile AS map_solfile",
-            )
-            );
-        $this->db->RequestGenericFilter(
-            array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
-            array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
-            "AND", false
-        );
-        
-        $this->db->RequestGenericFilter($args['filter'], $args['filterval']);
-        $this->db->RequestFilterLevels($args['levelset_f'], $args['level_f']);
-        $this->db->RequestGenericFilter("folder", get_folder_by_name("contest"));
-        $this->db->RequestSort($sort);
-        $result1 = $this->db->Query();
-        if(!$result1)
-          echo button_error(  $this->db->GetError(), 500);
-        $total1 = $this->db->NumRows();
-          
-        /* requête pour les records anciens */
-        $this->db->RequestSelectInit(
-            array("rec", "users", "sets", "maps"),
-            array(
-              $p."rec.id AS id",
-              $p."rec.levelset AS levelset",
-              $p."rec.level AS level",
-              $p."rec.time AS time",
-              $p."rec.coins AS coins",
-              $p."rec.replay AS replay",
-              $p."rec.type AS type",
-              $p."rec.folder AS folder",
-              $p."rec.timestamp AS timestamp",
-              $p."rec.isbest AS isbest",
-              $p."rec.comments_count AS comments_count",
-              $p."rec.user_id AS user_id",
-              $p."users.pseudo AS pseudo",
-              $p."sets.set_name AS set_name",
-              $p."sets.set_path AS set_path",
-              $p."maps.map_solfile AS map_solfile",
-            )
-            );
-        $this->db->RequestGenericFilter(
-            array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
-            array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
-            "AND", false
-        );
-        
-        $this->db->RequestGenericFilter($args['filter'], $args['filterval']);
-        $this->db->RequestFilterLevels($args['levelset_f'], $args['level_f']);
-        $this->db->RequestGenericFilter("folder", get_folder_by_name("oldones"));
-        $this->db->RequestSort($sort);
-        $result2 = $this->db->Query();
-        if(!$result2)
-          echo button_error(  $this->db->GetError(), 500);
-        $total2 = $this->db->NumRows();
-    }
-
-    $this->PrintSpeech();
-    $this->PrintTypeForm($args);
-    if (!$mode_level)
-    {
-      $this->dialog->NavBar($args['page'], $config['limit'], $total);
-      $diff = $args['diffview']=="on" ? true : false;
-      $this->dialog->Table($result1, $diff, $total);
-    }
-    else
-    {
-      $this->dialog->Level($result1, $result2, $args, $total1, $total2);
-    }
-
-    $this->dialog->SideBar( array("registered" => $this->online_users_registered,
-                                  "guests"     => $this->online_users_guest,
-                                  "list"       => $this->online_users_list)
-                          );
-    if (!$mode_level)
-        $this->dialog->NavBar($args['page'], $config['limit'], $total);
-  }
-
-  function Post($replay_id, $content_memory="")
-  {
-    global $nextargs, $config;
-    $nextargs = "record.php?to=addcomment";
-
-    /* test si le record existe */
-    $results = $this->db->RequestMatchRecords(array("id" => $replay_id));
-    if ($results['nb']>0)
-    {
-      $p = $config['bdd_prefix'];
-      $this->db->RequestSelectInit(
-            array("com", "users"),
-            array(
-                $p."com.id AS id",
-                $p."com.replay_id AS replay_id",
-                $p."com.user_id AS user_id",
-                $p."com.content AS content",
-                $p."com.timestamp AS timestamp",
-                $p."users.pseudo AS user_pseudo",
-                $p."users.user_avatar AS user_avatar",
-                ),
-            "SELECT", "com");
-      $this->db->RequestGenericFilter($p."com.user_id", $p."users.id", "AND", false);
-      $this->db->RequestGenericFilter($p."com.replay_id", $replay_id);
-      $this->db->RequestGenericSort(array($p."com.timestamp"), "ASC");
-      $results = $this->db->Query();
-      $this->PrintRecordById($replay_id, true); // with link
-      $this->dialog->Comments($results, $config['date_format']);
-      if (!Auth::Check(get_userlevel_by_name("member")))
-      {
-        button("Please <a href=\"register.php\">register</a>  or <a href=\"login.php?ready\">log in</a> to post comments !", 400);
-        $_SESSION['redirect'] = "?link=".$replay_id;
-      }
-      else
-        $this->dialog->CommentForm($replay_id, $content_memory);
-    }
-    else
-    {
-      button_error("Record doesn't exist !", 400);
-    }
-
-  }
-
-  /*__DIALOG WRAPPERS__*/
-    
-  function PrintHtmlHead($title, $special="")  {
-      $this->dialog->HtmlHead($title, $special);
-  }
-  function PrintTop()  {
-    $this->dialog->Top();
-  }
-  function PrintPrelude()  {
-    $this->dialog->Prelude();
-  }
-  function PrintSpeech()  {
-    $this->dialog->Speech();
-  }
-  function PrintFooter()  {
-      global $config;
-      $this->dialog->Footer($config['version'], $this->getProcessTime());
-  }
-  function PrintRecordById($id, $with_link=false)  {
-    $rec = new Record($this->db);
-    if($rec->LoadFromId($id))
-      $this->dialog->Record($rec->GetFields());
-    if($with_link)
-      $this->PrintRecordLink($rec->GetFields());
-  }
-  function PrintRecordLink($record_fields)  {
-      $this->dialog->RecordLink($record_fields);
-  }
-  function PrintRecordByFields($fields)  {
-    $this->dialog->Record($fields);
-  }
-  function PrintTypeForm($args)  {
-      $this->dialog->TypeForm($args);
-  }
-  function PrintUploadForm()  {
-      global $config;
-      $this->dialog->UploadForm($config['upload_size_max']);
-  }
-  function PrintCommentForm($replay_id, $content_memory, $user_id=-1)  {
-      $this->dialog->CommentForm($replay_id, $content_memory, $user_id);
-  }
-  function PrintAddFormAuto() {
-      $this->dialog->AddFormAuto();
-  }
-  function PrintMemberList($args) {
-    $this->db->RequestInit("SELECT", "users");
-    switch($args['sort'])
-    {
-     case "pseudo": $this->db->RequestGenericSort(array("pseudo"), "ASC"); break;
-     case "records": $this->db->RequestGenericSort(array("stat_total_records", "stat_best_records"), array("DESC", "DESC"));
-         break;
-     default: 
-     case "best": $this->db->RequestGenericSort(array("stat_best_records", "stat_total_records"), array("DESC", "DESC"));
-         break;
-     case "comments": $this->db->RequestGenericSort(array("stat_comments"), "DESC"); break;
-     case "cat": $this->db->RequestGenericSort(array("level"), "ASC"); break;
-     case "id": $this->db->RequestGenericSort(array("id"), "ASC"); break;
-    }
-    $results1 = $this->db->Query();
-    if(!$results1) {
-        echo button_error(  $this->db->GetError(), 400);
-    }
-    else
-    {
-      $this->dialog->MemberList($results1);
-    }
-  }
-  function PrintProfile() {
-      /* if options_saved, need to load user for profile*/
-      if ($_SESSION['options_saved'] == true)
-      {
-        $this->current_user = new User($this->db);
-        $this->current_user->LoadFromId($_SESSION['user_id']);
-      }
-      $this->dialog->UserProfile($this->current_user);
-  }
-  function ViewProfile($id) {
-      $tmp_user = new User($this->db);
-      if ($tmp_user->LoadFromId($id))
-        $this->dialog->UserProfile($tmp_user);
-      else
-        button_error($tmp_user->GetError(), 400);
-  }
-
-  function PrintStats() {
-      global $config;
-
-      /* check validity of liste.txt file used by neverstats applet */
-      $f = new FileManager($config['neverstats_liste']);
-      $stat = $f->Stat();
-      $refresh = false;
-      if ($stat != false)
-      {
-	 $t1 = $stat['mtime'];
-	 $days=timestamp_diff_in_days(time(), $t1); 
-	 if ($days > 1)
-	   $refresh = true;
-      }
-      if ($f->IsFile() == false) /* doesn't exist */
-      {
-         $refresh = true;
-      }
-      if ($refresh)
-      {
-        $lst = $this->GetStatsDump("contest");
-        if (!$f->Write($lst))
-	{
-          button_error("Write GestStatsDump : ".$f->GetError(), 300);
-	  return;
-	}
-      }
-      $this->dialog->Stats();
-  }
-  
   /*__UTILS__*/
 
   /* Record RSS */
@@ -592,12 +239,12 @@ class Nvrtbl
             array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
             "AND", false
         );
-     $this->db->RequestFilterFolder($folder);
+     $this->db->helper->RequestFilterFolder($folder);
      $this->db->RequestGenericSort(array("id"), "ASC");
 
      $res =   $this->db->Query();
      if(!$res)
-        echo button_error(  $this->db->GetError(), 500);
+        echo gui_button_error(  $this->db->GetError(), 500);
 
      $lst .= "id\tdate\ttype\tmember\tlevel\tset\tcoins\ttime\treplay\n";
      while ($val = $this->db->FetchArray())
@@ -623,7 +270,7 @@ class Nvrtbl
   function ManageBestRecords($updated_record_fields, $type)
   {
     $val = $updated_record_fields;
-    $ret = $this->db->RequestSetBestRecordByFields($val['level'], $val['levelset'], $type);
+    $ret = $this->db->helper->RequestSetBestRecordByFields($val['level'], $val['levelset'], $type);
     switch ($val['type'])
     {
      case get_type_by_name("best time") : $critera = "time"; $check=true; break;
@@ -632,7 +279,7 @@ class Nvrtbl
     }
     if($check)
     {
-      $best= $this->db->RequestGetBestRecord($val['type'], get_folder_by_name("contest"));
+      $best= $this->db->helper->RequestGetBestRecord($val['type'], get_folder_by_name("contest"));
       $ret['isbest'] = is_a_best_record($val, $best, $critera);
     }
     return $ret;
@@ -647,7 +294,7 @@ class Nvrtbl
     $this->db->RequestGenericFilter("ident", $_SERVER['REMOTE_ADDR']);
     $this->db->RequestLimit(1);
     if(!$this->db->Query()) {
-      button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
+      gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
       return false;
     }
 
@@ -664,7 +311,7 @@ class Nvrtbl
     $this->db->RequestGenericFilter("user_id", $_SESSION['user_id']);
     $this->db->RequestGenericFilter("ident", $_SESSION['user_pseudo']);
     if(!$this->db->Query()) {
-      button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
+      gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
       return false;
     }
     $res = $this->db->FetchArray();
@@ -674,7 +321,7 @@ class Nvrtbl
       $this->db->RequestUpdateSet(array("logged_time" => $this->start_time));
       $this->db->RequestGenericFilter("user_id", $_SESSION['user_id']);
       if(!$this->db->Query()) {
-        button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
+        gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
         return false;
       }
     }
@@ -687,7 +334,7 @@ class Nvrtbl
                           "logged_time" => $this->start_time,
                            ));
       if(!$this->db->Query()) {
-        button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
+        gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
         return false;
       }
     }
@@ -701,7 +348,7 @@ class Nvrtbl
     $this->db->RequestGenericFilter("user_id", $_SESSION['user_id']);
     $this->db->RequestGenericFilter("ident", $_SERVER['REMOTE_ADDR']);
     if(!$this->db->Query()) {
-      button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
+      gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
       return false;
     }
     $res = $this->db->FetchArray();
@@ -711,7 +358,7 @@ class Nvrtbl
       $this->db->RequestUpdateSet(array("logged_time" => $this->start_time));
       $this->db->RequestGenericFilter("ident", $_SERVER['REMOTE_ADDR'] );
       if(!$res = $this->db->Query()) {
-        button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
+        gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
         return false;
       }
     }
@@ -724,7 +371,7 @@ class Nvrtbl
                           "logged_time" => $this->start_time,
                            ));
       if(!$res = $this->db->Query()) {
-        button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
+        gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
         return false;
       }
     }
@@ -737,7 +384,7 @@ class Nvrtbl
     $this->db->RequestGenericFilter("user_id", $_SESSION['user_id']);
     $this->db->RequestLimit(1);
     if(!$this->db->Query()) {
-      button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
+      gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
       return false;
     }
    return true;
@@ -756,14 +403,14 @@ class Nvrtbl
     $this->db->RequestInit("DELETE", "online");
     $this->db->RequestGenericFilter_lt("logged_time", $this->start_time-$config['online_idletime']);
     if(!$this->db->Query()) {
-      button_error("UpdateOnlineUser::" . $this->db->GetError(), 300);
+      gui_button_error("UpdateOnlineUser::" . $this->db->GetError(), 300);
       return false;
     }
     
     /* récupère la liste */
     $this->db->RequestInit("SELECT", "online");
     if(!$this->db->Query()) {
-      button_error("UpdateOnlineUser::" . $this->db->GetError(), 300);
+      gui_button_error("UpdateOnlineUser::" . $this->db->GetError(), 300);
       return false;
     }
 
@@ -774,7 +421,17 @@ class Nvrtbl
       else
         $this->online_users_guest++;
     }
-    
+  }
+
+  function GetStats()
+  {
+    $ret = array();
+
+    $ret['registered'] = $this->online_users_registered;
+    $ret['guests']     = $this->online_users_guest;
+    $ret['registered_list']     = $this->online_users_list;
+
+    return $ret;
   }
   
   /*__FONCTIONS DE MAINTENANCE__*/
@@ -790,18 +447,21 @@ class Nvrtbl
     /* listing de tous les repertoires */
     foreach ($folders as $nb => $value)
     {
-      $dir = $replay_path.$folders[$nb]["name"];
-      $res = $f->DirList($dir);
-      if(!$res)
+      if ($value != "all")
       {
-          button_error($f->GetError(), 500);
+        $dir = $replay_path.$value;
+        $res = $f->DirList($dir);
+        if(!$res)
+        {
+          gui_button_error($f->GetError(), 500);
           return;
-      }
-      $dir_list[$folders[$nb]["name"]] = $res["files"] ;
-      if (!$dir_list)
-      {
-        button_error("Error opening \"".$dir."\" directory.",500);
-        return;
+        }
+        $dir_list[$value] = $res["files"] ;
+        if (!$dir_list)
+        {
+          gui_button_error("Error opening \"".$dir."\" directory.",500);
+          return;
+        }
       }
     }
 
@@ -811,13 +471,13 @@ class Nvrtbl
     $res = $this->db->Query();
     if(!$res)
     {
-      button_error($db->GetError(), 500);
+      gui_button_error($db->GetError(), 500);
       return;
     }
 
     echo "<div class=\"results\" style=\"width: 100%;\">\n";
     echo "<table>\n";
-    echo "<caption>Databse Check Results</caption>\n";
+    echo "<caption>Database Check Results</caption>\n";
     echo "<tr><th>replay_id</th><th>replay_file</th><th>folder</th><th>status</th></tr>\n";
  
     $dup_arr = array(); $dup=1;
@@ -825,7 +485,7 @@ class Nvrtbl
     $count = array();
     foreach ($folders as $nb => $value)
     {
-      $count[$folders['nb']["name"]] = 0;
+      $count[$value] = 0;
     }
     while ($val = $this->db->FetchArray())
     {
@@ -900,11 +560,11 @@ class Nvrtbl
     $this->db->RequestGenericFilter("type", get_type_by_name("freestyle"));
     $res = $this->db->Query();
     if(!$res)
-      button_error($this->db->GetError(), 500);
+      gui_button_error($this->db->GetError(), 500);
 
     /* get best time records value */
     echo "<h2>best time </h2>";
-    $best = $this->db->RequestGetBestRecord(get_type_by_name("best time"));
+    $best = $this->db->helper->RequestGetBestRecord(get_type_by_name("best time"));
 
     /* browse all best time */
     $this->db->RequestInit("SELECT", "rec");
@@ -913,7 +573,7 @@ class Nvrtbl
     $this->db->RequestCustom("AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
     $res = $this->db->Query();
     if(!$res)
-      button_error($this->db->GetError(), 500);
+      gui_button_error($this->db->GetError(), 500);
 
     $i=0;
     while ($val = $this->db->FetchArray($res))
@@ -975,7 +635,7 @@ class Nvrtbl
 
     /* get most coins records value */
     echo "<h2>most coins </h2>";
-    $best = $this->db->RequestGetBestRecord(get_type_by_name("most coins"));
+    $best = $this->db->helper->RequestGetBestRecord(get_type_by_name("most coins"));
 
     /* browse all most coins */
     $this->db->RequestInit("SELECT", "rec");
@@ -984,7 +644,7 @@ class Nvrtbl
     $this->db->RequestCustom("AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
     $res = $this->db->Query();
     if(!$res)
-      button_error($this->db->GetError(), 500);
+      gui_button_error($this->db->GetError(), 500);
 
     $i=0;
     while ($val = $this->db->FetchArray($res))
@@ -993,8 +653,6 @@ class Nvrtbl
       /* set 'isbest' field */
       if ($val['folder'] == get_folder_by_name("contest"))
       {
-          //echo "is_a_best_record($val, $best, \"coins\") = " .is_a_best_record($val, $best, "coins") . "<br/>";
-          //echo "val = "; print_r($val); echo "<br/>";
         if(is_a_best_record($val, $best, "coins") && $val['isbest']==0)
         {
           $rec->SetIsBest(1);
@@ -1046,18 +704,18 @@ class Nvrtbl
     }
     echo $i ." records modified.";
 	
-	/* Parcours tous pour les stats */
+    /* Parcours tous pour les stats */
     $this->db->RequestInit("SELECT", "rec");
     $res = $this->db->Query();
     if(!$res)
-      button_error($this->db->GetError(), 500);
+      gui_button_error($this->db->GetError(), 500);
 
     $i=0;
     while ($val = $this->db->FetchArray($res))
     { 
-	  $rec->LoadFromId($val['id']);
-	  /* remet ˆ jour les statistiques du record */
-	  $count = $this->db->RequestCountComments($rec->GetId());
+      $rec->LoadFromId($val['id']);
+      /* remet à jour les statistiques du record */
+      $count = $this->db->helper->RequestCountComments($rec->GetId());
       $rec->SetFields(array("comments_count" => $count));
       $rec->Update(true);
     }
@@ -1069,7 +727,7 @@ class Nvrtbl
     $res = $this->db->Query();
     if(!$res)
     {
-      button_error($db->GetError(), 500);
+      gui_button_error($db->GetError(), 500);
       return;
     }
 

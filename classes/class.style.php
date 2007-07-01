@@ -25,28 +25,33 @@ class Style
     var $current;
     var $theme_dir;
 
-	/*__Constructeur__
-	Cette fonction initialise l'objet Style.
-	*/
-	function Style()
-	{
+    /*__Constructeur__
+       Cette fonction initialise l'objet Style.
+    */
+    function Style()
+    {
       global $config;
       $this->current = $config['theme_default'];
       $this->theme_dir = ROOT_PATH . $config['theme_dir'] . $this->current;
-	}
+    }
 
     function GetStyle()
     {
       return $this->current;
     }
 
-    function Select($name="default")
+    function Select($name="")
     {
       global $config;
-      if ($name == "default")
+      if (empty($name))
         $this->current= $config['theme_default'];
       else
-        $this->current= $name;
+      {
+	if (is_dir(ROOT_PATH . $config['theme_dir'] . $name))
+          $this->current = $name;
+	else
+          $this->current= $config['theme_default'];
+      }
       $this->theme_dir = ROOT_PATH . $config['theme_dir'] . $this->current;
     }
 
@@ -72,15 +77,25 @@ class Style
 
     function GetImage($ident, $title="", $alt="", $special="")
     {
-      global $icons;
+      global $icons, $config;
+
       if (empty($alt))
-        $alt=$ident;
-      return "<img src=\"".$this->GetImageDir() . $icons[$ident] . "\" title=\"".$title."\" alt=\"".$alt."\" ".$special." />";
+         $alt=$ident;
+
+      $dir = $this->GetImageDir();
+      if(!file_exists($dir.$icons[$ident]))
+         $dir = $config['theme_default']."images/";
+      return "<img src=\"".$dir . $icons[$ident] . "\" title=\"".$title."\" alt=\"".$alt."\" ".$special." />";
     }
 
     function GetIcon($ident)
     {
-      return "<img src=\"".$this->GetIconDir() . $ident.".png"."\" alt=\"\" />";
+      global $config;
+
+      $dir = $this->GetIconDir();
+      if(!file_exists($dir.$ident))
+         $dir = $config['theme_default']."images/icons/";
+      return "<img src=\"".$dir . $ident.".png"."\" alt=\"\" />";
     }
 
 }

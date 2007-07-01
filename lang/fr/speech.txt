@@ -1,0 +1,6 @@
+<p>
+C'est la version beta de Nevertable 3.0. C'est juste pour jouer un peu, tout peut potentiellement être effacé n'importe quand, ou changer sans préavis. Cela dit, on va tacher d'éviter :)
+</p>
+<p>
+Seuls les records de Neverball 1.5 sont supportés pour l'instant, pour les 4 sets principaux.
+</p>

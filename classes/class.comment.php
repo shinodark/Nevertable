@@ -99,6 +99,12 @@ class Comment
         $this->error = "Comment is empty !";
         return false;
       }
+      if(empty($this->fields['id']))
+      {
+        $this->error = "Trying to update with no id specified!";
+        return false;
+      }
+
       $content = $this->fields['content'];
 
       $content = str_replace("&lt;","<", $content);
@@ -131,6 +137,11 @@ class Comment
         $this->error = "Comment is empty !";
         return false;
       }
+      if(empty($this->fields['id']))
+      {
+        $this->error = "Trying to purge with no id specified!";
+        return false;
+      }
       $this->db->RequestInit("DELETE", "com");
       $this->db->RequestGenericFilter("id", $this->fields['id']);
       if(!$this->db->Query()) {
@@ -138,6 +149,7 @@ class Comment
         return false;
       }
       $this->_RecordRecountComments();
+      $this->isload = false;
       return true;
     }
 
@@ -145,7 +157,7 @@ class Comment
     {
       $rec = new Record($this->db);
       $rec->LoadFromId($this->GetReplayId());
-      $count = $this->db->RequestCountComments($rec->GetId());
+      $count = $this->db->helper->RequestCountComments($rec->GetId());
       $rec->SetFields(array("comments_count" => $count));
       $rec->Update(true);
 

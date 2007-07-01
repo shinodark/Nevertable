@@ -45,7 +45,10 @@ class Menu
         $new_name = $name;
         for ($i=0; $i<$this->level; $i++)
            $new_name = "&nbsp;&nbsp;" . $new_name;
-        $this->output .= "<div class=\"menuitem\"><a href=\"".$link."\">".$new_name."</a><br/></div>\n";
+	if (!empty($link))
+           $this->output .= "<div class=\"menuitem\"><a href=\"".$link."\">".$new_name."</a><br/></div>\n";
+	else
+           $this->output .= "<div class=\"menuitem\">".$new_name."<br/></div>\n";
     }
     
     

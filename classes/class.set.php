@@ -26,16 +26,16 @@ class Set
     var $fields;
     var $isload;
 
-	/*__Constructeur__
-	Cette fonction initialise l'objet Set.
+    /*__Constructeur__
+      Cette fonction initialise l'objet Set.
 
-    @param: pointeur vers la base de donnée
-	*/
-	function Set(&$db)
-	{
-        $this->db = &$db;
-        $this->isload = false;
-	}
+      @param: pointeur vers la base de donnée
+    */
+    function Set(&$db)
+    {
+       $this->db = &$db;
+       $this->isload = false;
+    }
 
     /* Chargement des champs d'un record à partir de l'id */
     function LoadFromId($id)
@@ -62,17 +62,22 @@ class Set
       }
     }
 
-    function Update($conservative=false,$id="")
+    function Update($conservative=false)
     {
-      if (!$this->isload)
+      if(!$this->isload)
+      {
+        $this->error = "Set is not loaded!";
+	return false;
+      }
+      if(empty($this->fields['id']))
+      {
+        $this->error = "Trying to update with no id specified!";
         return false;
-      if(empty($id))
-        $id = $this->fields['id'];
+      }
 
-      $this->_CleanFields();
       $this->db->RequestInit("UPDATE", "sets");
       $this->db->RequestUpdateSet($this->fields, $conservative);
-      $this->db->RequestGenericFilter("id", $id);
+      $this->db->RequestGenericFilter("id", $this->fields['id']);
       $this->db->RequestLimit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
@@ -83,23 +88,119 @@ class Set
       }
     }
 
-    function Purge($id="")
+    function Purge()
     {
-      if (!$this->isload)
+      if(!$this->isload)
+      {
+        $this->error = "Set is not loaded!";
+	return false;
+      }
+      if(empty($this->fields['id']))
+      {
+        $this->error = "Trying to purge with no id specified!";
         return false;
-      if(empty($id))
-        $id = $this->fields['id'];
-      
-      $this->SetError("Set deletion deactivated. Need to implement map deletion too.");
-      return false;
+      }
 
+      /* efface les maps */
+      $this->db->RequestInit("DELETE", "maps");
+      $this->db->RequestGenericFilter("set_id", $this->fields['id']);
+      if(!$this->db->Query()) {
+        $this->SetError($this->db->GetError());
+        return false;
+      }
+      
+      /* efface les records */
+      $this->db->RequestInit("SELECT", "rec");
+      $this->db->RequestGenericFilter("levelset", $this->fields['id']);
+      $res = $this->db->Query();
+      if(!$res) {
+        $this->SetError($this->db->GetError());
+        return false;
+      }
+
+      $rec = new Record($this->db);
+
+      /* boucle sur tous les records */
+      while ($val = $this->db->FetchArray($res))
+      {
+        if(!$rec->LoadFromId($val['id']))
+        {
+          $this->SetError($rec->GetError());
+          return false;
+        }
+	if (!$rec->Purge(true))
+	{
+          $this->SetError($rec->GetError());
+          return false;
+	}
+      }
+      
+      /* efface le set */
+      $this->db->RequestInit("DELETE", "sets");
+      $this->db->RequestGenericFilter("id", $this->fields['id']);
+      $this->db->RequestLimit(1);
+      if(!$this->db->Query()) {
+        $this->SetError($this->db->GetError());
+        return false;
+      }
+
+      $this->isload = false;
+
+      return true;
     }
 
     function Insert()
     { 
       if (!$this->isload)
+	      return false;
+      $this->db->RequestInit("INSERT",  "sets");
+      $this->db->RequestInsert($this->fields);
+      if(!$this->db->Query()) {
+        $this->SetError($this->db->GetError());
         return false;
-      return false;
+      }
+      /* le but ici est de récupérer le nouveau set pour mise à jour des infos */
+      /* cela permet d'avoir le bon id surtout, pour un affichage correct */
+      $this->db->RequestInit("SELECT", "sets");
+      $this->db->RequestGenericSort(array("id"), "DESC");
+      $this->db->RequestLimit(1);
+      if($this->db->Query()) 
+         $this->SetFields($this->db->FetchArray());
+      else
+      {
+        $this->SetError($this->db->GetError());
+        return false;
+      }
+
+      return true;
+    }
+
+    function GetMapsRes()
+    {
+      $this->db->RequestInit("SELECT", "maps");
+      $this->db->RequestGenericFilter("set_id", $this->fields['id']);
+      $res = $this->db->Query();
+      if(!$res) {
+        $this->SetError($this->db->GetError());
+        return false;
+      }
+      return $res;
+    }
+    
+    function AddMap($level_num, $map_solfile)
+    {
+      $this->db->RequestInit("INSERT",  "maps");
+      $map_fields = array(
+	      "set_id"      => $this->fields['id'],
+	      "level_num"   => $level_num,
+	      "map_solfile" => $map_solfile,
+      );
+      $this->db->RequestInsert($map_fields);
+      if(!$this->db->Query()) {
+        $this->SetError($this->db->GetError());
+        return false;
+    }
+      return true;
     }
 
     function GetId()

@@ -38,89 +38,103 @@ $table = new Nvrtbl("DialogAdmin");
 <?php
 
 
-$table->PrintHtmlHead("Nevertable - Neverball Hall of Fame");
+$table->dialog->Head("Nevertable - Neverball Hall of Fame");
 ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
+
+function closepage()
+{   global $table;
+    gui_button_back();
+    echo "</div><!-- fin \"main\" -->\n";
+    $table->Close();
+    $table->dialog->Footer();
+    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
+    exit;
+}
+
 if (!Auth::Check(get_userlevel_by_name("admin")))
 {
-  button_error("You have to be admin to access this page.", 400);
-  exit;
+  gui_button_error($lang['NOT_ADMIN'], 400);
+  closepage();;
 }
-  
+
+$manage_lang = get_lang_by_number($args['manage_lang']);
+if (!in_array($manage_lang, $langs))
+   $manage_lang = $lang['code'];
+
+$langpath = ROOT_PATH . $config['lang_dir']. $manage_lang . "/";
+
 if (isset($args['upannounce']))
 {
-    file_put_contents(ROOT_PATH . "announce.txt", stripslashes($args['announce']));
-    button("Announcement updated.", 200);
+    file_put_contents($langpath . "announce.txt", stripslashes($args['announce']));
+    gui_button("Announcement updated.", 200);
 }
 
 if (isset($args['upspeech']))
 {
-    file_put_contents(ROOT_PATH . "speech.txt", stripslashes($args['speech']));
-    button("Speech updated.", 200);
+    file_put_contents($langpath . "speech.txt", stripslashes($args['speech']));
+    gui_button("Speech updated.", 200);
 }
 
 if (isset($args['upconditions']))
 {
-    file_put_contents(ROOT_PATH . "conditions.txt", stripslashes($args['conditions']));
-    button("Conditions updated.", 200);
+    file_put_contents($langpath . "conditions.txt", stripslashes($args['conditions']));
+    gui_button("Conditions updated.", 200);
 }
 
-else
-{
-  if (file_exists(ROOT_PATH . "announce.txt"))
-    $cur_announce = file_get_contents(ROOT_PATH . "announce.txt");
-  if (file_exists(ROOT_PATH . "speech.txt"))
-    $cur_speech = file_get_contents(ROOT_PATH . "speech.txt");
-  if (file_exists(ROOT_PATH . "conditions.txt"))
-    $cur_conditions = file_get_contents(ROOT_PATH . "conditions.txt");
+
+  $form = new Form("post", "management.php", "lang_form", 400);
+  $form->AddTitle($lang['ADMIN_MANAGEMENT_LANG_FORM_TITLE']);
+  $form->Br();
+  $form->AddSelect("manage_lang", "manage_lang", $langs, $lang['ADMIN_MANAGEMENT_LANG_FORM_LANG']);
+  $form->Br();
+  $form->AddInputSubmit();
+  echo $form->End();
+
+  echo '<script>';
+    echo "change_form_select('lang_form', 'manage_lang',  '".get_lang_by_name($manage_lang)."');";
+  echo '</script>';
+
+
+  if (file_exists($langpath . "announce.txt"))
+    $cur_announce = file_get_contents($langpath . "announce.txt");
+  if (file_exists($langpath . "speech.txt"))
+    $cur_speech = file_get_contents($langpath . "speech.txt");
+  if (file_exists($langpath . "conditions.txt"))
+    $cur_conditions = file_get_contents($langpath . "conditions.txt");
     
-?>
-  <form class="nvform" method="post" action="management?upannounce" style="width: 700px;">
-  <table><tr>
-  <th>Announcement  Editor</th></tr>
-  <tr><td>
-  <textarea name="announce" rows="5" cols="90"><?php echo $cur_announce ?></textarea>
-  </td></tr><tr><td>
-  <center><input type="submit" value="Edit" /></center>
-  </td></tr>
-  </table>
-  </form>
+  $form = new Form("post", "management.php?upannounce&amp;manage_lang=".get_lang_by_name($manage_lang)."", "announce_form", 700);
+  $form->AddTitle($lang['ADMIN_MANAGEMENT_ANNOUNCE_FORM_TITLE']);
+  $form->AddTextArea("announce", "announce", "", 5, $cur_announce);
+  $form->Br();
+  $form->AddInputSubmit();
+  echo $form->End();
 
-  <form class="nvform" method="post" action="management?upspeech" style="width: 700px;">
-  <table><tr>
-  <th>Speech  Editor</th></tr>
-  <tr><td>
-  <textarea name="speech" rows="20" cols="90"><?php echo $cur_speech ?></textarea>
-  </td></tr><tr><td>
-  <center><input type="submit" value="Edit" /></center>
-  </td></tr>
-  </table>
-  </form>
+  $form = new Form("post", "management.php?upspeech&amp;manage_lang=".get_lang_by_name($manage_lang)."", "speech_form", 700);
+  $form->AddTitle($lang['ADMIN_MANAGEMENT_SPEECH_FORM_TITLE']);
+  $form->AddTextArea("speech", "speech", "", 20, $cur_speech);
+  $form->Br();
+  $form->AddInputSubmit();
+  echo $form->End();
 
-  <form class="nvform" method="post" action="management?upconditions" style="width: 700px;">
-  <table><tr>
-  <th>Conditions  Editor</th></tr>
-  <tr><td>
-  <textarea name="conditions" rows="60" cols="90"><?php echo $cur_conditions ?></textarea>
-  </td></tr><tr><td>
-  <center><input type="submit" value="Edit" /></center>
-  </td></tr>
-  </table>
-  </form>
+  $form = new Form("post", "management.php?upconditions&amp;manage_lang=".get_lang_by_name($manage_lang)."", "conditions_form", 700);
+  $form->AddTitle($lang['ADMIN_MANAGEMENT_CONDITIONS_FORM_TITLE']);
+  $form->AddTextArea("conditions", "conditions", "", 60, $cur_conditions);
+  $form->Br();
+  $form->AddInputSubmit();
+  echo $form->End();
 
-<?php
-}
-button("<a href=\"admin.php\">Return to admin panel</a>", 400);
+gui_button_main_page_admin();
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

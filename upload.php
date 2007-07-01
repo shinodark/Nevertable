@@ -34,95 +34,136 @@ $table = new Nvrtbl("DialogStandard");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<?php $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame"); ?>
+<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
 <body>
 <div id="page">
 <?php 
-  $table->PrintTop();
-  $table->PrintPrelude();
+  $table->dialog->Top();
+  $table->dialog->Prelude();
 ?>
 <div id="main">
 <?php
 
-if($args['to'] == 'autoadd')
+function closepage()
+{  global $table;
+    gui_button_back();
+    gui_button_return("Upload", "upload.php");
+    echo "</div><!-- fin \"main\" -->\n";
+    $table->Close();
+    $table->dialog->Footer();
+    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
+    exit;
+}
+
+
+if(isset($args['autoadd']))
 {
   /* toujours off pour ce cas, puisqu'on va dans incoming d'abord */
   $overwrite == "off";
-  
+
   if (!Auth::Check(get_userlevel_by_name("member")))
-  {
-    button_error("You need to log in to post a record.", 400);
+  {          
+    gui_button_error($lang['NOT_MEMBER'], 400);
+    closepage();
   }
-  else if (empty($_SESSION['user_id']))
+  
+  if (empty($_SESSION['user_id']))
   {
-    button_error("Invalid user !", 300);
+    gui_button_error($lang['GUI_INVALID_USER'], 300);
+    closepage();
   }
-  else if ($args['folder'] != get_folder_by_name("incoming"))
-  {
-      button_error("Error: folder has to be incoming.", 300);
-  }
-  else
-  {
-    $rec = new Record($table->db);
-    $rec->SetFields($args);
+  
+  $rec = new Record($table->db);
+print_r($args);
+  $fields = array(
+	   "type"      => $args['type'],
+	   "user_id"   => $args['user_id'],
+	   "folder"    => get_folder_by_name("incoming"),
+	  );
+  $rec->SetFields($fields);
     
-    $up_dir = ROOT_PATH. $config['replay_dir'] . get_folder_by_number($rec->GetFolder());
+  $up_dir = ROOT_PATH. $config['replay_dir'] . get_folder_by_number($rec->GetFolder());
     
-    /* Upload du fichier */
-    $f = new FileManager();
-    $ret = $f->Upload($_FILES, 'replayfile', $up_dir, basename($_FILES['replayfile']['name']));
+  /* Upload du fichier */
+  $f = new FileManager();
+  $ret = $f->Upload($_FILES, 'replayfile', $up_dir, basename($_FILES['replayfile']['name']));
 
+  if(!$ret)
+  {
+    gui_button_error($f->GetError(), 500);
+    closepage();
+  }
+
+  /* Analyse */
+  $rep = new Replay($table->db, $f->GetFileName(), $rec->GetType());
+  if(!$rep->Init())
+  { 
+    /* erreur lors de l'analyse */
+    gui_button_error($rep->GetError(), 500);
+    $ret = $f->Unlink();
     if(!$ret)
-    {
-      button_error($f->GetError(), 500);
-    }
-
-    /* Analyse */
-    $rep = new Replay($table->db, $f->GetFileName(), $rec->GetType());
-    if(!$rep->Init())
-    { 
-      /* erreur lors de l'analyse */
-      button_error($rep->GetError(), 500);
-      $ret = $f->Unlink();
-      if(!$ret) button_error($f->GetError(), 500);
-    }
-    else
-    {
-      /* Insertion du record */
-      $rec->SetFields($rep->GetFields());
-      
-      /* récupération de la case "goal not reached */
-      if ($args['goalnotreached'] == "on")
-          $rec->SetFields(array("time" => 9999));
-      
-      $rec->SetFields(array("replay" => $f->GetBaseName()));
-
-      $ret = $rec->Insert();
-      
-      if(!$ret)
-      {
-        button_error($rec->GetError(), 500);
-        if ($f->Unlink())
-          button_error($f->GetError(), 500);
-      }
-      else
-      {
-        button("Your record is registered. An admin has to validate it before contest update.", 600);
-        /* Aucune gestion à faire, puisque le record est dans "incoming" */
-        $table->PrintRecordByFields($rec->GetFields());
-      }
-    }
+      gui_button_error($f->GetError(), 500);
+    closepage();
   }
 
-  button("<a href=\"index.php\">Return to table</a>", 200);
+  if(get_replay_mode_by_name("challenge") == $rep->GetMode())
+  {
+     gui_button_error("Challenge replays are not supported yet", 500);
+     closepage();
+  }
+ 
+  /* Insertion du record */
+  $rec->SetFields($rep->GetFields());
+      
+  /* récupération de la case "goal not reached */
+  if (!$rep->IsGoalReached())
+  {
+     $rec->SetFields(array(
+	     "time" => 9999,
+	     "type" => get_type_by_name("freestyle"), /* force freestyle */
+     ));
+  }
+    
+  $rec->SetFields(array("replay" => $f->GetBaseName()));
+
+  $ret = $rec->Insert();
+      
+  if(!$ret)
+  {
+     gui_button_error($rec->GetError(), 500);
+     if ($f->Unlink())
+        gui_button_error($f->GetError(), 500);
+     closepage();
+  }
+    
+  gui_button($lang['UPLOAD_REGISTERED'], 600);
+  /* Aucune gestion à faire, puisque le record est dans "incoming" */
+  $table->dialog->Replay($rep->GetStruct());
+  $table->dialog->Record($rec->GetFields());
+
+  gui_button_main_page();
 }
 
 else
 {
-  button("Max size of file : ".floor($config['upload_size_max']/1024)."kB.",550);
-  $table->PrintAddFormAuto();
-  button_back();
+  $form = new Form("post", "upload.php?autoadd", "avatar_form", 600, "multipart/form-data");
+  $form->AddTitle($lang['UPLOAD_FORM_TITLE']);
+  $form->Br();
+  $form->AddLine(sprintf($lang['UPLOAD_FORM_SIZEMAX'], floor($config['upload_size_max']/1024) ));
+  $form->Br();
+  $form->AddInputText("pseudo", "pseudo", $lang['UPLOAD_FORM_PSEUDO'], 10, $_SESSION['user_pseudo'], "readonly");
+  $form->Br();
+  $form->AddSelect("type", "type",array(1=>"best time", 2=>"most coins", 3=>"freestyle"), $lang['UPLOAD_FORM_TYPE']  );
+  $form->Br();
+  $form->AddInputFile("replayfile", "replayfile", $lang['UPLOAD_FORM_REPLAYFILE'], 40);
+  $form->AddInputHidden("user_id", "user_id", "", 0, $_SESSION['user_id']);
+  $form->AddInputHidden("size_max", "MAX_FILE_SIZE", "", 0, $config['upload_size_max']);
+  $form->Br();
+  $form->AddInputSubmit();
+  echo $form->End();
+
+  gui_button_main_page();
 }
 
 
@@ -130,7 +171,7 @@ else
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

@@ -37,7 +37,7 @@ class Map
         $this->isload = false;
 	}
 
-    /* Chargement des champs d'un record à partir de l'id */
+    /* Chargement des champs d'une map à partir de l'id */
     function LoadFromId($id)
     {
       $this->isload = false;

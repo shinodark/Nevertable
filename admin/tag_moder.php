@@ -35,40 +35,40 @@ $table = new Nvrtbl("DialogAdmin");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<?php $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame"); ?>
+<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
 
 function closepage()
-{  global $table;
+{   global $table;
     echo "</div><!-- fin \"main\" -->\n";
     $table->Close();
-    $table->PrintFooter();
+    $table->dialog->Footer();
     echo "</div><!-- fin \"page\" -->\n";
     echo "</body>\n";
     echo "</html>\n";
+    exit;
 }
 
 
 $tagboard = new TagBoard($table->dialog->db, $table->dialog->bbcode, $table->dialog->smilies, $table->dialog->style);
 
 if (!Auth::Check(get_userlevel_by_name("moderator")))
-{          
-  button_error("You have to be moderator to access tag  !", 400);
-  button_back();
+{  
+  gui_button_error($lang['NOT_MODERATOR'], 400);
+  gui_button_back();
   closepage();
-  exit;
 }
 
 $nextargs = "tag_moder.php?";
 
 if($args['to'] == "edit")
 {
-    button("Editing tag #".$args['id']. " ...", 200);
+    gui_button("Editing tag #".$args['id']. " ...", 200);
     $nextargs = "tag_moder.php?id=".$args['id'];
 }
 
@@ -76,16 +76,16 @@ if(isset($args['tag']))
 {
    if (!isset($args['id']) || empty($args['id']))
    {
-      button_error("No tag selected, can't post from mod panel.", 300);
+      gui_button_error($lang['TAG_NO_TAG'], 300);
    }
    else if(empty($args['tag_pseudo']) || empty($args['content']))
    {
-      button_error($strings['tag_emptyfield'], 300);
+      gui_button_error($lang['TAG_EMPTY_FIELD'], 300);
    }
    else
    {
     if (!$tagboard->Update($args['id'], $args['content'], $args['tag_pseudo'], $args['tag_link']))
-      button_error($tagboard->GetError(), 400);
+      gui_button_error($tagboard->GetError(), 400);
    }
 }
 
@@ -95,11 +95,11 @@ if($args['to'] == "del")
     {
       if (!$tagboard->Purge($args['id']))
       {
-        button_error($tagboard->GetError(), 400);
+        gui_button_error($tagboard->GetError(), 400);
       }
       else
       {
-        button("tag #".$args['id']." deleted", 300);
+        gui_button("tag #".$args['id']." deleted", 300);
       }
     }
 }
@@ -108,26 +108,27 @@ $tagboard->dialog->Tags(true);
 $tagboard->dialog->TagForm();
 $tagboard->PrintOut();
 
+
 if($args['to'] == "edit")
 {
     $tagboard->db->RequestInit("SELECT", "tags");
     $tagboard->db->RequestGenericFilter("id", $args['id']);
     if(!$tagboard->db->Query())
-      button_error($tagboard->db->GetError(), 400);
+      gui_button_error($tagboard->db->GetError(), 400);
     $val = $tagboard->db->FetchArray();
-    echo "<script type=\"text/javascript\">update_tagform_fields('".
-        JavaScriptize($val['pseudo'])."','".
-       // JavaScriptize($val['link'])."','".
-        JavaScriptize($val['content'])."')</script>\n";
+    print_r($val);
+    echo "<script type=\"text/javascript\">
+	    change_form_input('tagpostform', 'tag_pseudo', '".JavaScriptize($val['pseudo'])."');\n
+            change_form_textarea('tagpostform', 'content', '".JavaScriptize($val['content'])."')
+	  </script>\n";
 }
 
-
-button("<a href=\"admin.php\">Return admin panel</a>", 300);
+gui_button_main_page_admin();
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

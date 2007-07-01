@@ -1,0 +1,6 @@
+<p>
+This is beta version of nevertable 3.0 It's in construction. Everything could disapear or edited at anytime, you've been warmed :) But it shouldn't happen often, I hope. It's online so you can play witth it :) have fun
+</p>
+<p>
+Only Neverball 1.5 records of 4 main sets are supported at the moment.
+</p>

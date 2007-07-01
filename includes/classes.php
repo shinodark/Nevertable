@@ -22,7 +22,9 @@
 
 define('ROOT_PATH', "./");
 include_once ROOT_PATH ."classes/class.db.php";
+include_once ROOT_PATH ."classes/class.db.helper.php";
 include_once ROOT_PATH ."classes/class.nvrtbl.php";
+include_once ROOT_PATH ."classes/class.auth.php";
 include_once ROOT_PATH ."classes/class.dialog_standard.php";
 include_once ROOT_PATH ."classes/class.replay.php";
 include_once ROOT_PATH ."classes/class.record.php";
@@ -34,8 +36,9 @@ include_once ROOT_PATH ."classes/class.set.php";
 include_once ROOT_PATH ."classes/class.map.php";
 include_once ROOT_PATH ."classes/class.tag.tagboard.php";
 include_once ROOT_PATH ."libs/lib.filemanager.php";
-include_once ROOT_PATH ."libs/lib.auth.php";
 include_once ROOT_PATH ."libs/lib.mail.php";
 include_once ROOT_PATH ."libs/lib.bbcode.php";
 include_once ROOT_PATH ."libs/lib.cache.php";
+include_once ROOT_PATH ."libs/lib.form.php";
+include_once ROOT_PATH ."libs/lib.photo.php";
 //include_once ROOT_PATH ."libs/lib.template.php";

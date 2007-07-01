@@ -20,15 +20,16 @@
 #
 # ***** END LICENSE BLOCK *****
 
-define('ROOT_PATH', "./");
+define('ROOT_PATH', "../");
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
+include_once ROOT_PATH ."classes/class.dialog_admin.php";
 
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl("DialogStandard");
+$table = new Nvrtbl("DialogAdmin");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -43,27 +44,13 @@ $table = new Nvrtbl("DialogStandard");
 <?php
 
 function closepage()
-{  global $table;
+{   global $table;
     gui_button_back();
-    gui_button_return("Profile", "profile.php");
     echo "</div><!-- fin \"main\" -->\n";
     $table->Close();
     $table->dialog->Footer();
     echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
     exit;
-}
-
-if (!Auth::Check(get_userlevel_by_name("member")))
-{          
-  gui_button_error($lang['NOT_MEMBER'], 400);
-  closepage();
-}
-
-$user = new User($table->db);
-if(!$user->LoadFromId($_SESSION['user_id']))
-{
-  gui_button_error($user->GetError(), 400);
-  closepage();
 }
 
 function CheckLimitsInfo($args)
@@ -85,6 +72,49 @@ function CheckLimitsInfo($args)
   if ($err == false) return $err;
   else return $val;
 }
+
+function CheckLimitsOptions($args)
+{
+  global $lang;
+
+  $val= array();
+  $err = true;
+
+  $val['user_theme'] = GetContentFromPost($args['theme']);
+  $err = $err & CheckLimitInterval($val['opt_theme'], 0, 5, $lang['OPTIONS_FORM_THEME']);
+  $val['user_sort'] = GetContentFromPost($args['sort']);
+  $err = $err & CheckLimitInterval($val['user_sort'], 0, 6, $lang['OPTIONS_FORM_SORT']);
+  $val['user_limit'] = GetContentFromPost($args['limit']);
+  $err = $err & CheckLimitInterval($val['user_limit'], 1, 50, $lang['OPTIONS_FORM_LIMIT']);
+  $val['user_sidebar_comments'] = GetContentFromPost($args['sidebar_comments']);
+  $err = $err & CheckLimitInterval($val['user_sidebar_comments'], 1, 15, $lang['OPTIONS_FORM_SIDEBAR_COMMENTS']);
+  $val['user_sidebar_comlength'] = GetContentFromPost($args['sidebar_comlength']);
+  $err = $err & CheckLimitInterval($val['user_sidebar_comlength'], 5, 100, $lang['OPTIONS_FORM_SIDEBAR_COMLENGTH']);
+
+
+  if ($err == false) return $err;
+  else return $val;
+}
+
+if (!Auth::Check(get_userlevel_by_name("admin")))
+{
+  gui_button_error($lang['NOT_ADMIN'], 400);
+  closepage();;
+}
+
+if (!isset($args['id']))
+{
+  gui_button_error("URL error, id not set", 400);
+  closepage();
+}
+
+$user = new User($table->db);
+if(!$user->LoadFromId($args['id']))
+{
+  gui_button_error($u->GetError(), 400);
+  closepage();
+}
+
 
 /*
    TRAITEMENT DES EVENEMENTS 
@@ -122,27 +152,7 @@ if (isset($args['upident']))
 
     gui_button($lang['GUI_UPDATE_OK'], 300);
   }
-  if (!empty($args['passwd1']) && !empty($args['passwd2']) )
-  {
-    if ($args['passwd1'] != $args['passwd2'])
-    {
-      gui_button_error($lang['REGISTER_PASSWD_CHECK'], 400);
-      closepage();
-    }
-    else
-    {
-      //mise à jour du nouveau mot de passe
-      $user->SetFields(array('passwd' => md5($args['passwd1'])));
-      if (! $user->Update())
-      {
-        gui_button_error($user->GetError(), 300);
-        closepage();
-      }
-
-      gui_button($lang['GUI_UPDATE_OK'], 300);
-    }
-  }
-}       
+} 
 
 if(isset($args['upavatar'])  && !isset($args['delavatar']))
 {
@@ -154,6 +164,7 @@ if(isset($args['upavatar'])  && !isset($args['delavatar']))
     gui_button_error("Error on creating temp file.", 300);
     closepage();
   }
+  else {
 
   $f = new FileManager();
   $ret = $f->Upload($_FILES, 'uploadfile', $tmp_dir, basename($tmp_file), true);
@@ -163,57 +174,54 @@ if(isset($args['upavatar'])  && !isset($args['delavatar']))
     gui_button_error($f->GetError(), 500);
     closepage();
   }
-
-  $p = new Photo($f->GetFileName());
-  if (!$p->Init())
-  {
-      $f->Unlink();
-      gui_button_error($p->GetError(), 500);
+  
+    $picprop = getimagesize($tmp_file);
+    if (!$picprop)
+    {
+      gui_button_error("Error getting image attributes.", 400);
+      $ret = $f->Unlink();
+      if(!$ret)
+         gui_button_error($f->GetError(), 500);
       closepage();
-  }
-
-  /* Vérification des limites */
-  if ($p->GetWidth() > $config['avatar_width_max'] || $p->GetHeight > $config['avatar_height_max'] )
-  {
-      $factor = $p->GetWidth() / $p->GetHeight();
-      $factor_config = $config['photo_width_max'] / $config['avatar_height_max'];
-      if ($factor > $factor_config)
-        $ret = $p->Resize($config['avatar_width_max'], floor($p->GetHeight()*$config['avatar_width_max']/$p->GetWidth()));
-      else
-        $ret = $p->Resize(floor($p->GetWidth()*$config['avatar_height_max']/$p->GetHeight()), $config['avatar_height_max']);
-      if (!$ret)
+    }
+    else
+    {
+      /* Vérification des limites */
+      if ($picprop[0] > $config['avatar_width_max']
+        ||$picprop[1] > $config['avatar_height_max']
+         )
       {
-        $f->Unlink();
-        gui_button_error($p->GetError(), 500);
+        gui_button_error("Image too large, please use size < 128x128.", 400);
         closepage();
       }
+      else {
+        /* effacement du fichier ancien si existant */
+        $old_avatar = $user->GetAvatar();
+        if (!empty($old_avatar))
+        {
+          $oldf = new FileManager($config['avatar_dir'].$old_avatar);
+          $oldf->Unlink();
+        }
+        
+        /* copie du fichier définitif */
+        $new_name = strtolower(md5($user->GetPseudo().$user->GetId()) .".".$imagetypes[$picprop[2]]);
+        $f->Move($up_dir, $new_name, true);
 
-      gui_button($lang['PROFILE_AVATAR_RESIZE_OK'], 400);
-  }
-  $final_name = $f->GetHash() . '.' .  strtolower($p->GetFormat());
-  if (!$f->Move($up_dir,  $final_name, true))
-  {
-     $f->Unlink();
-     gui_button_error($f->GetError(), 500);
-     closepage();
-  }
-  $user->SetFields(array(
-        "user_avatar"  => $final_name,
-  ));
-  $user->Update();
+        gui_button($lang['GUI_UPLOAD_OK'], 400);
 
+        /* mise à jour profil */
+
+       $user->SetFields(array(
+            "user_avatar"  => $new_name,
+        ));
+
+       $user->Update();
+
+      } /* Vérifications */
+    } /* getimagesize () */
+  } /* tempnam() */
+  
   gui_button_main_page();
-}
-
-if (isset($args['upavatar']) && $args['delavatar'])
-{ 
-  /* Effacement de la photo actuelle */
-  $oldf = new FileManager($config['avatar_dir'].$user->GetAvatar());
-  $oldf->Unlink();
-  $user->SetFields(array(
-        "user_avatar"  => "",
-    ));
-  $user->Update();
 }
 
 
@@ -239,30 +247,47 @@ if(isset($args['upinfos']))
    }
 }
 
+if(isset($args['upoptions']))
+{
+   $val = CheckLimitsOptions($args);
+   if ($val == false)
+     closepage();
+   $user->SetFields($val);
+
+  $user->SetFields($val);
+   if (! $user->Update())
+   {
+     gui_button_error($user->GetError(), 300);
+     closepage();
+   }
+   else
+   {
+      gui_button($lang['GUI_UPDATE_OK'], 300);
+      /* rafraichit le cache des options */
+   }
+}
+
+
 /*
    AFFICHAGE DE LA PAGE
 */
 
+
   $table->dialog->UserProfile($user);
 
-
   /* Identification  */
-  $form = new Form("post", "profile.php?upident", "password", 600);
+  $form = new Form("post", "editprofile.php?upident&amp;id=".$user->GetId(), "password", 600);
   $form->AddTitle($lang['PROFILE_FORM_IDENT_TITLE']);
   $form->AddInputText("pseudo", "pseudo", $lang['PROFILE_FORM_IDENT_PSEUDO'], 20, $user->GetPseudo(), "readonly");
   $form->Br();
   $form->AddInputText("email", "email", $lang['PROFILE_FORM_IDENT_MAIL'], 20, $user->GetMail());
-  $form->Br();
-  $form->AddInputPassword("passwd1", "passwd1", $lang['PROFILE_FORM_IDENT_PASSWD1']);
-  $form->Br();
-  $form->AddInputPassword("passwd2", "passwd2", $lang['PROFILE_FORM_IDENT_PASSWD2']);
   $form->Br();
   $form->AddInputSubmit();
   echo $form->End();
 
 
   /* Personal infos */
-  $form = new Form("post", "profile.php?upinfos", "personnal", 600);
+  $form = new Form("post", "editprofile.php?upinfos&amp;id=".$user->GetId(), "personnal", 600);
   $form->AddTitle($lang['PROFILE_FORM_INFO_TITLE']);
   $form->Br();
   $form->AddLine($lang['PROFILE_FORM_INFO_INFO']);
@@ -277,7 +302,7 @@ if(isset($args['upinfos']))
 
   
   /* Avatar */
-  $form = new Form("post", "profile.php?upavatar", "avatar_form", 600, "multipart/form-data");
+  $form = new Form("post", "editprofile.php?upavatar&amp;id=".$user->GetId(), "avatar_form", 600, "multipart/form-data");
   $form->AddTitle($lang['PROFILE_FORM_AVATAR_TITLE']);
   $form->Br();
   $form->AddLine(sprintf($lang['PROFILE_FORM_AVATAR_LIMITS'], $config['avatar_width_max'], $config['avatar_height_max'], $config['avatar_size_max']/1024 ));
@@ -288,8 +313,31 @@ if(isset($args['upinfos']))
   $form->Br();
   $form->AddInputSubmit();
   echo $form->End();
-  
-gui_button_main_page();
+
+  /* Options */
+  $form = new Form("post", "editprofile.php?upoptions&amp;id=".$user->GetId(), "options_form", 600);
+  $form->AddTitle($lang['OPTIONS_FORM_TITLE']);
+
+  $form->Br();
+  $form->AddSelect("sort", "sort", $sort_type, $lang['OPTIONS_FORM_SORT']  );
+  $form->Br();
+  $form->AddSelect("theme", "theme", $themes, $lang['OPTIONS_FORM_THEME']  );
+  $form->Br();
+  $form->AddInputText("limit", "limit", $lang['OPTIONS_FORM_LIMIT'], 5, $user->GetLimit());
+  $form->Br();
+  $form->AddInputText("sidebar_comments", "sidebar_comments", $lang['OPTIONS_FORM_SIDEBAR_COMMENTS'], 5, $user->GetSidebarComments());
+  $form->Br();
+  $form->AddInputText("sidebar_comlength", "sidebar_comlength", $lang['OPTIONS_FORM_SIDEBAR_COMLENGTH'], 5, $user->GetSidebarComLength());
+  $form->Br();
+  $form->AddInputSubmit();
+  echo $form->End();
+
+  echo '<script>';
+    echo "change_form_select('options_form', 'sort',  '".$user->GetSort()."');";
+    echo "change_form_select('options_form', 'theme',  '".$user->GetTheme()."');";
+  echo '</script>';
+
+gui_button_main_page_admin();
 ?>
 </div> <!-- fin main-->
 <?php

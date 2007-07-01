@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-    
+
 /******************************************************/
 /*------------ OTHERS  -------------------------------*/
 /******************************************************/
@@ -37,8 +37,6 @@ function is_a_best_record($record, $best, $critera)
   // all record with same time/coins will be displayed
   if(empty($critera))
     $critera == "time";
-
-  //echo "<br/><br/>besttime = $besttime<br/>bestcoins = $bestcoins<br/><br/>";
 
   // goal not reached cannot be "best record"  
   if ($time >= 9999)
@@ -132,69 +130,16 @@ function get_arguments($post, $get)
     {
       $args[$arg] = $value;
     }
-    
-    // trim known text args
-    if(isset($args['pseudo']))
-        $args['pseudo'] = trim($args['pseudo']);
-    if(isset($args['replay']))
-        $args['replay'] = trim($args['replay']);
-    if (!isset($args['coins']))
-        $args['coins']=0;
-
-    // default value for known args
-    if(!isset($args['filter']))
-        $args['filter']='none';
-    if(isset($args['filter']) && !isset($args['filterval']))
-        $args['filter']='none';
-    if(!isset($args['type']))
-        $args['type'] = get_type_by_name("all");
-    if(!isset($args['diffview']))
-        $args['diffview'] = "off";
-    if(!isset($args['bestonly']))
-        $args['bestonly'] = "off";
-    if(!isset($args['newonly']))
-        $args['newonly'] = get_newonly_by_name("off");
-    if(!isset($args['levelset_f']))  // used in main page to filter, index in list
-        $args['levelset_f'] = 0;     // all by default
-    if(!isset($args['level_f']))     // used in main page to filter, index in list
-        $args['level_f'] = 0;        // all by default
-    if(!isset($args['folder']))
-        $args['folder'] = get_folder_by_name("contest");
-    if(!isset($args['goalnotreached']))
-        $args['goalnotreached'] = "off";
-    
-    // only use in admin
-    if(!isset($args['overwrite']))
-        $args['overwrite'] = 'off';
 
     return $args; // return args with all arguments
 }
 
 function getIsoDate($ts)
 {
-	return date('Y-m-d\\TH:i:s+00:00',$ts);
+    return date('Y-m-d\\TH:i:s+00:00',$ts);
 }
 
-function getInt($FileHandle)
-{
-    $BinaryData = fread($FileHandle, 4);
-    $UnpackedData = unpack("V", $BinaryData);
-    return $UnpackedData[1];
-}
-
-function getShort($FileHandle)
-{
-    $BinaryData = fread($FileHandle, 2);
-    $UnpackedData = unpack("S", $BinaryData);
-    return $UnpackedData[1];
-}
-
-function getString($FileHandle, $length)
-{
-    return  fread($FileHandle, $length);
-}
-
-function button($str, $width)
+function gui_button($str, $width)
 {
   if (empty($str)) return;
   $button = "<div class=\"button\" style=\"width:".$width."px;\">\n";
@@ -202,7 +147,17 @@ function button($str, $width)
   $button .= "</div>\n\n";
   echo $button;
 }
-function button_error($str, $width)
+
+function gui_button_noecho($str, $width)
+{
+  if (empty($str)) return;
+  $button = "<div class=\"button\" style=\"width:".$width."px;\">\n";
+  $button .= $str;
+  $button .= "</div>\n\n";
+  return $button;
+}
+
+function gui_button_error($str, $width)
 {
   if (empty($str)) return;
   $button = "<div class=\"error\" style=\"width:".$width."px;\">\n";
@@ -210,9 +165,29 @@ function button_error($str, $width)
   $button .= "</div>\n\n";
   echo $button;
 }
-function button_back()
+
+function gui_button_back()
 {
-  button("<a href=\"javascript:history.go(-1)\">Back</a>", 200);
+  global $lang;
+  gui_button("<a href=\"javascript:history.go(-1)\">".$lang['GUI_BUTTON_BACK']."</a>", 200);
+}
+
+function gui_button_main_page()
+{
+  global $lang;
+  gui_button("<a href=\"index.php\">".$lang['GUI_BUTTON_MAINPAGE']."</a>", 300);
+}
+
+function gui_button_main_page_admin()
+{
+  global $lang;
+  gui_button("<a href=\"admin.php\">".$lang['GUI_BUTTON_MAINPAGE_ADMIN']."</a>", 300);
+}
+
+function gui_button_return($name, $page)
+{
+  global $lang;
+  gui_button("<a href=\"".$page."\">".sprintf($lang['GUI_BUTTON_RETURN'], $name)."</a>", 300);
 }
 
 function replay_link($folder, $replay_file)
@@ -226,28 +201,73 @@ function GetDateFromTimestamp($timestamp)
   global $config;
   // Fonction permettant de traduire un timestamp
   
-  if ($config['bdd_mysql_version']=="4.0.x")
-  {
-    $s = substr($timestamp,12,2); // secondes
-    $mn = substr($timestamp,10,2); // minute
-    $h = substr($timestamp,8,2); // heure
-    $d = substr($timestamp,6,2); // jour
-    $m = substr($timestamp,4,2); // mois
-    $y = substr($timestamp,0,4); // année
-  }
-  else
-  {
-    $s = substr($timestamp,17,2); // secondes
-    $mn = substr($timestamp,14,2); // minute
-    $h = substr($timestamp,11,2); // heure
-    $d = substr($timestamp,8,2); // jour
-    $m = substr($timestamp,5,2); // mois
-    $y = substr($timestamp,0,4); // année
-  }
+  $s = substr($timestamp,17,2); // secondes
+  $mn = substr($timestamp,14,2); // minute
+  $h = substr($timestamp,11,2); // heure
+  $d = substr($timestamp,8,2); // jour
+  $m = substr($timestamp,5,2); // mois
+  $y = substr($timestamp,0,4); // année
    
   // TIMESTAMP mysql >> TIMESTAMP UNIX
   return mktime($h, $mn, $s, $m, $d, $y);
 }
+
+function GetDateFromDate($date)
+{
+  global $config;
+  // Fonction permettant de traduire une date
+  
+  $d = substr($date,8,2); // jour
+  $m = substr($date,5,2); // mois
+  $y = substr($date,0,4); // année
+
+  // TIMESTAMP mysql >> TIMESTAMP UNIX
+  return mktime(0, 0, 0, $m, $d, $y);
+}
+
+function GetDateLang($date)
+{
+  global $lang_months, $lang_days;
+
+  list($day, $month, $year, $hour) =   sscanf(date('j m Y H:i', $date), "%s %d %s %s");
+
+  echo $daystr;
+  return $day." ".$lang_months[$month]." ".$year.", ".$hour;
+}
+
+function GetDateLang_mini($date)
+{
+  global $lang_months, $lang_days;
+
+  list($day, $month, $year, $hour) =   sscanf(date('j m Y H:i', $date), "%s %d %s %s");
+  return $day."/".$month."/".$year.", ".$hour;
+}
+
+function GetDateLang_birthday($date)
+{
+  global $lang_months, $lang_days;
+
+  list($day, $month, $year, $hour) =   sscanf(date('j m Y H:i', $date), "%s %d %s %s");
+  return $day." ".$lang_months[$month]." ".$year;
+}
+
+function TimestampDiffDays($t1,$t2)
+{
+ $offset = $t1-$t2; 
+ return  floor($offset/60/60/24);
+}
+
+function TimestampDiffYears($t1,$t2)
+{
+ $offset = $t1-$t2; 
+ return floor($offset/60/60/24/365);
+}
+
+function TimestampDiffSecs($u_t1,$u_t2)
+{
+ return $u_t1-$u_t2;
+}
+
 
 /* pour mettre dans un javascript ou une URL, la total */
 function CleanContent($content)
@@ -312,7 +332,6 @@ function Javascriptize($string)
 
 function CheckMail($email)
 {
-  //if (ereg("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$", $email))
   // same as lib.mail 
   if (ereg("^[^@  ]+@([a-zA-Z0-9\-]+\.)+([a-zA-Z0-9\-]{2}|net|com|gov|mil|org|edu|int)\$",$email))
     return true;
@@ -320,32 +339,38 @@ function CheckMail($email)
     return false;
 }
 
-function GetFolderDescription($nb)
+
+function CheckUrl($url)
 {
-  global $folders, $config;
+   $ret = $url;
+   if (!empty($url) && (ereg("^http://",$url) == FALSE))
+     $ret = "http://" . $url;
+   return $ret;
+}
 
-  $name = get_folder_by_number($nb);
+function CheckLimitLength($var, $limit, $field_name="")
+{
+  global $lang;
 
-  $descpath = ROOT_PATH . "/";
-  $desc = $descpath . $config['folders_desc'];
- 
-  if (file_exists($desc))
-  {
-    $def = file($desc);
-    foreach($def as $v)
-    {
-      $v = trim($v);
-      if (preg_match('|^([^\t]*)[#]+(.*)$|',$v,$matches))
-	  {
-        if($matches[1]==$name)
-            return $matches[2];
-      }
-    }
+  if (strlen($var) > $limit) {
+    gui_button_error(sprintf($lang['CHECK_ERR_TOOLONG'], '"'.$field_name.'"', $limit), 500);
+    return false;
   }
   else
-  {
-    echo "No folders description file found.\n";
+    return true;
+}
+
+function CheckLimitInterval($var, $limit_min, $limit_max, $field_name="")
+{
+  global $lang;
+
+  $var = (integer) $var;
+  if ( ($var > $limit_max) || ($var < $limit_min) ) {
+    gui_button_error(sprintf($lang['CHECK_ERR_LIMITS'], '"'.$field_name.'"', $limit_min, $limit_max), 500);
+    return false;
   }
+  else
+    return true;
 }
 
 /*** IMPORTATION PEAR ***/

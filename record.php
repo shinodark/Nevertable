@@ -28,335 +28,321 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-if (isset($args['preview']))
-{
-  if ($args['to'] == "comedit" || $args['to'] == "comedit2")  
-    $args['prev_to'] = "comedit";
-  else if ($args['to'] == "addcomment")
-    $args['prev_to'] = "addcomment";
-  else
-    $args['prev_to'] = "error";
-  $args['to'] = 'compreview';
-}
-
 $table = new Nvrtbl("DialogStandard");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<?php $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame"); ?>
+<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
 
-
-/***************************************************/
-/* ----------- POST  COMMENT  ---------------------*/
-/***************************************************/
-if($args['to'] == 'compreview')
-{
-   $replay_id = $args['id'];
-   $content   = $args['content'];
-   $uid       = $args['user_id'];
-   $com_id    = $args['comid'];
-
-
-   if (empty($uid) || empty($content))
-   {
-     button_error("You can't post an empty message ^-^",400);
-    // keep content if exists
-     $nextargs = "record.php?content=".CleanContent($content)."&amp;to=addcomment";
-   }
-   else if (empty($replay_id) || ( ($args['prev_to'] == "comedit") && empty($com_id) ))
-   {
-    button_error("URL error",200);
-   }
-   else{
-
-   $o_user = new User($table->db);
-   $o_user->LoadFromId($uid);
-
-   echo "<div class=\"comments\">\n";
-   button("This is only a preview, nothing is submitted yet!", 400);
-   echo "<br/>\n";
-   /* table générale */
-   echo "<table>\n";
-   echo "<tr><th>Preview</th></tr>\n";
-   echo "<tr><td>\n";
-
-   /* table de contenu */
-   echo "<div class=\"embedded\">\n";
-   echo "<table>";
-   $content_prev = GetContentFromPost($content);
-   $content_prev = LineFeed2Html($content_prev);
-   $content_prev = $table->dialog->bbcode->parse($content_prev, "all", false);
-   $content_prev = $table->dialog->smilies->Apply($content_prev);
-   echo "<tr>";
-   echo "<td width=\"130px\" valign=\"top\">".$o_user->GetAvatarHtml()."</td>\n";
-   echo "<td class=\"com_content\">".$content_prev."</td>\n";
-   echo "</tr>\n";
-   echo "</table>\n";
-   echo "</div>\n";
-   /* fin table de contenu */
-   
-   echo "</table>\n";
-   echo "</div>\n";
-   /* fin table générale */
-
-   }
-
-   switch($args['prev_to'])
-   {
-     case "addcomment" :  $nextargs = "record.php?to=addcomment"; break;
-     case "comedit"    :  $nextargs = "record.php?to=comedit2&amp;comid=".$com_id; break;
-     default:
-     case error        :  $nextargs = "record.php"; break;
-   }
-   $jsfriendly = CleanContentPost($content);
-   $table->PrintCommentForm($replay_id, $jsfriendly, $uid);
-
-   button("<a href=\"record.php?id=".$replay_id."\">Return to record</a>", 300);
+function closepage()
+{   global $table;
+    gui_button_back();
+    echo "</div><!-- fin \"main\" -->\n";
+    $table->Close();
+    $table->dialog->Footer();
+    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
+    exit;
 }
 
-else if($args['to'] == 'addcomment')
+if (empty($args['id']))
 {
-  $replay_id = $args['id'];
-  $content   = $args['content'];
-  $uid       = $args['user_id'];
+  gui_button_error("URL error", 400);
+  closepage();
+}
 
+/* test si le record existe, et le charge. */
+$replay_id = $args['id'];
+if (empty($replay_id)) {
+  gui_button_error("URL error.", 200);
+  closepage();
+}
+  
+$rec = new Record($table->db);
+if(!$rec->LoadFromId($args['id']))
+{
+  gui_button_error($rec->GetError(), 400);
+  closepage();
+} 
 
-  if (!Auth::Check(get_userlevel_by_name("member")))
+if (!empty($args['comuser_id']))
+{
+  $comuser = new User($table->db);
+  if(!$comuser->LoadFromId($args['comuser_id']))
   {
-    button_error("You have to log in to post a comment !", 400);
-  }
-  
-  else 
-  {
-  
-  if ( empty($content))
-  {
-    button_error("You can't post an empty message ^-^",400);
-    button_back();
-  }
-  else if (empty($replay_id))
-  {
-    button_error("URL error",200);
-  }
-  else
-  {
-     $com = new Comment($table->db);
-     $content = GetContentFromPost($content);
-     $com->SetFields(array("id"         => $comid,
-                           "replay_id"  => $replay_id,
-                           "user_id"    => $uid,
+    gui_button_error($user->GetError(), 400);
+    closepage();
+  } 
+}
+
+/*
+   TRAITEMENT DES EVENEMENTS 
+*/
+
+  if (isset($args['upcomments']) && !isset($args['preview']))
+  { 
+    if (!Auth::Check(get_userlevel_by_name("member")))
+    {          
+      gui_button_error($lang['NOT_MEMBER'], 400);
+      closepage();
+    }
+
+    if ( empty($args['content']) )
+    {
+      gui_button_error($lang['COMMENTS_ERR_EMPTY_CONTENT'], 400);
+    }
+
+    else if (empty($args['comuser_id']))
+    {
+      gui_button_error("URL error", 400);
+      closepage();
+    }
+    else
+    {
+      $com = new Comment($table->db);
+      $content = GetContentFromPost($args['content']);
+      $com->SetFields(array(
+                           "replay_id"  => $args['id'],
+                           "user_id"    => $args['comuser_id'],
                            "content"    => $content)
                     );
-
      $ret = $com->Insert();
-
-     if (!$ret)
-     {
-       button_error($com->GetError(), 500);
+     if (!$ret) {
+       gui_button_error($com->GetError(), 500);
      }
      else
      {
-       $u = new User($table->db);
-       $ret = $u->LoadFromId($uid);
-       if ($ret)
-         $u->_RecountComments();
-       else
-         button_error($u->GetError(), 500);
-       
-       $content = ""; // vide pour ne pas conserver dans commentform
-       button("Your comment is added ! Thanks !", 400);
+       gui_button($lang['GUI_UPDATE_OK'], 300);
      }
-    $jsfriendly = CleanContentPost($content);
-    $table->Post($replay_id, $jsfriendly);
+
+    }
+  }
+  
+  /* Edition du commentaire par l'utilisateur */
+  if (isset($args['comedit']))
+  { 
+    if (!Auth::Check(get_userlevel_by_name("member")))
+    {          
+      gui_button_error($lang['NOT_MEMBER'], 400);
+      closepage();
+    }
+
+    if (empty($args['com_id']) || empty($args['comuser_id']) )
+    {
+      gui_button_error("URL error", 400);
+      closepage();
+    }
+    $com = new Comment($table->db);
+    $ret = $com->LoadFromId($args['com_id']);
+    if (!$ret)
+    {
+      gui_button_error($com->GetError(), 500);
+      closepage();
+    }
+
+    $jsfriendly = CleanContent($com->GetContent());
+    $nextargs = "record.php?comedit2";
+    $table->dialog->CommentForm($comuser->GetId(), $comuser->GetPseudo(), $jsfriendly, $nextargs);
+    closepage();
+  }
+ 
+  if (isset($args['comedit2']) && !isset($args['preview']) )
+  { 
+    if (!Auth::Check(get_userlevel_by_name("member")))
+    {          
+      gui_button_error($lang['NOT_MEMBER'], 400);
+      closepage();
+    }
+    
+    if (empty($args['com_id']) || empty($args['comuser_id']) )
+    {
+      gui_button_error("URL error", 400);
+      closepage();
+    }
+    
+    $com = new Comment($table->db);
+    $ret = $com->LoadFromId($args['com_id']);
+    if (!$ret)
+    {
+      gui_button_error($com->GetError(), 500);
+      closepage();
+    }
+ 
+    $auth_ok = false;
+    if (Auth::Check(get_userlevel_by_name("moderator"))
+    ||  Auth::CheckUser($comuser->GetId()))
+    {
+       $auth_ok = true;
+    }
+
+    if ($auth_ok !== true)
+    {
+      gui_button_error($lang['NOT_MODERATOR'], 500);
+      closepage();
+    }
+
+    if ( empty($args['content']))
+    {
+      gui_button_error($lang['COMMENTS_ERR_EMPTY_CONTENT'],400);
+      closepage();
+    }
+
+    $content = GetContentFromPost($args['content']);
+    $com->SetFields(array("content"    => $content));
+                           
+    $ret = $com->Update(true);
+    if (!$ret)
+       gui_button_error($com->GetError(), 400);
+    else
+       gui_button($lang['GUI_UPDATE_OK'], 300);
+  }
+ 
+  if (isset($args['comdel']))
+  { 
+    if (!Auth::Check(get_userlevel_by_name("moderator")))
+    {          
+      gui_button_error($lang['NOT_MODERATOR'], 400);
+      closepage();
+    }
+
+    if (empty($args['com_id']))
+    {
+      gui_button_error("URL error", 400);
+      closepage();
+    }
+
+    $com = new Comment($table->db);
+    $com->LoadFromId($args['com_id']);
+    $ret = $com->Purge();
+    if (!$ret)
+      gui_button_error($com->GetError());
+    else
+      gui_button($lang['GUI_UPDATE_OK'], 400);
   }
 
-  } // fin auth
+  if(isset($args['preview']))
+  {
+    if (empty($args['content']))
+    {
+      gui_button_error($lang['COMMENTS_ERR_EMPTY_CONTENT'], 400);
+    }
 
-  button("<a href=\"index.php\">Return to table</a>", 200);
-}
+    else {
 
-/***************************************************/
-/* ----------- COMMENTAIRES MODERATION ------------*/
-/***************************************************/
-else if ($args['to'] == 'comedit')
+    gui_button($lang['COMMENTS_PREVIEW_WARNING'], 400);
+    echo "<br/>\n";
+    /* Affichage du preview */
+    echo "<div class=\"comments\">\n";
+    echo "<div class=\"comments_content\">\n";
+    /* table générale */
+    echo "<table>\n";
+    echo "<tr><th>".$lang['COMMENTS_PREVIEW_TITLE'] ."</th></tr>\n";
+    echo "<tr><td>\n";
+
+    /* table de contenu */
+    echo "<div class=\"embedded\">\n";
+    echo "<table>";
+    $content_prev = GetContentFromPost($args['content']);
+    $content_prev = LineFeed2Html($content_prev);
+    $content_prev = $table->dialog->bbcode->parse($content_prev, "all", false);
+    $content_prev = $table->dialog->smilies->Apply($content_prev);
+    echo "<tr>";
+    echo "<td width=\"130px\" valign=\"top\">".$comuser->GetAvatarHtml()."</td>\n";
+    echo "<td class=\"com_content\">".$content_prev."</td>\n";
+    echo "</tr>\n";
+    echo "</table>\n";
+    echo "</div>\n"; /* fin table de contenu */
+   
+    echo "</table>\n";
+    echo "</div>\n"; /* fin comments_contents */
+   
+   
+    $jsfriendly = CleanContent($args['content']);
+    if (isset($args['comedit2']))
+      $nextargs = "record.php?comedit2";
+    else
+      $nextargs = "record.php?upcomments";
+    $table->dialog->CommentForm($comuser->GetId(), $comuser->GetPseudo(), $jsfriendly, $nextargs);
+    
+    echo "</div>\n"; /* fin comments */
+    closepage();
+    }
+  }
+
+/*
+   AFFICHAGE DES COMMENTAIRES
+ */
+  $table->dialog->Record($rec->GetFields());
+  $table->dialog->RecordLink($rec->GetFields());
+
+  $table->dialog->Output('<div id="comments">'."\n");
+
+ 
+  /* gestion du numéro de page et de l'offset */
+  $off = ($args['page']-1) * $config['comments_limit'];
+      
+  /* Comptage du nombre total */
+  $table->db->RequestInit("SELECT", "com", "COUNT(id)");
+  $table->db->RequestGenericFilter("replay_id", $replay_id);
+  $table->db->Query();
+  $val = $table->db->FetchArray();
+  $total = $val['COUNT(id)'];
+
+  $results = $table->db->helper->RequestMatchRecords(array("id" => $replay_id));
+  $p = $config['bdd_prefix'];
+  $table->db->RequestSelectInit(
+         array("com", "users"),
+            array(
+                $p."com.id AS id",
+                $p."com.replay_id AS replay_id",
+                $p."com.user_id AS user_id",
+                $p."com.content AS content",
+                $p."com.timestamp AS timestamp",
+                $p."users.pseudo AS user_pseudo",
+                $p."users.user_avatar AS user_avatar",
+                ),
+            "SELECT", "com");
+  $table->db->RequestGenericFilter($p."com.user_id", $p."users.id", "AND", false);
+  $table->db->RequestGenericFilter($p."com.replay_id", $replay_id);
+  $table->db->RequestGenericSort(array($p."com.timestamp"), "ASC");
+  $table->db->RequestLimit($config['comments_limit'], $off);
+  if (!$res = $table->db->Query())
+     gui_button_error("error on query.");
+
+  $table->dialog->Comments($res);
+  
+
+/*
+   AFFICHAGE DU FORMULAIRE
+*/
+  
+if (!Auth::Check(get_userlevel_by_name("member")))
 {
-   $replay_id = $args['id'];
-   $id        = $args['comid'];
-
-   if (empty($replay_id) || empty($id))
-   {
-     button_error("URL error",200);
-   } 
-   else {
-
-   $com = new Comment($table->db);
-   $ret = $com->LoadFromId($id);
-   if (!$ret)
-   {
-     button_error($com->GetError(), 500);
-   }
-   else
-   {
-     $auth_ok = false;
-
-     if (Auth::Check(get_userlevel_by_name("moderator"))
-     ||  Auth::CheckUser($com->GetUserId()))
-     {
-       $auth_ok = true;
-     }
-
-     if ($auth_ok !== true)
-      button_error("You have to be a moderator or the author of this comment to edit it.", 500);
-     else {
-       
-     if (!isset($replay_id) || !isset($id))
-       button_error("URL error.", 200);
-     else {
-
-     $jsfriendly = CleanContent($com->GetContent());
-     $nextargs = "record.php?comid=".$id."&amp;to=comedit2";
-     $table->PrintCommentForm($replay_id, $jsfriendly, $com->GetUserId());
-     }
-
-     } // fin auth
-   }
-
-   }
-   button("<a href=\"record.php?id=".$replay_id."\">Return to record</a>", 300);
+  gui_button($lang['LOGIN_TO_POST'], 400);
 }
-
-else if($args['to'] == 'comedit2')
-{
-   $comid     = $args['comid'];
-   $replay_id = $args['id'];
-   $content   = $args['content'];
-   $uid       = $args['user_id'];
-   $timestamp = $args['timestamp'];
-     
-   if (empty($comid) || empty($replay_id) || empty($uid))
-   {
-     button_error("URL error",200);
-   }
-
-   else {
-   
-   $com = new Comment($table->db);
-   
-   /* on vérifie si le commentaire est valide */
-   $ret = $com->LoadFromId($comid);
-   if (!$ret)
-   {
-     button_error($com->GetError(), 500);
-   }
-   else
-   {
-     $auth_ok = false;
-
-     if (Auth::Check(get_userlevel_by_name("moderator"))
-     ||  Auth::CheckUser($com->GetUserId()))
-     {
-       $auth_ok = true;
-     }
-
-     if ($auth_ok !== true)
-      button_error("You have to be a moderator or the author of this comment to edit it.", 500);
-     else {
-   
-     if ( empty($content))
-     {
-       button_error("You can't post an empty message ^-^",400);
-       button_back();
-     }
-     else
-     {
-       $content = GetContentFromPost($content);
-       $com->SetFields(array("id"       => $comid,
-                           "replay_id"  => $replay_id,
-                           "user_id"    => $uid,
-                           "content"    => $content)
-                    );
-
-       $ret = $com->Update(true);
-       if (!$ret)
-       {
-         button_error($com->GetError());
-       }
-       else
-       {
-         button("Comment edited !", 400);
-       }
-     }
-
-   /* Reaffichage des commentaires */
-     $table->Post($replay_id);
-
-     }//fin auth
-   }//fin Load comment
-
-   }// URL error
-
-  button("<a href=\"index.php\">Return to table</a>", 200);
-}
-
-else if ($args['to'] == 'comdel')
-{
-   $replay_id = $args['id'];
-   $com_id    = $args['comid']; 
-
-   if (!Auth::Check(get_userlevel_by_name("moderator")))
-    button_error("You have to be a moderator to delete comments.", 400);
-   else {
-
-   if (empty($replay_id) || empty($com_id))
-    button_error("URL error.", 200);
-   else {
-
-   $com = new Comment($table->db);
-   $com->LoadFromId($com_id);
-   $ret = $com->Purge();
-   if (!$ret)
-   {
-     button_error($com->GetError());
-   }
-   else
-   {
-     button("Comment deleted !", 400);
-   }
-   
-   $table->Post($replay_id);
-   } // URL error
-   } // fin auth
-
-   button("<a href=\"index.php\">Return to table</a>", 200);
-}
-
-/**************************************/
-/* ----------- AFFICHAGE -------------*/
-/**************************************/
 else
 {
-  $replay_id = $args['id'];
-  if (empty($replay_id))
-    button_error("URL error.", 200);
-  else 
-    $table->Post($replay_id);
-  
-   button("<a href=\"index.php\">Return to Table</a>", 300);
+ $table->dialog->CommentForm($_SESSION['user_id'], $_SESSION['user_pseudo'], "", 'record.php?upcomments') ;
 }
+
+  $table->dialog->NavBar($total, $config['comments_limit'], 'record.php', '&amp;id='.$args['id']);
+
+$table->dialog->Output('</div><!-- comments -->');
+
+gui_button_main_page();
 
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

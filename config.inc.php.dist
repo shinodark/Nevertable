@@ -27,6 +27,5 @@ $config = array (
     "bdd_user"          => "localebase",
     "bdd_passwd"        => "pass",
     "bdd_prefix"        => "nvrtbl_",
-    "bdd_mysql_version" => "4.1.x",  /* 4.0.x or 4.1.x */
     );
 ?>

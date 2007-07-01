@@ -25,6 +25,7 @@ define('PATHMAX',64);
 class FileManager
 {
   var $filename;
+  var $handle;
 
   /*__Constructeur__
 	
@@ -98,7 +99,7 @@ class FileManager
         return true;
       }
       else {
-          $this->error = "Error deleting file ".$this->filename." from server !";
+        $this->error = "Error deleting file ".$this->filename." from server !";
         return false;
       }
   }
@@ -165,9 +166,9 @@ class FileManager
   {
     $d=0; $d=0;
     $f_arr=array(); $d_arr=array();
-    if ($handle = @opendir($dir))
+    if ($dirhandle = @opendir($dir))
     {
-      while (false !== ($file = @readdir($handle)))
+      while (false !== ($file = @readdir($dirhandle)))
       {
         if (is_file($dir."/".$file))
         {
@@ -177,7 +178,7 @@ class FileManager
         else if (is_dir($dir."/".$file) && $file !== "." && $file !== "..")
           $d_arr[$d++] = $file;
       }
-      closedir($handle);
+      closedir($dirhandle);
       return array("files" => $f_arr, "subdir" => $d_arr);
     }
     else
@@ -210,22 +211,68 @@ class FileManager
     return @stat($this->filename);
   }
 
-  function IsFile()
+  function Exists()
   {
-    return @is_file($this->filename);
+    return @file_exists($this->filename);
   }
-
-  function Read()
+  
+  function Open($att = "r")
   {
-    $handle = @fopen($this->filename, "r");
-    if (!$handle)
+    if (!isset($this->handle))
+    {
+        if (!file_exists($this->filename) || !is_readable($this->filename) )
+        {
+            $this->SetError("file ".$this->filename." doesn't exist or is not readable");
+            return false;
+        }
+       $this->handle = @fopen($this->filename, $att);
+    }
+    if (!$this->handle)
     {
       $this->SetError("Error opening file ".$this->filename." for reading.");
       return false;
     }
-    $data = @fread($handle, filesize($this->filename));
-    @fclose($handle);
+    return true;
+  }
+  
+  function Close()
+  {
+    if (isset($this->handle))
+       @fclose($this->handle);
+    unset($this->handle);
+  }
+  
+  function IsEof()
+  {
+     if (!isset($this->handle))
+         return true;
+     return @feof($this->handle);
+  }
+
+
+  function Read()
+  {
+    if (!isset($this->handle))
+    {
+      $ret = $this->Open();
+      if (!$ret)
+        return false;
+    }
+    $data = @fread($this->handle, filesize($this->filename));
+    $this->Close();
     return $data;
+  }
+
+  function ReadLine()
+  {
+    if (!isset($this->handle))
+    {
+      $ret = $this->Open();
+      if (!$ret)
+        return false;
+    }
+    $line = @fgets($this->handle, 4096);
+    return $line;
   }
 
   function ReadString()
@@ -241,23 +288,69 @@ class FileManager
 
   function Write($data)
   {
-    $handle = @fopen($this->filename, "w");
-    if (!$handle)
+    if (!isset($this->handle))
     {
-      $this->SetError("Error opening file ".$this->filename." for writing.");
-      return false;
+      $ret = $this->Open("w");
+      if (!$ret)
+        return false;
     }
-    if (! @fwrite($handle, $data))
+    if (! @fwrite($this->handle, $data))
     {
       $this->SetError("Error writing data to file ".$this->filename." .");
       return false;
     }
-    @fclose($handle);
+    $this->Close();
     if (! @chmod ($this->filename, 0666))
     {
       $this->SetError("Error chmod file ".$this->filename." .");
     }
     return true;
+  }
+  
+  function ReadInt()
+  {
+    if (!isset($this->handle))
+    {
+      $ret = $this->Open();
+      if (!$ret)
+        return false;
+    }
+
+    $BinaryData = fread($this->handle, 4);
+    $UnpackedData = unpack("V", $BinaryData);
+    return $UnpackedData[1];
+  }
+ 
+  function ReadShort()
+  {
+    if (!isset($this->handle))
+    {
+      $ret = $this->Open();
+      if (!$ret)
+        return false;
+    }
+
+    $BinaryData = fread($this->handle, 2);
+    $UnpackedData = unpack("S", $BinaryData);
+    return $UnpackedData[1];
+  }
+
+  function ReadStringLength($length)
+  {
+    if (!isset($this->handle))
+    {
+      $ret = $this->Open();
+      if (!$ret)
+        return false;
+    }
+
+    return  fread($this->handle, $length);
+  }
+
+
+  function GetHash()
+  {
+    return md5_file($this->filename);
   }
   
   function GetFileName()

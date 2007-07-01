@@ -38,67 +38,111 @@ $table = new Nvrtbl("DialogAdmin");
 <?php
 
 
-$table->PrintHtmlHead("Nevertable - Neverball Hall of Fame");
+$table->dialog->Head("Nevertable - Neverball Hall of Fame");
 ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
-if (!Auth::Check(get_userlevel_by_name("root")))
-{
-  button_error("You have to be root to access this page.", 400);
-  exit;
+
+function closepage()
+{   global $table;
+    gui_button_return("Member list", "memberlist.php");
+    gui_button_main_page_admin();
+    echo "</div><!-- fin \"main\" -->\n";
+    $table->Close();
+    $table->dialog->Footer();
+    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
+    exit;
 }
 
-else if (isset($args['upmember']))
+if (!Auth::Check(get_userlevel_by_name("admin")))
+{
+  gui_button_error($lang['NOT_ADMIN'], 400);
+  closepage();;
+}
+
+if (isset($args['upmember']))
 {
   if (!Auth::Check(get_userlevel_by_name('root'))) {
-    button_error("Only root can modify member properties.", 400);
+	  gui_button_error($lang['NOT_ROOT'], 400);
+	  closepage();
   }
-  else if (!empty($args['id']) && !empty($args['pseudo'])) {
+  if (!empty($args['id']) && !empty($args['pseudo'])) {
     $u = new user($table->db);
     $u->LoadFromId($args['id']);
     $u->SetFields(array("pseudo" => $args['pseudo'], "level" => $args['authlevel']));
     if(!$u->Update())
-      button_error($u->GetError(), 400);
-    else
-      button("user #".$args['id']." updated.", 300);
+    {
+	    gui_button_error($u->GetError(), 400);
+	    closepage();
+    }
+    gui_button("user #".$args['id']." updated.", 300);
   }
-  button("<a href=\"memberlist.php\">Return to member list</a>", 200);
 }
 
-else if (isset($args['delmember']))
+if (isset($args['delmember']))
 {
   if (!Auth::Check(get_userlevel_by_name('root'))) {
-    button_error("Only root can modify member properties.", 400);
+	  gui_button_error($lang['NOT_ROOT'], 400);
+	  closepage();
   }
-  else if (!empty($args['id'])) {
+
+  gui_button($lang['ADMIN_MEMBERS_CONFIRM_DELETE'], 500);
+  gui_button('<a href="?delete2&amp;id='.$args['id'].'" style="color: red;"><b>'.$lang['GUI_YES'].'</b></a>', 100);
+
+  closepage();
+}
+
+if (isset($args['delete2']))
+{
+
+  if (!empty($args['id'])) {
     $u = new user($table->db);
     $u->LoadFromId($args['id']);
-    $u->SetFields(array("pseudo" => $args['pseudo'], "level" => $args['authlevel']));
     if(!$u->Purge())
-      button_error($u->GetError(), 400);
-    else
-      button("user #".$args['id']." is deleted ! .", 300);
-
+    {
+       gui_button_error($u->GetError(), 400);
+       closepage();
+    }
+    gui_button("user #".$args['id']." is deleted !", 300);
   }
-  button("<a href=\"memberlist.php\">Return to member list</a>", 200);
 }
 
+  $table->db->RequestInit("SELECT", "users");
+  /* Contre le problème du sort=0 si aucun get n'est passé */
+  if (!isset($_GET['sort']))
+     $args['sort'] = 2;
+  switch($args['sort'])
+  {
+     case 0: $table->db->RequestGenericSort(array("pseudo"), "ASC"); break;
+     case 1: $table->db->RequestGenericSort(array("stat_total_records", "stat_best_records"), array("DESC", "DESC"));
+         break;
+     default: 
+     case 2: $table->db->RequestGenericSort(array("stat_best_records", "stat_total_records"), array("DESC", "DESC"));
+         break;
+     case 3: $table->db->RequestGenericSort(array("stat_comments"), "DESC"); break;
+     case 4: $table->db->RequestGenericSort(array("level"), "ASC"); break;
+     case 5: $table->db->RequestGenericSort(array("id"), "ASC"); break;
+  }
+  $res = $table->db->Query();
+  if(!$res) {
+      echo gui_button_error(  $table->db->GetError(), 400);
+  }
+  else
+  {
+    $table->dialog->MemberList($res);
+  }
 
-else
-{
-  $table->PrintMemberList($args);
-}
-  
-button("<a href=\"admin.php\">Return to admin panel</a>", 400);
+
+gui_button_main_page_admin();
 ?>
 </div> <!-- fin main-->
 <?php
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

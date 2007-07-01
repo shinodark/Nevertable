@@ -31,32 +31,32 @@ $table = new Nvrtbl("DialogStandard");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<?php $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame"); ?>
+<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <div id="prelude">
 <?php 
-$conditions  = ROOT_PATH . "conditions.txt";
-if (file_exists($conditions))
-{
-  $line = file_get_contents($conditions);
-  echo $line . "<br />\n";
-}
+
+$langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
+$conditions  = $langpath . "conditions.txt";
+$f = new FileManager($conditions);
+if ($f->Exists())
+	echo $f->ReadString() . "<br />\n";
 
 ?>
 </div><!-- fin "prelude" -->
 
-<?php button_back();?>
+<?php gui_button_back();?>
 
 </div><!-- fin "main" -->
 
 <?php
 /* Close avant le footer, car db inutile et pour les statistiques de temps */
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

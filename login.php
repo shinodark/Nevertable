@@ -38,7 +38,7 @@ if (isset($args['out']))
   Auth::CloseSession();
   $table->RemoveOnlineUser();
   $special="<meta http-equiv=\"refresh\" content=\"1;URL=./\" />\n";
-  $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame", $special);
+  $table->dialog->Head("Nevertable - Neverball Hall of Fame", $special);
 }
 else
 {
@@ -57,7 +57,7 @@ else
     else
      $special="<meta http-equiv=\"refresh\" content=\"1;URL=./\" />\n";
   }
-  $table->PrintHtmlHead("Nevertable - Neverball Hall of Fame", $special);
+  $table->dialog->Head("Nevertable - Neverball Hall of Fame", $special);
 }
 ?>
 
@@ -67,53 +67,47 @@ else
 
 <body>
 <div id="page">
-<?php   $table->PrintTop();  ?>
+<?php   $table->dialog->Top();  ?>
 <div id="main">
 <?php
 
 if(isset($args['out']))
 {
   if (!$was_logged)
-    button_error("You're not logged in.", 400);
+    gui_button_error($lang['LOGIN_NOTLOGIN'], 400);
   else
-    button("Logged out ! Redirecting to main page...", 400);
+    gui_button($lang['LOGIN_LOGOUT'], 400);
 }
 else if($success)
 {
-  button("Logged in ! Redirecting ...", 400);
+  gui_button($lang['LOGIN_LOGIN'], 400);
 }
 else if(isset($args['ready']))
 {
-  ?>
-  <div class="nvform" style="width: 300px;">
-  <form action="login.php" method="post" name="login">
-  <table>
-  <tr>
-  <th>Ready ?</th>
-  </tr>
-  <tr>
-  <td><center><input type="text" id="pseudo" name="pseudo" size="10" value="Login" onfocus="if (this.value=='Login') this.value=''" /></center></td>
-  </tr><tr>
-  <td><center>&nbsp;&nbsp;<input type="password" id="passwd" name="passwd" size="10" value="passwd" onfocus="this.value=''" /></center></td>
-  </tr><tr>
-  <td><center><input type="submit" value="Go!" /></center><br/></td>
-  </tr></table>
-  </form>
-  </div>
-  <?php
-  button("<a href=\"index.php\">Return to main page</a>", 300);
+  $form = new Form("post", "login.php", "resgister", 300);
+  $form->AddTitle($lang['LOGIN_FORM_TITLE']);
+  $option = 'onfocus="if (this.value==\''.$lang['LOGIN_FORM_PSEUDO'].'\') this.value=\'\'" ';
+  $form->AddInputText("pseudo", "pseudo", $lang['LOGIN_FORM_PSEUDO'], 10, $lang['LOGIN_FORM_PSEUDO'], $option);
+  $form->Br();
+  $option = 'onfocus=" this.value=\'\'" ';
+  $form->AddInputPassword("passwd", "passwd", $lang['LOGIN_FORM_PASSWD'], 10, $lang['LOGIN_FORM_PASSWD'], $option);
+  $form->Br();
+  $form->AddInputSubmit("Login");
+  echo $form->End();
+
+  gui_button("<a href=\"index.php\">Return to main page</a>", 300);
 }
 else 
 {
-  button_error("Auth failed. Try again...", 200);
-  button_error($auth->GetError(), 200);
-  button_back();
+  gui_button_error("Auth failed. Try again...", 200);
+  gui_button_error($auth->GetError(), 200);
+  gui_button_back();
 }
 ?>
 </div><!-- fin "main" -->
 <?php    
 $table->Close();
-$table->PrintFooter();
+$table->dialog->Footer();
 ?>
 
 </div><!-- fin "page" -->

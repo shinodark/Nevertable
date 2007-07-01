@@ -26,16 +26,16 @@ class Record
     var $fields;
     var $isload;
 
-	/*__Constructeur__
-	Cette fonction initialise l'objet Record.
+    /*__Constructeur__
+    Cette fonction initialise l'objet Record.
 
     @param: pointeur vers la base de donnée
-	*/
-	function Record(&$db)
-	{
-        $this->db = &$db;
-        $this->isload = false;
-	}
+    */
+    function Record(&$db)
+    {
+       $this->db = &$db;
+       $this->isload = false;
+    }
 
     /* Chargement des champs d'un record à partir de l'id */
     function LoadFromId($id)
@@ -93,15 +93,22 @@ class Record
     }
 
     /* Mise à jour du record dans la bdd avec les champs actuellement chargé */
-    function Update($conservative=false,$id="")
+    function Update($conservative=false)
     {
-      if (!$this->isload)
+      if(!$this->isload)
+      {
+        $this->error = "Record is not loaded!";
+	return false;
+      }
+      if(empty($this->fields['id']))
+      {
+        $this->error = "Trying to update with no id specified!";
         return false;
-      if(empty($id))
-        $id = $this->fields['id'];
+      }
+
       $this->db->RequestInit("UPDATE", "rec");
       $this->db->RequestUpdateSet($this->fields, $conservative);
-      $this->db->RequestGenericFilter("id", $id);
+      $this->db->RequestGenericFilter("id", $this->fields['id']);
       $this->db->RequestLimit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
@@ -124,20 +131,20 @@ class Record
         $this->SetError($this->db->GetError());
         return false;
       }
-      else {
-        /* le but ici est de récupérer le nouveau record pour mise à jour des infos */
-        /* cela permet d'avoir le bon id surtout, pour un affichage correct */
-        $this->db->RequestInit("SELECT", "rec");
-        $this->db->RequestGenericSort(array("timestamp"), "DESC");
-        $this->db->RequestLimit(1);
-        if($this->db->Query()) {
-          $this->SetFields($this->db->FetchArray());
-        }
-        $this->_UpdateUserStats();
-
-        /* on retourne true de toute façon, l'opération est déjà effectuée */
-        return true;
+      /* le but ici est de récupérer le nouveau record pour mise à jour des infos */
+      /* cela permet d'avoir le bon id surtout, pour un affichage correct */
+      $this->db->RequestInit("SELECT", "rec");
+      $this->db->RequestGenericSort(array("id"), "DESC");
+      $this->db->RequestLimit(1);
+      if($this->db->Query()) 
+        $this->SetFields($this->db->FetchArray());
+      else
+      {
+        $this->SetError($this->db->GetError());
+        return false;
       }
+      $this->_UpdateUserStats();
+
       return true;
     }
 
@@ -146,15 +153,19 @@ class Record
     {
       global $config;
 
-      $ret = true;
       if (!$this->isload)
-        return false;
+	      return false;
+
+      if ($this->fields['folder'] == $folder)
+        return true;
+      
+      $ret = true;
      
       if ($this->GetReplayRelativePath())
         $f = new FileManager($this->GetReplayRelativePath());
       else
       {
-        button_error("Error in GetReplayRelativePath(), replay:".$this->fields['replay']. " folder: ".$this->fields['folder'], 500);
+        gui_button_error("Error in GetReplayRelativePath(), replay:".$this->fields['replay']. " folder: ".$this->fields['folder'], 500);
         return false;
       }
 
@@ -167,7 +178,7 @@ class Record
       {
         $this->SetError($f->GetError()." But record is moved.");
         /* affiche l'erreur car avec le ret=true, elle ne sera pas affichée sinon */
-        button_error($this->GetError(), 300);
+        gui_button_error($this->GetError(), 500);
         $ret = true;
       }
       else /* change le nom au cas où il est changer par $f->Move()... */
@@ -178,7 +189,6 @@ class Record
       $this->SetFields(array("folder" => $folder));
       if(!$this->Update())
         $ret = false;
-        
       $this->_UpdateUserStats();
       return $ret;
     }
@@ -253,7 +263,23 @@ class Record
     function Purge($filedelete=false)
     {
       if(!$this->isload)
+      {
+        $this->error = "Record is not loaded!";
+	return false;
+      }
+      if(empty($this->fields['id']))
+      {
+        $this->error = "Trying to purge with no id specified!";
         return false;
+      }
+
+      $this->db->RequestInit("DELETE", "com");
+      $this->db->RequestGenericFilter("replay_id", $this->fields['id']);
+      if(!$this->db->Query()) {
+        $this->SetError($this->db->GetError());
+        return false;
+      }
+      
       $this->db->RequestInit("DELETE", "rec");
       $this->db->RequestGenericFilter("id", $this->fields['id']);
       $this->db->RequestLimit(1);
@@ -261,36 +287,24 @@ class Record
         $this->SetError($this->db->GetError());
         return false;
       }
-      else {
-        $this->db->RequestInit("DELETE", "com");
-        $this->db->RequestGenericFilter("replay_id", $this->fields['id']);
-        if(!$this->db->Query()) {
-          $this->SetError($this->db->GetError());
-          return false;
+      if($filedelete)
+      {
+        /* purge fichier */
+        if ($this->GetReplayRelativePath())
+        {
+          $f = new FileManager($this->GetReplayRelativePath());
+          if(!$f->Unlink())
+             gui_button_error($this->SetError($f->GetError()), 400);
+          else
+             gui_button("replay file : ".$f->GetBaseName()." deleted from server", 500);
         }
-        else if($filedelete) {
-          /* purge fichier */
-	  if ($this->GetReplayRelativePath())
-	  {
-            $f = new FileManager($this->GetReplayRelativePath());
-            if(!$f->Unlink())
-            {
-              $this->SetError($f->GetError());
-              return false;
-            }
-            else
-            {
-               button("replay file : ".$f->GetBaseName()." deleted from server", 500);
-            }
-          }
-	  else
-	  {	
-             button_error("Error in GetReplayRelativePath(), replay:".$this->fields['replay']. " folder: ".$this->fields['folder'], 500);
-             return false;
-	  }
-          $this->_UpdateUserStats();
+        else
+        {	
+            gui_button_error("Error in GetReplayRelativePath(), replay:".$this->fields['replay']. " folder: ".$this->fields['folder'], 500);
         }
       }
+      $this->_UpdateUserStats();
+      $this->isload = false;
       return true;
     }
 
@@ -299,7 +313,7 @@ class Record
       return $this->fields['id'];
     }
     
-    function GetuserId()
+    function GetUserId()
     {
       return $this->fields['user_id'];
     }
@@ -397,6 +411,7 @@ class Record
       {
         $u->_RecountTotalRecords();
         $u->_RecountBestRecords();
+        $u->_RecountComments();
       }
     }
     
