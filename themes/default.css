@@ -1,0 +1,329 @@
+@import url('layout.css');
+
+body {
+    font-family: Trebuchet, Tahoma, Helvetica, "Bitstream Vera Sans", sans-serif;
+    font-size: 12px;
+    background : #eee;
+}
+
+a {
+    color : #003;
+    background: transparent;
+    text-decoration: none;
+}
+
+img {
+    border: 0;
+}
+
+
+#page {
+    background: #fff url(images/bg.png) repeat-y left;
+    color : #223;
+}
+
+#main {
+    background: transparent;
+}
+
+input, textarea {
+    font-family: Trebuchet, Tahoma, Helvetica, "Bitstream Vera Sans", sans-serif;
+    border : 1px solid gray;
+    padding : 2px;
+    background: #fcc;
+    font-size: 10px;
+}
+select, option {
+    background: #fcc;
+}
+input[type=submit]:hover, input[type=submit]:focus {
+	background : #daa;
+}
+
+input[type=text]:focus, input[type=password]:focus, textarea:focus {
+	border: 1px solid red;
+}
+
+table {
+    border: 1px solid #E0E0E0;
+    width: 100%;
+}
+
+th {
+    font-weight: bold;
+    text-align: center;
+    color: #556;
+    background: #FFF url(images/back-vertic.png) repeat-x;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    color: #223;
+}
+
+caption {
+    font-weight: bold;
+    text-align: center;
+}
+
+.embedded table, .embedded td, .embedded tr, .embedded th {
+    border: 0px;
+    padding: 0 0 0 0;
+}
+
+.embedded td {
+    height: 40px;
+}
+
+.embedded input {
+    font-family: "Courier New";
+    font-size: 14px;
+    border: 1px;
+    border-color: #888;
+    background: #ffe;
+}
+
+/******** Title ****************************/
+
+#top {
+    color: #223;
+}
+
+#announce {
+    background: red;
+    color: white;
+    font-weight: bold;
+}
+
+/******** Record table ********************/
+
+/* style only for main page */
+
+.results-prelude {
+   color: #822;
+}
+.results {
+   font-size: 11px;
+   clear: both;
+}
+
+.results tr:hover {
+    background : #fff;
+}
+
+.results td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    color: #223;
+}
+
+.results a {
+    color: #633;
+    text-decoration: none;
+}
+
+.row1 {
+    background: #fbfbfb;  
+}
+
+.row2 {
+    background: #f4f4f4;  
+}
+
+/******** ONE result table *********/
+.oneresult a {
+    color: #633;
+}
+
+/******** Comments table ********************/
+
+.comments a {
+    color: #633;
+}
+
+.com_header {
+    background: #fff url(images/back-vertic.png) repeat-x;
+}
+
+td .com_content {
+    border: 2px solid #f8d0d0;
+    padding: 10px 10px 10px 10px;
+    background: #fdd; 
+}
+
+/******** Prelude ****************************/
+
+#prelude {
+    background: #FFF url(images/back-vertic.png) repeat-x;
+    font-weight: bold;
+    color : #f03080;
+}
+
+#prelude a {
+    color : #00f;
+}
+#prelude a:hover, #prelude a:focus {
+    color : #0373A1;
+}
+#prelude p,ul,li {
+    color : #333;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+/******** Speech ****************************/
+#speech {
+    color : #333;
+}
+
+/******** Navbar *****************************/
+.navbar {
+    background: #FFF url(images/back-vertic.png) repeat-x;
+    color : #f38;
+}
+.navbar a {
+    color : #558;
+}
+
+
+/******** Sidebar ****************************/
+#sidebar {
+    font-size: 10px;
+}
+
+#sidebar h2 {
+    background: #eaa;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+}
+
+.comPreviewHeader {
+    background: #eee;
+}
+.comPreviewHeader a{
+    color: #411;
+}
+.comPreview {
+    background: #fff;
+}
+
+.menuitem:hover {    background: url(images/curseur.gif) repeat-y left; }
+.menuitem a:hover { color: #335 ; }
+
+/******** Tagform ****************************/
+#tagboard {
+    font-size: 11px;
+}
+
+#tagform label {
+    font-weight: bold;
+    color: #525;
+}
+
+
+/*********** Tags **************/
+#tags table {
+    background: transparent;
+    table-layout: fixed;
+}
+
+.tagheader {
+    background: #eee;
+}
+
+.tagmsg1 {
+    background: #fff;   
+}
+
+.tagmsg2 {
+    width: 100%;
+    background: #fff;
+}
+
+.tag_pseudo {
+    color: black;
+    font-weight: bold;
+}
+
+.tag_pseudo a{
+    color: #006;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.tag_date {
+    color: #333;
+    font-style: italic;
+}
+
+.tag_error {
+    color: red;
+    font-weight: bold;
+}
+
+
+/******** Footer ****************************/
+#footer
+{
+    background: #FFF url(images/back-vertic.png) repeat-x;
+    color: #335;
+    -moz-border-radius: 6px;
+}
+
+#footer a{
+    color: #558;
+}
+
+#stats {
+    text-align: left;
+}
+
+.st_label {
+   font-weight: bold;
+   text-align: left;
+}
+.st_text {
+   font-style: italic;
+   text-align: left;
+}
+
+#perfs
+{
+    border: 1px solid #E0E0E0;
+    color: #335;
+}
+
+/******** generic form  *****************/
+
+.generic_form {
+    background: #FFF url(images/back-vertic.png) repeat-x;
+    font-size: 11px;
+    color: #224;
+}
+
+.generic_form td {
+    padding: 5px;
+}
+
+/****** General Button ************************/
+
+.button {
+    border: 1px solid #E0E0E0;
+    color: #335;
+    background: #FFF url(images/back-vertic.png) repeat-x;
+    -moz-border-radius: 6px;
+}
+.button a {
+    font-weight: bold;
+}
+.error {
+    background: #f55;
+    font-weight: bold;
+    color: #fff;
+}
