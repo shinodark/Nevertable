@@ -585,14 +585,14 @@ class Nvrtbl
         if(is_a_best_record($val, $best, "time") && $val['isbest']==0)
         {
           $rec->SetIsBest(1);
-          $rec->Update($true);
+          $rec->Update(true);
           echo "record id " . $val['id'] ." is a best time. Set.<br />";
           $i++;
         }
         else if(!is_a_best_record($val, $best, "time") && $val['isbest']==1)
         {
           $rec->SetIsBest(0);
-          $rec->Update($true);
+          $rec->Update(true);
           $rec->Move(get_folder_by_name("oldones"));
           echo "record id " . $val['id'] ." is NOT the \"best time\". Moved to \"oldones\"<br />";
           $i++;
@@ -609,7 +609,7 @@ class Nvrtbl
         if(is_a_best_record($val, $best, "time") && $val['isbest']==0)
         {
           $rec->SetIsBest(1);
-          $rec->Update($true);
+          $rec->Update(true);
           $rec->Move(get_folder_by_name("contest"));
           echo "record id " . $val['id'] ." is a best time. Moved to contest and set.<br />";
           $i++;
@@ -617,7 +617,7 @@ class Nvrtbl
         else if(is_a_best_record($val, $best, "time") && $val['isbest']==1)
         {
           $rec->SetIsBest(1);
-          $rec->Update($true);
+          $rec->Update(true);
           $rec->Move(get_folder_by_name("contest"));
           echo "record id " . $val['id'] ." shouldn't be in oldones. Moved to contest.<br />";
           $i++;
@@ -625,7 +625,7 @@ class Nvrtbl
         else if(!is_a_best_record($val, $best, "time") && $val['isbest']==1)
         {
           $rec->SetIsBest(0);
-          $rec->Update($true);
+          $rec->Update(true);
           echo "record id " . $val['id'] ." is NOT the \"best time\". Unset.<br />";
           $i++;
         }
@@ -680,7 +680,7 @@ class Nvrtbl
         if(is_a_best_record($val, $best, "coins") && $val['isbest']==0)
         {
           $rec->SetIsBest(1);
-          $rec->Update($true);
+          $rec->Update(true);
           $rec->Move(get_folder_by_name("contest"));
           echo "record id " . $val['id'] ." is a most coins. Moved to contest and set.<br />";
           $i++;
@@ -688,7 +688,7 @@ class Nvrtbl
         else if(is_a_best_record($val, $best, "coins") && $val['isbest']==1)
         {
           $rec->SetIsBest(1);
-          $rec->Update($true);
+          $rec->Update(true);
           $rec->Move(get_folder_by_name("contest"));
           echo "record id " . $val['id'] ." shouldn't be in oldones. Moved to contest.<br />";
           $i++;
@@ -696,7 +696,7 @@ class Nvrtbl
         else if(!is_a_best_record($val, $best, "coins") && $val['isbest']==1)
         {
           $rec->SetIsBest(0);
-          $rec->Update($true);
+          $rec->Update(true);
           echo "record id " . $val['id'] ." is NOT the \"most coins\". Unset.<br />";
           $i++;
         }

@@ -128,6 +128,8 @@ class DialogAdmin extends Dialog
 
   function Record($fields)
   {
+  	global $nextargs;
+  
     $this->output  =  "<div class=\"oneresult\">\n";
     $this->output .=  "<table><tr>\n";
     $this->output .=  "<tr><th style=\"width: 16px;\"></th>\n"; // select

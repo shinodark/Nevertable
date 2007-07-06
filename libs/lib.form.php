@@ -159,7 +159,7 @@ class Form
        $colspan=2;
        if (!empty($label))
        {
-           $this->output .= '<td><label for="'.$name.'">'.$label.'</label></td>'."\n" ;
+           $this->output .= '<td><label for="birthday_day">'.$label.'</label></td>'."\n" ;
 	   $colspan = 1;
        }
        $this->output .= '<td colspan="'.$colspan.'">';

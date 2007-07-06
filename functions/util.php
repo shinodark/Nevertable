@@ -231,7 +231,6 @@ function GetDateLang($date)
 
   list($day, $month, $year, $hour) =   sscanf(date('j m Y H:i', $date), "%s %d %s %s");
 
-  echo $daystr;
   return $day." ".$lang_months[$month]." ".$year.", ".$hour;
 }
 

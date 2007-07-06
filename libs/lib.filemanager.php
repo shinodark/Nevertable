@@ -164,7 +164,7 @@ class FileManager
 
   function DirList($dir, $show_hidden=false)
   {
-    $d=0; $d=0;
+    $d=0; $f=0;
     $f_arr=array(); $d_arr=array();
     if ($dirhandle = @opendir($dir))
     {

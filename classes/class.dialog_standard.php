@@ -674,7 +674,7 @@ class DialogStandard extends Dialog
   
   function _MemberLine($i, $fields)
   {
-    global $nextargs, $config;
+    global $nextargs, $config, $lang;
 
     $rowclass = ($i % 2) ? "row1" : "row2";
     $this->output .=   "<tr class=\"".$rowclass."\">\n";

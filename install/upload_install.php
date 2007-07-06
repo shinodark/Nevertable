@@ -1,7 +1,5 @@
 <?php
 
-require("dialog.php");
-
 $up_dir = "./replays";
 
 if (chmod($up_dir, 0777))

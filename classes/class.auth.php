@@ -93,7 +93,6 @@ class Auth
         $_SESSION['user_id']     = 0;
         return false;
       }
-      return false;
   }
 
   function CloseSession()
