@@ -195,7 +195,7 @@ if (isset($args['repcontest']))
           "type" => $rec->GetType(),
           "folder" => get_folder_by_name("contest"),
           );
-      $matches = $table->db->helper->RequestMatchRecords($comp_array);
+      $matches = $table->db->helper->SelectRecords($comp_array);
       $merge=false;
       if ($matches['nb'] > 1)
       {
@@ -397,12 +397,12 @@ if (!isset($args['link']))
       $off = ($args['page']-1) * $config['limit'];
 
       /* hack pour faire un count en utilisant tous les filtres de base */
-      $table->db->RequestInit("SELECT", "rec", "COUNT(id)");
-      $table->db->RequestGenericFilter($args['filter'], $args['filterval']);
-      $table->db->helper->RequestFilterLevels($args['levelset_f'], $args['level_f']);
-      $table->db->helper->RequestFilterType($args['type']);
-      $table->db->helper->RequestFilterNew($args['newonly']);
-      $table->db->helper->RequestFilterFolder($args['folder']);
+      $table->db->NewQuery("SELECT", "rec", "COUNT(id)");
+      $table->db->Where($args['filter'], $args['filterval']);
+      $table->db->helper->LevelsFilter($args['levelset_f'], $args['level_f']);
+      $table->db->helper->TypeFilter($args['type']);
+      $table->db->helper->NewFilter($args['newonly']);
+      $table->db->helper->FolderFilter($args['folder']);
       $result0 =   $table->db->Query();
       if(!$result0)
           gui_button_error(  $table->db->GetError(), 500);
@@ -413,7 +413,7 @@ if (!isset($args['link']))
       
       /* requête avec tous les champs mais limitée à "limit" */
       $p = $config['bdd_prefix'];
-      $table->db->RequestSelectInit(
+      $table->db->Select(
           array("rec", "users", "sets", "maps"),
           array(
             $p."rec.id AS id",
@@ -434,20 +434,20 @@ if (!isset($args['link']))
             $p."maps.map_solfile AS map_solfile",
           )
           );
-      $table->db->RequestGenericFilter(
+      $table->db->Where(
           array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
           array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
           "AND", false
       );
       
-      $table->db->RequestGenericFilter($args['filter'], $args['filterval']);
-      $table->db->helper->RequestFilterLevels($args['levelset_f'], $args['level_f']);
-      $table->db->helper->RequestFilterType($args['type']);
-      $table->db->helper->RequestFilterNew($args['newonly']);
-      $table->db->helper->RequestFilterFolder($args['folder']);
+      $table->db->Where($args['filter'], $args['filterval']);
+      $table->db->helper->LevelsFilter($args['levelset_f'], $args['level_f']);
+      $table->db->helper->TypeFilter($args['type']);
+      $table->db->helper->NewFilter($args['newonly']);
+      $table->db->helper->FolderFilter($args['folder']);
       
       if($args['bestonly'] == "on")
-        $table->db->RequestGenericFilter("isbest", 1);
+        $table->db->Where("isbest", 1);
       
       /* dans le cas du diffview, on trie par pieces, ou par temps */
       if($args['diffview'] == "on")
@@ -468,8 +468,8 @@ if (!isset($args['link']))
         $config['limit'] = 255;
       }
 
-      $table->db->helper->RequestSort($sort);
-      $table->db->RequestLimit($config['limit'], $off);
+      $table->db->helper->SortFilter($sort);
+      $table->db->Limit($config['limit'], $off);
       $result1 =   $table->db->Query();
       if(!$result1)
         gui_button_error(  $table->db->GetError(), 500);

@@ -89,8 +89,8 @@ class Tagboard
         "link"        => "",
 	"ip_log"      => $_SERVER['REMOTE_ADDR'],
         );
-      $this->db->RequestInit("INSERT", "tags");
-      $this->db->RequestInsert($fields);
+      $this->db->NewQuery("INSERT", "tags");
+      $this->db->Insert($fields);
       if(!$this->db->Query())
       {
         $this->out .= "<span class=\"tag_error\">".$lang['TAG_TOO_LONG']."</span>\n";
@@ -124,9 +124,9 @@ class Tagboard
         "content"     => $tag,
         "link"        => $link,
         );
-      $this->db->RequestInit("UPDATE", "tags");
-      $this->db->RequestUpdateSet($fields, true);
-      $this->db->RequestGenericFilter("id", $id);
+      $this->db->NewQuery("UPDATE", "tags");
+      $this->db->Update($fields, true);
+      $this->db->Where("id", $id);
       if(!$this->db->Query())
       {
         $this->SetError($this->db->GetError());
@@ -145,8 +145,8 @@ class Tagboard
     {
       return false;
     }
-    $this->db->RequestInit("DELETE", "tags");
-    $this->db->RequestGenericFilter("id", $id);
+    $this->db->NewQuery("DELETE", "tags");
+    $this->db->Where("id", $id);
     if (!$this->db->Query())
     {
        $this->SetError($this->db->GetError());

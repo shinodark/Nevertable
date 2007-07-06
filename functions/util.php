@@ -53,11 +53,11 @@ function is_a_best_record($record, $best, $critera)
     // seul le record avec le plus de pièces, et le temps min est retenu
 
     // récupère tous les temps pour ce niveau / set
-    $table->db->RequestInit("SELECT", "rec");
-    $table->db->RequestGenericFilter("level", (integer)$level);
-    $table->db->RequestGenericFilter("levelset", (integer)$levelset);
-    $table->db->RequestGenericFilter("type", get_type_by_name("most coins"));
-    $table->db->RequestCustom(" AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
+    $table->db->NewQuery("SELECT", "rec");
+    $table->db->Where("level", (integer)$level);
+    $table->db->Where("levelset", (integer)$levelset);
+    $table->db->Where("type", get_type_by_name("most coins"));
+    $table->db->AppendCustom(" AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
     $table->db->Query();
     // recherche du temps le plus faible, pour ce niveau
     $tmptime = 99999; $i=0;

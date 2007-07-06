@@ -60,7 +60,7 @@ if(isset($args['run']))
     closepage();
   }
   
-  $res = $table->db->helper->MatchUserByMail($args['email']);
+  $res = $table->db->helper->SlectUserByMail($args['email']);
   if ($table->db->NumRows() == 0) // pas trouvé
   {
     gui_button_error($lang['FORGOT_INVALID_MAIL'], 500);
@@ -79,10 +79,10 @@ if(isset($args['run']))
   //mise à jour du nouveau mot de passe
   if (!isset($val['id']))
     exit;
-  $table->db->RequestInit("UPDATE",  "users");
-  $table->db->RequestUpdateSet(array("passwd" => md5($newpass)));
-  $table->db->RequestGenericFilter("id", $val['id']);
-  $table->db->RequestLimit(1);
+  $table->db->NewQuery("UPDATE",  "users");
+  $table->db->Update(array("passwd" => md5($newpass)));
+  $table->db->Where("id", $val['id']);
+  $table->db->Limit(1);
   if(!$table->db->Query()) {
     gui_button_error($table->db->GetError(),500);
     closepage();

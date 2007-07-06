@@ -43,8 +43,8 @@ class Record
       if (empty($id))
         return false;
       unset($this->fields);
-      $this->db->RequestInit("SELECT", "rec");
-      $this->db->RequestGenericFilter("id", $id);
+      $this->db->NewQuery("SELECT", "rec");
+      $this->db->Where("id", $id);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -68,12 +68,12 @@ class Record
     function LoadFromMatch($pseudo, $levelset, $level, $type, $folder)
     {
       unset($this->fields);
-      $this->db->RequestInit("SELECT", "rec");
-      $this->db->RequestGenericFilter("pseudo", $pseudo);
-      $this->db->RequestGenericFilter("levelset", (integer)$levelset);
-      $this->db->RequestGenericFilter("level", (integer)$level);
-      $this->db->RequestGenericFilter("type", (integer)$type);
-      $this->db->RequestGenericFilter("folder", (integer)$folder);
+      $this->db->NewQuery("SELECT", "rec");
+      $this->db->Where("pseudo", $pseudo);
+      $this->db->Where("levelset", (integer)$levelset);
+      $this->db->Where("level", (integer)$level);
+      $this->db->Where("type", (integer)$type);
+      $this->db->Where("folder", (integer)$folder);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -106,10 +106,10 @@ class Record
         return false;
       }
 
-      $this->db->RequestInit("UPDATE", "rec");
-      $this->db->RequestUpdateSet($this->fields, $conservative);
-      $this->db->RequestGenericFilter("id", $this->fields['id']);
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("UPDATE", "rec");
+      $this->db->Update($this->fields, $conservative);
+      $this->db->Where("id", $this->fields['id']);
+      $this->db->Limit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -125,17 +125,17 @@ class Record
     {
       if (!$this->isload)
         return false;
-      $this->db->RequestInit("INSERT",  "rec");
-      $this->db->RequestInsert($this->fields);
+      $this->db->NewQuery("INSERT",  "rec");
+      $this->db->Insert($this->fields);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
       }
       /* le but ici est de récupérer le nouveau record pour mise à jour des infos */
       /* cela permet d'avoir le bon id surtout, pour un affichage correct */
-      $this->db->RequestInit("SELECT", "rec");
-      $this->db->RequestGenericSort(array("id"), "DESC");
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("SELECT", "rec");
+      $this->db->Sort(array("id"), "DESC");
+      $this->db->Limit(1);
       if($this->db->Query()) 
         $this->SetFields($this->db->FetchArray());
       else
@@ -273,16 +273,16 @@ class Record
         return false;
       }
 
-      $this->db->RequestInit("DELETE", "com");
-      $this->db->RequestGenericFilter("replay_id", $this->fields['id']);
+      $this->db->NewQuery("DELETE", "com");
+      $this->db->Where("replay_id", $this->fields['id']);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
       }
       
-      $this->db->RequestInit("DELETE", "rec");
-      $this->db->RequestGenericFilter("id", $this->fields['id']);
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("DELETE", "rec");
+      $this->db->Where("id", $this->fields['id']);
+      $this->db->Limit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;

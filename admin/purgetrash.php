@@ -65,8 +65,8 @@ if (!Auth::Check(get_userlevel_by_name("admin")))
 
 if (isset($args['reallypurge']))
 {
-  $table->db->RequestInit("SELECT", "rec");
-  $table->db->RequestGenericFilter("folder", get_folder_by_name("trash"));
+  $table->db->NewQuery("SELECT", "rec");
+  $table->db->Where("folder", get_folder_by_name("trash"));
   $res = $table->db->Query();
   if(!$res)
   {

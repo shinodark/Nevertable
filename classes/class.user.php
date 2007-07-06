@@ -44,8 +44,8 @@ class User
       unset($this->fields);
       if (empty($id))
         return false;
-      $this->db->RequestInit("SELECT", "users");
-      $this->db->RequestGenericFilter("id", $id);
+      $this->db->NewQuery("SELECT", "users");
+      $this->db->Where("id", $id);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -69,8 +69,8 @@ class User
       unset($this->fields);
       if (empty($pseudo))
         return false;
-      $this->db->RequestInit("SELECT", "users");
-      $this->db->RequestGenericFilter("pseudo", $pseudo);
+      $this->db->NewQuery("SELECT", "users");
+      $this->db->Where("pseudo", $pseudo);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -101,10 +101,10 @@ class User
       }
 
       $this->_CleanFields();
-      $this->db->RequestInit("UPDATE", "users");
-      $this->db->RequestUpdateSet($this->fields, $conservative);
-      $this->db->RequestGenericFilter("id", $this->fields['id']);
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("UPDATE", "users");
+      $this->db->Update($this->fields, $conservative);
+      $this->db->Where("id", $this->fields['id']);
+      $this->db->Limit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -128,8 +128,8 @@ class User
       }
       
       /* efface les records */
-      $this->db->RequestInit("SELECT", "rec");
-      $this->db->RequestGenericFilter("user_id", $this->fields['id']);
+      $this->db->NewQuery("SELECT", "rec");
+      $this->db->Where("user_id", $this->fields['id']);
       $res = $this->db->Query();
       if(!$res) {
         $this->SetError($this->db->GetError());
@@ -151,13 +151,13 @@ class User
           $this->SetError($rec->GetError());
           return false;
 	}
-        $this->db->helper->RequestSetBestRecordByFields($rec->GetLevel(), $rec->GetSet(), $rec->GetType());
+        $this->db->helper->SetBestRecordByFields($rec->GetLevel(), $rec->GetSet(), $rec->GetType());
       }
       
       /* efface le user */
-      $this->db->RequestInit("DELETE", "users");
-      $this->db->RequestGenericFilter("id", $this->fields['id']);
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("DELETE", "users");
+      $this->db->Where("id", $this->fields['id']);
+      $this->db->Limit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -173,17 +173,17 @@ class User
       if (!$this->isload)
         return false;
       $this->_CleanFields();
-      $this->db->RequestInit("INSERT",  "users");
-      $this->db->RequestInsert($this->fields);
+      $this->db->NewQuery("INSERT",  "users");
+      $this->db->Insert($this->fields);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
       }
       /* le but ici est de récupérer le nouveau user pour mise à jour des infos */
       /* cela permet d'avoir le bon id surtout, pour un affichage correct */
-      $this->db->RequestInit("SELECT", "users");
-      $this->db->RequestGenericSort(array("id"), "DESC");
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("SELECT", "users");
+      $this->db->Sort(array("id"), "DESC");
+      $this->db->Limit(1);
       if($this->db->Query())
         $this->SetFields($this->db->FetchArray());
       else
@@ -199,7 +199,7 @@ class User
     {
       if (!$this->isload)
         return false;
-      $total_records = $this->db->helper->RequestCountUserRecords($this->GetId());
+      $total_records = $this->db->helper->CountUserRecords($this->GetId());
       $this->SetFields(array("stat_total_records" => $total_records));
       $this->Update();
       return $total_records;
@@ -209,7 +209,7 @@ class User
     {
       if (!$this->isload)
         return false;
-      $best_records = $this->db->helper->RequestCountUserBest($this->GetId());
+      $best_records = $this->db->helper->CountUserBest($this->GetId());
       $this->SetFields(array("stat_best_records" => $best_records));
       $this->Update();
       return $best_records;
@@ -219,7 +219,7 @@ class User
     {
       if (!$this->isload)
         return false;
-      $comments = $this->db->helper->RequestCountUserComments($this->GetId());
+      $comments = $this->db->helper->CountUserComments($this->GetId());
       $this->SetFields(array("stat_comments" => $comments));
       $this->Update();
       return $comments;
@@ -229,12 +229,12 @@ class User
     {
       if (!$this->isload)
         return false;
-      $this->db->RequestInit("SELECT", "rec", "COUNT(id)");
-      $this->db->RequestGenericFilter("user_id", $this->GetId());
-      $this->db->RequestGenericFilter("folder", get_folder_by_name("contest"));
-      $this->db->RequestGenericFilter("type", $type);
+      $this->db->NewQuery("SELECT", "rec", "COUNT(id)");
+      $this->db->Where("user_id", $this->GetId());
+      $this->db->Where("folder", get_folder_by_name("contest"));
+      $this->db->Where("type", $type);
       if ($type != get_type_by_name("freestyle"))
-        $this->db->RequestGenericFilter("isbest", 1);
+        $this->db->Where("isbest", 1);
       $this->db->Query();
       $res = $this->db->FetchArray();
       return $res['COUNT(id)'];

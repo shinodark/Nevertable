@@ -190,7 +190,7 @@ echo '<div style="margin-left: auto; margin-right: auto; width: 450px;">'."\n";
 echo "<table>\n";
 echo "<caption>Sets</caption>\n";
 
-$res = $table->db->helper->GetSetsRes();
+$res = $table->db->helper->SelectSetsRes();
 
 $i = 0;
 while ($val = $table->db->FetchArray($res))
@@ -225,7 +225,7 @@ echo $form->End();
 
 /* __MAPS */
 
-$sets = $table->db->helper->GetSets();
+$sets = $table->db->helper->SelectSets();
 
 echo '<div style="margin-left: auto; margin-right: auto; width: 300px;">'."\n";
 echo "<table>\n";

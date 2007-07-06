@@ -76,9 +76,9 @@ if (isset($args['filecation']) && isset($args['rename']))
   }
   
   /* recherche les records auxquels appartiennent ce fichier */
-  $table->db->RequestInit("SELECT", "rec");
-  $table->db->RequestGenericFilter("replay", $replay);
-  $table->db->RequestGenericFilter("folder", $args['folder']);
+  $table->db->NewQuery("SELECT", "rec");
+  $table->db->Where("replay", $replay);
+  $table->db->Where("folder", $args['folder']);
   $res = $table->db->Query();
   if(!$res)
   {
@@ -110,9 +110,9 @@ if (isset($args['filecation']) && isset($args['rename']))
   /* recherche les records auxquels appartiennent ce fichier */
   /* on recommence, le fetcharray a déjà été  fait par l'affichage */
   /* de la table ! */
-  $table->db->RequestInit("SELECT", "rec");
-  $table->db->RequestGenericFilter("replay", $replay);
-  $table->db->RequestGenericFilter("folder", $args['folder']);
+  $table->db->NewQuery("SELECT", "rec");
+  $table->db->Where("replay", $replay);
+  $table->db->Where("folder", $args['folder']);
   $res = $table->db->Query();
   if(!$res)
   {
@@ -144,9 +144,9 @@ if (isset($args['fileaction']) && isset($args['delete']))
 	  closepage();
   }
   /* recherche les records auxquels appartiennent ce fichier */
-  $table->db->RequestInit("SELECT", "rec");
-  $table->db->RequestGenericFilter("replay", $replay);
-  $table->db->RequestGenericFilter("folder", $args['folder']);
+  $table->db->NewQuery("SELECT", "rec");
+  $table->db->Where("replay", $replay);
+  $table->db->Where("folder", $args['folder']);
   $res = $table->db->Query();
   if(!$res)
   {
@@ -175,9 +175,9 @@ if (isset($args['fileaction']) && isset($args['delete']))
   /* recherche les records auxquels appartiennent ce fichier */
   /* on recommence, le fetcharray a déjà été  fait par l'affichage */
   /* de la table ! */
-  $table->db->RequestInit("SELECT", "rec");
-  $table->db->RequestGenericFilter("replay", $replay);
-  $table->db->RequestGenericFilter("folder", $args['folder']);
+  $table->db->NewQuery("SELECT", "rec");
+  $table->db->Where("replay", $replay);
+  $table->db->Where("folder", $args['folder']);
   $res = $table->db->Query();
   if(!$res)
   {

@@ -95,7 +95,7 @@ class Replay
         
         /*  Check if this set/level is in the database */
         $p = $config['bdd_prefix'];
-        $this->db->RequestSelectInit(
+        $this->db->Select(
            array("maps", "sets"),
            array(
                $p."maps.map_solfile AS map_solfile",
@@ -104,16 +104,16 @@ class Replay
                $p."maps.level_num AS level_num",
            )
         );
-        $this->db->RequestGenericFilter(
+        $this->db->Where(
            array($p."sets.id"),
            array($p."maps.set_id"),
            "AND", false
         );
-        $this->db->RequestGenericFilter(
+        $this->db->Where(
            array($p."sets.set_path", $p."maps.map_solfile"),
            array($set_path, $map_solfile)
        );
-       $this->db->RequestLimit(1);
+       $this->db->Limit(1);
        if (!$this->db->Query())
        {
           $this->error = "Can't query database for validation";

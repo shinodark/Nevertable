@@ -75,7 +75,7 @@ if(isset($args['autoadd']))
   }
   
   $rec = new Record($table->db);
-print_r($args);
+
   $fields = array(
 	   "type"      => $args['type'],
 	   "user_id"   => $args['user_id'],

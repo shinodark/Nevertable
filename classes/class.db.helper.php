@@ -34,18 +34,18 @@ class DBHelper
      $this->db = &$db;
    }
    
-   function RequestFilterLevels($levelset, $level)
+   function LevelsFilter($levelset, $level)
    {
      global $config;
      
      $p = $config['bdd_prefix'];
      if ($levelset > 0)  // -1 is index in list, "all" for levelset
-        $this->db->RequestGenericFilter($p."rec.levelset", $levelset);
+        $this->db->Where($p."rec.levelset", $levelset);
      if ($level > 0)      // 0 is index in list, "all" for level
-        $this->db->RequestGenericFilter($p."rec.level", $level);
+        $this->db->Where($p."rec.level", $level);
    }
    
-   function RequestFilterType($typeP)
+   function TypeFilter($typeP)
    {
      global $config;
 
@@ -53,10 +53,10 @@ class DBHelper
        return;
    
      $p = $config['bdd_prefix'];
-     $this->db->RequestGenericFilter($p."rec.type", $typeP);
+     $this->db->Where($p."rec.type", $typeP);
    }
    
-   function RequestFilterNew($newonly)
+   function NewFilter($newonly)
    {
      global $config;
      
@@ -80,19 +80,19 @@ class DBHelper
      $lim = $val['lim'];
    
      $p = $config['bdd_prefix'];
-     $this->db->RequestGenericFilter_ge($p."rec.timestamp", $lim);
+     $this->db->Where_ge($p."rec.timestamp", $lim);
    }
    
-   function RequestFilterFolder($folder)
+   function FolderFilter($folder)
    {
      global $config;
      
      $p = $config['bdd_prefix'];
      if ($folder != get_folder_by_name("all"))
-       $this->db->RequestGenericFilter($p."rec.folder", $folder);
+       $this->db->Where($p."rec.folder", $folder);
      else
      { /* affichage des répertoires oldones et contest, $folder = 0 => all*/
-       $this->db->RequestGenericFilter(
+       $this->db->Where(
            array($p."rec.folder", $p."rec.folder"),
            array(get_folder_by_name("contest"), get_folder_by_name("oldones")),
            "OR"
@@ -100,7 +100,7 @@ class DBHelper
      }
    }
    
-   function RequestSort($sortP)
+   function SortFilter($sortP)
    {
      global $config;
      
@@ -118,31 +118,31 @@ class DBHelper
          case 'old'    : $f = array($p."rec.timestamp"); $o = "DESC"; break;
      }
    
-     $this->db->RequestGenericSort($f, $o);
+     $this->db->Sort($f, $o);
    }
    
-   function RequestMatchComments($replay_id)
+   function SelectComments($replay_id)
    {
-     $this->db->RequestInit("SELECT", "com");
-     $this->db->RequestGenericFilter("replay_id", $replay_id);
-     $this->db->RequestGenericSort(array("timestamp"), "ASC");
+     $this->db->NewQuery("SELECT", "com");
+     $this->db->Where("replay_id", $replay_id);
+     $this->db->Sort(array("timestamp"), "ASC");
      return $this->db->Query();
    }
    
-   function RequestMatchCommentById($com_id)
+   function SelectCommentById($com_id)
    {
-     $this->db->RequestInit("SELECT", "com");
-     $this->db->RequestGenericFilter("id", $com_id);
+     $this->db->NewQuery("SELECT", "com");
+     $this->db->Where("id", $com_id);
      return $this->db->Query();
    }
    
-   function RequestMatchRecords($fields_arr)
+   function SelectRecords($fields_arr)
    {
-     $this->db->RequestInit("SELECT", "rec");
+     $this->db->NewQuery("SELECT", "rec");
      
      foreach($fields_arr as $f => $v)
      {
-       $this->db->RequestGenericFilter($f, $v);
+       $this->db->Where($f, $v);
      }
      $res = $this->db->Query();
      $ret = array();
@@ -157,33 +157,33 @@ class DBHelper
      return $ret;
    }
 
-   function MatchUserByName($name)
+   function SlectUserByName($name)
    {
-     $this->db->RequestInit("SELECT", "users");
-     $this->db->RequestGenericFilter("pseudo", $name);
+     $this->db->NewQuery("SELECT", "users");
+     $this->db->Where("pseudo", $name);
      return $this->db->Query();
    }
    
-   function MatchUserByMail($mail)
+   function SlectUserByMail($mail)
    {
-     $this->db->RequestInit("SELECT", "users");
-     $this->db->RequestGenericFilter("email", $mail);
+     $this->db->NewQuery("SELECT", "users");
+     $this->db->Where("email", $mail);
      return $this->db->Query();
    }
 
-   function MatchUserById($user_id)
+   function SlectUserById($user_id)
    {
-     $this->db->RequestInit("SELECT", "users");
-     $this->db->RequestGenericFilter("id", $user_id);
+     $this->db->NewQuery("SELECT", "users");
+     $this->db->Where("id", $user_id);
      return $this->db->Query();
    }
    
-   function RequestCountComments($replay_id)
+   function CountComments($replay_id)
    {
        return $this->db->CountRows("com", array("replay_id" => $replay_id));
    }
    
-   function RequestCountRecords($folder, $type)
+   function CountRecords($folder, $type)
    {
      if ($type==get_type_by_name("all"))
          return  $this->db->CountRows("rec", array("folder"=>$folder));
@@ -191,52 +191,52 @@ class DBHelper
          return  $this->db->CountRows("rec", array("folder"=>$folder,"type"=>$type));
    }
 
-   function RequestCountUserRecords($user_id)
+   function CountUserRecords($user_id)
    {
-     $this->db->RequestInit("SELECT", "rec");
+     $this->db->NewQuery("SELECT", "rec");
 	 /* on ne compte pas les recordes dans trash */
-	 $this->db->RequestCustom("WHERE user_id=".$user_id." AND folder!=".get_folder_by_name("trash") ." AND folder!=".get_folder_by_name("incoming"));
+	 $this->db->AppendCustom("WHERE user_id=".$user_id." AND folder!=".get_folder_by_name("trash") ." AND folder!=".get_folder_by_name("incoming"));
 	 $this->db->Query();
      return $this->db->NumRows();
    }
    
-   function RequestCountUserBest($user_id)
+   function CountUserBest($user_id)
    {
      return $this->db->CountRows("rec", array("user_id"=>$user_id, "isbest"=>1));
    }
    
-   function RequestCountUserComments($user_id)
+   function CountUserComments($user_id)
    {
      return $this->db->CountRows("com", array("user_id"=>$user_id));
    }
    
-   function RequestGetBestRecord($type, $folder="")
+   function GetBestRecord($type, $folder="")
    {
      global $config;
 
      $p = $config['bdd_prefix'];
 
-     $this->db->RequestInit("CUSTOM");
-     $this->db->RequestCustom("SELECT MIN(time) AS mintime, MAX(coins) AS maxcoins,levelset,level FROM ". $p."rec ");
+     $this->db->NewQuery("CUSTOM");
+     $this->db->AppendCustom("SELECT MIN(time) AS mintime, MAX(coins) AS maxcoins,levelset,level FROM ". $p."rec ");
 
 
      /* Si aucun paramètre précisé, on effectue une recherche à la fois dans contest et oldones */
      if(empty($folder))
      {
        if($type != get_type_by_name("all"))
-         $this->db->RequestCustom("WHERE type=".$type." AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
+         $this->db->AppendCustom("WHERE type=".$type." AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
        else
-         $this->db->RequestCustom("WHERE folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones"));
+         $this->db->AppendCustom("WHERE folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones"));
      }
      else
      /* Sinon, on fait dans le "folder" précisé ! */
      {
        if($type != get_type_by_name("all"))
-         $this->db->RequestGenericFilter("type", $type);
-       $this->db->RequestGenericFilter("folder", $folder);
+         $this->db->Where("type", $type);
+       $this->db->Where("folder", $folder);
      }
      
-     $this->db->RequestCustom("GROUP BY levelset,level");
+     $this->db->AppendCustom("GROUP BY levelset,level");
      $res = $this->db->Query();
      if (!$res)
      {
@@ -261,7 +261,7 @@ class DBHelper
             $ret['beaten']: nb of records moved to "oldones" folder
             $ret['imports']: nb of records moved to "oldones" folder
    */
-   function RequestSetBestRecordByFields($level, $levelset, $type)
+   function SetBestRecordByFields($level, $levelset, $type)
    {
      $rec = new Record($this->db);
 
@@ -270,22 +270,22 @@ class DBHelper
         return false;
      }
 
-     $this->db->RequestInit("SELECT", "rec");
-     $this->db->RequestGenericFilter("level", (integer)$level);
-     $this->db->RequestGenericFilter("levelset", (integer)$levelset);
-     $this->db->RequestGenericFilter("type", (integer)$type);
-     $this->db->RequestGenericFilter("folder", get_folder_by_name("contest"));
+     $this->db->NewQuery("SELECT", "rec");
+     $this->db->Where("level", (integer)$level);
+     $this->db->Where("levelset", (integer)$levelset);
+     $this->db->Where("type", (integer)$type);
+     $this->db->Where("folder", get_folder_by_name("contest"));
      $res = $this->db->Query();
      
      /* set all record for this level/levelset/type/folder at isbest=0 */
-     $this->db->RequestInit("UPDATE", "rec");
+     $this->db->NewQuery("UPDATE", "rec");
      $my  = array("isbest" => 0);
      /* update conserving timestamp */
-     $this->db->RequestUpdateSet($my, true);
-     $this->db->RequestGenericFilter("level", (integer)$level);
-     $this->db->RequestGenericFilter("levelset", (integer)$levelset);
-     $this->db->RequestGenericFilter("type", (integer)$type);
-     $this->db->RequestGenericFilter("folder", get_folder_by_name("contest"));
+     $this->db->Update($my, true);
+     $this->db->Where("level", (integer)$level);
+     $this->db->Where("levelset", (integer)$levelset);
+     $this->db->Where("type", (integer)$type);
+     $this->db->Where("folder", get_folder_by_name("contest"));
      $this->db->Query();
    
      switch ($type)
@@ -295,7 +295,7 @@ class DBHelper
        default: $critera = "none"; break;
      }
    
-     $best = $this->RequestGetBestRecord($type, get_folder_by_name("contest"));
+     $best = $this->GetBestRecord($type, get_folder_by_name("contest"));
      
      $ret['nb'] = 0;
      $ret['beaten'] = 0;
@@ -323,14 +323,14 @@ class DBHelper
    
      if ($ret['nb']==0) /* no best records found, try moving up one from "oldones" */
      {
-       $this->db->RequestInit("SELECT", "rec");
-       $this->db->RequestGenericFilter("level", (integer)$level);
-       $this->db->RequestGenericFilter("levelset", (integer)$levelset);
-       $this->db->RequestGenericFilter("type", (integer)$type);
-       $this->db->RequestGenericFilter("folder", get_folder_by_name("oldones"));
+       $this->db->NewQuery("SELECT", "rec");
+       $this->db->Where("level", (integer)$level);
+       $this->db->Where("levelset", (integer)$levelset);
+       $this->db->Where("type", (integer)$type);
+       $this->db->Where("folder", get_folder_by_name("oldones"));
        $res = $this->db->Query();
        
-       $best = $this->RequestGetBestRecord($type, get_folder_by_name("oldones"));
+       $best = $this->GetBestRecord($type, get_folder_by_name("oldones"));
        while ($val = $this->db->FetchArray($res))
        {
          if (is_a_best_record($val, $best, $critera))
@@ -350,18 +350,18 @@ class DBHelper
    function RecordSetIsBest($id, $isbest)
    {
      /* set new best record */
-     $this->db->RequestInit("UPDATE", "rec");
+     $this->db->NewQuery("UPDATE", "rec");
      $my  = array("isbest" => $isbest);
      /* update conserving timestamp */
-     $this->db->RequestUpdateSet($my, true);
-     $this->db->RequestGenericFilter("id", $id);
-     $this->db->RequestLimit(1);
+     $this->db->Update($my, true);
+     $this->db->Where("id", $id);
+     $this->db->Limit(1);
      $this->db->Query();
    }
 
-   function GetSets()
+   function SelectSets()
    {
-     $this->db->RequestInit("SELECT", "sets");
+     $this->db->NewQuery("SELECT", "sets");
      $this->db->Query();
      $sets = array();
      while ($val = $this->db->FetchArray())
@@ -369,20 +369,20 @@ class DBHelper
      return $sets;
    }
 
-   function GetSetsRes()
+   function SelectSetsRes()
    {
-     $this->db->RequestInit("SELECT", "sets");
+     $this->db->NewQuery("SELECT", "sets");
      $res = $this->db->Query();
      return $res;
    }
 
-   function RequestMatchTags()
+   function SelectTags()
    {
      global $config;
 
-     $this->db->RequestInit("SELECT", "tags");
-     $this->db->RequestGenericSort(array("timestamp"), "DESC");
-     $this->db->RequestLimit($config['tag_limit']);
+     $this->db->NewQuery("SELECT", "tags");
+     $this->db->Sort(array("timestamp"), "DESC");
+     $this->db->Limit($config['tag_limit']);
      return $this->db->Query();
    }
 }

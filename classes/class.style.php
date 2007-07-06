@@ -84,7 +84,7 @@ class Style
 
       $dir = $this->GetImageDir();
       if(!file_exists($dir.$icons[$ident]))
-         $dir = $config['theme_default']."images/";
+         $dir = ROOT_PATH . $config['theme_dir'] . $config['theme_default']."/images/";
       return "<img src=\"".$dir . $icons[$ident] . "\" title=\"".$title."\" alt=\"".$alt."\" ".$special." />";
     }
 
@@ -94,7 +94,7 @@ class Style
 
       $dir = $this->GetIconDir();
       if(!file_exists($dir.$ident))
-         $dir = $config['theme_default']."images/icons/";
+         $dir = ROOT_PATH . $config['theme_dir'] . $config['theme_default']."/images/icons/";
       return "<img src=\"".$dir . $ident.".png"."\" alt=\"\" />";
     }
 

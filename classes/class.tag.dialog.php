@@ -58,7 +58,7 @@ class Tag_Dialog
       $data .= "<table>\n";
   
       $i=0;
-      $res = $this->db->helper->RequestMatchTags();
+      $res = $this->db->helper->SelectTags();
       if(!$res)
       {
         gui_button_error($this->db->GetError(), 400);

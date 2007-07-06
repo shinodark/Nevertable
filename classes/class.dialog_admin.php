@@ -38,22 +38,22 @@ class DialogAdmin extends Dialog
     $this->output .=   "<center>\n";
     $this->output .=   '<a href="?folder='.get_folder_by_name("incoming").'&amp;type='.get_type_by_name("all").'">';
     $this->output .=   sprintf($lang['ADMIN_PRELUDE_INCOMING'],
-           	       $this->db->helper->RequestCountRecords(get_folder_by_name("incoming"), get_type_by_name("all"))
+           	       $this->db->helper->CountRecords(get_folder_by_name("incoming"), get_type_by_name("all"))
     		       );
     $this->output .=   "</a> &nbsp; | &nbsp; \n";
     $this->output .=   '<a href="?folder='.get_folder_by_name("trash").'&amp;type='.get_type_by_name("all").'">';
     $this->output .=   sprintf($lang['ADMIN_PRELUDE_TRASH'],
-           	       $this->db->helper->RequestCountRecords(get_folder_by_name("trash"), get_type_by_name("all"))
+           	       $this->db->helper->CountRecords(get_folder_by_name("trash"), get_type_by_name("all"))
     		       );
     $this->output .=   "</a> &nbsp; | &nbsp; \n";
     $this->output .=   '<a href="?folder='.get_folder_by_name("oldones").'&amp;type='.get_type_by_name("all").'">';
     $this->output .=   sprintf($lang['ADMIN_PRELUDE_OLDONES'],
-           	       $this->db->helper->RequestCountRecords(get_folder_by_name("oldones"), get_type_by_name("all"))
+           	       $this->db->helper->CountRecords(get_folder_by_name("oldones"), get_type_by_name("all"))
     		       );
     $this->output .=   "</a> &nbsp; | &nbsp; \n";
     $this->output .=   '<a href="?folder='.get_folder_by_name("contest").'&amp;type='.get_type_by_name("all").'">';
     $this->output .=   sprintf($lang['ADMIN_PRELUDE_CONTEST'],
-           	       $this->db->helper->RequestCountRecords(get_folder_by_name("contest"), get_type_by_name("all"))
+           	       $this->db->helper->CountRecords(get_folder_by_name("contest"), get_type_by_name("all"))
     		       );
     $this->output .=   "</a>\n";
     $this->output .=   "</center>\n";
@@ -228,7 +228,7 @@ class DialogAdmin extends Dialog
     $this->output .=   "<td><label for=\"levelset_f\">".$lang['TYPE_FORM_SET']."</label>\n";
     $this->output .=   "<select name=\"levelset_f\" id=\"levelset_f\">\n";
     $this->output .=     "<option value=\"0\">".$lang['all']."</option>\n";
-    foreach ($this->db->helper->GetSets() as $id => $name)
+    foreach ($this->db->helper->SelectSets() as $id => $name)
     {
       $this->output .=   "<option value=\"".$id."\">".$name."</option>\n";
     }
@@ -295,7 +295,7 @@ class DialogAdmin extends Dialog
     $this->output .=   "<td><label for=\"levelset\">".$lang['ADMIN_EDIT_FORM_SET'] ."</label></td>\n";
     $this->output .=   "<td><select name=\"levelset\" id=\"levelset\">\n";
   
-    foreach ($this->db->helper->GetSets() as $id => $name)
+    foreach ($this->db->helper->SelectSets() as $id => $name)
     {
       $this->output .=   "<option value=\"".$id."\">".$name."</option>\n";
     }
@@ -406,7 +406,7 @@ class DialogAdmin extends Dialog
     /* pseudo */
     if ($fields['folder'] == get_folder_by_name("incoming"))
     { /* on affiche l'adresse mail */
-      $res = $this->db->helper->MatchUserById($fields['user_id']);
+      $res = $this->db->helper->SlectUserById($fields['user_id']);
       $val = $this->db->FetchArray($res);
       $this->output .=   "<td><a href=\"mailto:".$val['email']." \">";
       $this->output .=   $fields['pseudo'] ."</a></td>\n" ;

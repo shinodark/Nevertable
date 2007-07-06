@@ -148,7 +148,7 @@ class DB
 			return false;
    }
 
-   function GetRequestString()
+   function GetQueryString()
    {
         return $this->request;
    }
@@ -157,7 +157,7 @@ class DB
    /*------------ PROCESS REQUEST FUNCTIONS -------------*/
    /******************************************************/
    
-   function RequestInit($type, $table_name="", $select_field="*")
+   function NewQuery($type, $table_name="", $select_field="*")
    {
        $this->request = '';
        $table = $this->db_prefix . $table_name;
@@ -173,7 +173,7 @@ class DB
        }
    }
    
-   function RequestSelectInit($table_arr, $fields_arr)
+   function Select($table_arr, $fields_arr)
    {
      while (($f=array_pop($fields_arr)) != NULL)
      {
@@ -193,7 +193,7 @@ class DB
      $this->request = "SELECT " . $flist . " FROM " . $tlist . " ";
    }
    
-   function RequestUpdateSet($fields_array, $timestamp_conserve=false)
+   function Update($fields_array, $timestamp_conserve=false)
    {
      if (empty($fields_array))  
        return;
@@ -219,7 +219,7 @@ class DB
      }
    }
    
-   function RequestInsert($fields_array)
+   function Insert($fields_array)
    {
      if (empty($fields_array))  
        return;
@@ -241,7 +241,7 @@ class DB
      $this->request .= "(" . $flist .") VALUES(" . $vlist . ")";
    }
    
-   function RequestGenericFilter($filter, $filterval, $logic="AND", $val_quote=true)
+   function Where($filter, $filterval, $logic="AND", $val_quote=true)
    {
      if(!isset($filter) || !isset($filterval))
         return;
@@ -311,7 +311,7 @@ class DB
      }
    }
    
-   function RequestGenericFilter_ge($filter, $filterval)
+   function Where_ge($filter, $filterval)
    {
      if(empty($filter) || empty($filterval))
         return;
@@ -334,7 +334,7 @@ class DB
      }
    }
    
-   function RequestGenericFilter_lt($filter, $filterval)
+   function Where_lt($filter, $filterval)
    {
      if(empty($filter) || empty($filterval))
         return;
@@ -357,7 +357,7 @@ class DB
      }
    }
    
-   function RequestGenericSort($fields_array, $order)
+   function Sort($fields_array, $order)
    {
      $f="";
      $i=0;
@@ -378,12 +378,12 @@ class DB
        $this->request .= " ORDER BY " . $f . " " . $order;
    }
    
-   function RequestCustom($str)
+   function AppendCustom($str)
    {
      $this->request .= " " . $str . " ";
    }
    
-   function RequestLimit($count, $off=0)
+   function Limit($count, $off=0)
    {
        if(!empty($count))
        {
@@ -397,13 +397,13 @@ class DB
 
    function CountRows($table, $arr_filters=array())
    {
-     $this->RequestInit("CUSTOM");
+     $this->NewQuery("CUSTOM");
      $table = $this->db_prefix . $table;
-     $this->RequestCustom("SELECT COUNT(*) FROM ".$table);
+     $this->AppendCustom("SELECT COUNT(*) FROM ".$table);
      if (!empty($arr_filters))
      {
        foreach ($arr_filters as $f => $v)
-         $this->RequestGenericFilter($f, $v);
+         $this->Where($f, $v);
      }
      $this->Query();
      $res = $this->FetchArray();

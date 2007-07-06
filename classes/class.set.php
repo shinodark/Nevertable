@@ -44,8 +44,8 @@ class Set
       unset($this->fields);
       if (empty($id))
         return false;
-      $this->db->RequestInit("SELECT", "sets");
-      $this->db->RequestGenericFilter("id", $id);
+      $this->db->NewQuery("SELECT", "sets");
+      $this->db->Where("id", $id);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -75,10 +75,10 @@ class Set
         return false;
       }
 
-      $this->db->RequestInit("UPDATE", "sets");
-      $this->db->RequestUpdateSet($this->fields, $conservative);
-      $this->db->RequestGenericFilter("id", $this->fields['id']);
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("UPDATE", "sets");
+      $this->db->Update($this->fields, $conservative);
+      $this->db->Where("id", $this->fields['id']);
+      $this->db->Limit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -102,16 +102,16 @@ class Set
       }
 
       /* efface les maps */
-      $this->db->RequestInit("DELETE", "maps");
-      $this->db->RequestGenericFilter("set_id", $this->fields['id']);
+      $this->db->NewQuery("DELETE", "maps");
+      $this->db->Where("set_id", $this->fields['id']);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
       }
       
       /* efface les records */
-      $this->db->RequestInit("SELECT", "rec");
-      $this->db->RequestGenericFilter("levelset", $this->fields['id']);
+      $this->db->NewQuery("SELECT", "rec");
+      $this->db->Where("levelset", $this->fields['id']);
       $res = $this->db->Query();
       if(!$res) {
         $this->SetError($this->db->GetError());
@@ -136,9 +136,9 @@ class Set
       }
       
       /* efface le set */
-      $this->db->RequestInit("DELETE", "sets");
-      $this->db->RequestGenericFilter("id", $this->fields['id']);
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("DELETE", "sets");
+      $this->db->Where("id", $this->fields['id']);
+      $this->db->Limit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -153,17 +153,17 @@ class Set
     { 
       if (!$this->isload)
 	      return false;
-      $this->db->RequestInit("INSERT",  "sets");
-      $this->db->RequestInsert($this->fields);
+      $this->db->NewQuery("INSERT",  "sets");
+      $this->db->Insert($this->fields);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
       }
       /* le but ici est de récupérer le nouveau set pour mise à jour des infos */
       /* cela permet d'avoir le bon id surtout, pour un affichage correct */
-      $this->db->RequestInit("SELECT", "sets");
-      $this->db->RequestGenericSort(array("id"), "DESC");
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("SELECT", "sets");
+      $this->db->Sort(array("id"), "DESC");
+      $this->db->Limit(1);
       if($this->db->Query()) 
          $this->SetFields($this->db->FetchArray());
       else
@@ -177,8 +177,8 @@ class Set
 
     function GetMapsRes()
     {
-      $this->db->RequestInit("SELECT", "maps");
-      $this->db->RequestGenericFilter("set_id", $this->fields['id']);
+      $this->db->NewQuery("SELECT", "maps");
+      $this->db->Where("set_id", $this->fields['id']);
       $res = $this->db->Query();
       if(!$res) {
         $this->SetError($this->db->GetError());
@@ -189,13 +189,13 @@ class Set
     
     function AddMap($level_num, $map_solfile)
     {
-      $this->db->RequestInit("INSERT",  "maps");
+      $this->db->NewQuery("INSERT",  "maps");
       $map_fields = array(
 	      "set_id"      => $this->fields['id'],
 	      "level_num"   => $level_num,
 	      "map_solfile" => $map_solfile,
       );
-      $this->db->RequestInsert($map_fields);
+      $this->db->Insert($map_fields);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;

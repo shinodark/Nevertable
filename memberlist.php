@@ -45,21 +45,21 @@ $table = new Nvrtbl("DialogStandard");
 <div id="main">
 <?php
 
-  $table->db->RequestInit("SELECT", "users");
+  $table->db->NewQuery("SELECT", "users");
   /* Contre le problème du osrt=0 si aucun get n'est passé */
   if (!isset($_GET['sort']))
      $args['sort'] = 2;
   switch($args['sort'])
   {
-     case 0: $table->db->RequestGenericSort(array("pseudo"), "ASC"); break;
-     case 1: $table->db->RequestGenericSort(array("stat_total_records", "stat_best_records"), array("DESC", "DESC"));
+     case 0: $table->db->Sort(array("pseudo"), "ASC"); break;
+     case 1: $table->db->Sort(array("stat_total_records", "stat_best_records"), array("DESC", "DESC"));
          break;
      default: 
-     case 2: $table->db->RequestGenericSort(array("stat_best_records", "stat_total_records"), array("DESC", "DESC"));
+     case 2: $table->db->Sort(array("stat_best_records", "stat_total_records"), array("DESC", "DESC"));
          break;
-     case 3: $table->db->RequestGenericSort(array("stat_comments"), "DESC"); break;
-     case 4: $table->db->RequestGenericSort(array("level"), "ASC"); break;
-     case 5: $table->db->RequestGenericSort(array("id"), "ASC"); break;
+     case 3: $table->db->Sort(array("stat_comments"), "DESC"); break;
+     case 4: $table->db->Sort(array("level"), "ASC"); break;
+     case 5: $table->db->Sort(array("id"), "ASC"); break;
   }
   $res = $table->db->Query();
   if(!$res) {

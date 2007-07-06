@@ -105,10 +105,10 @@ if (isset($args['upconfig']))
   {
     foreach ($_POST AS $c => $v)
     {
-      $table->db->RequestInit("UPDATE", "conf");
-      $table->db->RequestUpdateSet(array("conf_value" => $v));
-      $table->db->RequestGenericFilter("conf_name", $c);
-      $table->db->RequestLimit(1);
+      $table->db->NewQuery("UPDATE", "conf");
+      $table->db->Update(array("conf_value" => $v));
+      $table->db->Where("conf_name", $c);
+      $table->db->Limit(1);
       if(!$table->db->Query())
       {
         gui_button_error($table->db->GetError(), 400);
@@ -124,7 +124,7 @@ if (isset($args['upconfig']))
   }
 }
 
-  $table->db->RequestInit("SELECT", "conf");
+  $table->db->NewQuery("SELECT", "conf");
   if(!$table->db->Query())
   {
     gui_button_error($table->db->GetError(), 400);

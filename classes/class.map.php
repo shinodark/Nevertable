@@ -44,8 +44,8 @@ class Map
       unset($this->fields);
       if (empty($id))
         return false;
-      $this->db->RequestInit("SELECT", "maps");
-      $this->db->RequestGenericFilter("id", $id);
+      $this->db->NewQuery("SELECT", "maps");
+      $this->db->Where("id", $id);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -70,10 +70,10 @@ class Map
         $id = $this->fields['id'];
 
       $this->_CleanFields();
-      $this->db->RequestInit("UPDATE", "maps");
-      $this->db->RequestUpdateSet($this->fields, $conservative);
-      $this->db->RequestGenericFilter("id", $id);
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("UPDATE", "maps");
+      $this->db->Update($this->fields, $conservative);
+      $this->db->Where("id", $id);
+      $this->db->Limit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;

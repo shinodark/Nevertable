@@ -39,8 +39,8 @@ class Comment
       if (empty($id))
         return false;
       unset($this->fields);
-      $this->db->RequestInit("SELECT", "com");
-      $this->db->RequestGenericFilter("id", $id);
+      $this->db->NewQuery("SELECT", "com");
+      $this->db->Where("id", $id);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -82,8 +82,8 @@ class Comment
       );
       $this->SetFields($f);
     
-      $this->db->RequestInit("INSERT", "com");
-      $this->db->RequestInsert($this->fields);
+      $this->db->NewQuery("INSERT", "com");
+      $this->db->Insert($this->fields);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -117,10 +117,10 @@ class Comment
       );
 
       $this->SetFields($f);
-      $this->db->RequestInit("UPDATE", "com");
-      $this->db->RequestUpdateSet($this->fields, $conservative);
-      $this->db->RequestGenericFilter("id", $this->fields['id']);
-      $this->db->RequestLimit(1);
+      $this->db->NewQuery("UPDATE", "com");
+      $this->db->Update($this->fields, $conservative);
+      $this->db->Where("id", $this->fields['id']);
+      $this->db->Limit(1);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -142,8 +142,8 @@ class Comment
         $this->error = "Trying to purge with no id specified!";
         return false;
       }
-      $this->db->RequestInit("DELETE", "com");
-      $this->db->RequestGenericFilter("id", $this->fields['id']);
+      $this->db->NewQuery("DELETE", "com");
+      $this->db->Where("id", $this->fields['id']);
       if(!$this->db->Query()) {
         $this->SetError($this->db->GetError());
         return false;
@@ -157,7 +157,7 @@ class Comment
     {
       $rec = new Record($this->db);
       $rec->LoadFromId($this->GetReplayId());
-      $count = $this->db->helper->RequestCountComments($rec->GetId());
+      $count = $this->db->helper->CountComments($rec->GetId());
       $rec->SetFields(array("comments_count" => $count));
       $rec->Update(true);
 

@@ -111,8 +111,8 @@ $tagboard->PrintOut();
 
 if($args['to'] == "edit")
 {
-    $tagboard->db->RequestInit("SELECT", "tags");
-    $tagboard->db->RequestGenericFilter("id", $args['id']);
+    $tagboard->db->NewQuery("SELECT", "tags");
+    $tagboard->db->Where("id", $args['id']);
     if(!$tagboard->db->Query())
       gui_button_error($tagboard->db->GetError(), 400);
     $val = $tagboard->db->FetchArray();

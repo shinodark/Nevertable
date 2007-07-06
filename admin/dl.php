@@ -79,7 +79,7 @@ if(isset($args['dlcontest']))
 {
  $lst = "";
 	
- $table->db->RequestSelectInit(array("rec"), array("*"));
+ $table->db->Select(array("rec"), array("*"));
  $table->db->requestGenericFilter("folder", get_folder_by_name("contest"));
  $table->db->Query();
  while ($val = $table->db->FetchArray())
@@ -96,7 +96,7 @@ if(isset($args['dloldones']))
 {
  $lst = "";
 	
- $table->db->RequestSelectInit(array("rec"), array("*"));
+ $table->db->Select(array("rec"), array("*"));
  $table->db->requestGenericFilter("folder", get_folder_by_name("oldones"));
  $table->db->Query();
  while ($val = $table->db->FetchArray())

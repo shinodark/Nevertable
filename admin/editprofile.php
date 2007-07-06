@@ -124,7 +124,7 @@ if (isset($args['upident']))
 {
   if (!empty($args['email']) && $args['email'] != $user->GetMail())
   {
-    $table->db->helper->MatchUserByMail($args['email']);
+    $table->db->helper->SlectUserByMail($args['email']);
     if ($table->db->NumRows() > 0) // dejà existant
     {
       gui_button_error($lang['REGISTER_MAIL_EXISTS'], 500);

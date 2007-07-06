@@ -56,7 +56,7 @@ class Nvrtbl
     }
 
     /* Chargement de la configuration dans la variable globale */
-    $this->db->RequestInit("SELECT", "conf");
+    $this->db->NewQuery("SELECT", "conf");
     if(!$this->db->Query())
     {
       gui_button_error($this->db->GetError(), 500);
@@ -130,9 +130,9 @@ class Nvrtbl
   /* Record RSS */
   function GetEarlierDate()
   {
-    $this->db->RequestInit("SELECT", "rec");
-    $this->db->RequestSort("old");
-    $this->db->RequestLimit(1, 0);
+    $this->db->NewQuery("SELECT", "rec");
+    $this->db->SortFilter("old");
+    $this->db->Limit(1, 0);
     $res = $this->db->Query();
 
     $val = $this->db->FetchArray();
@@ -144,7 +144,7 @@ class Nvrtbl
     global $config;
 
     $p = $config['bdd_prefix'];
-    $this->db->RequestSelectInit(
+    $this->db->Select(
         array("rec", "users", "sets" ),
         array(
             $p."rec.id AS id",
@@ -158,15 +158,15 @@ class Nvrtbl
             $p."sets.set_name AS set_name",
             )
      );
-     $this->db->RequestGenericFilter(
+     $this->db->Where(
         array($p."rec.user_id", $p."rec.levelset"),
         array($p."users.id", $p."sets.id"),
         "AND", false
     );
         
-    $this->db->RequestGenericFilter("folder", get_folder_by_name($folder));
-    $this->db->RequestSort("old");
-    $this->db->RequestLimit($order, 0);
+    $this->db->Where("folder", get_folder_by_name($folder));
+    $this->db->SortFilter("old");
+    $this->db->Limit($order, 0);
     $this->db->Query();
 
     $i=0;
@@ -189,9 +189,9 @@ class Nvrtbl
   /* Comments RSS */
   function getEarlierDateComments()
   {
-    $this->db->RequestInit("SELECT", "com");
-    $this->db->RequestSort("old");
-    $this->db->RequestLimit(1, 0);
+    $this->db->NewQuery("SELECT", "com");
+    $this->db->SortFilter("old");
+    $this->db->Limit(1, 0);
     $res = $this->db->Query();
 
     $val = $this->db->FetchArray();
@@ -215,7 +215,7 @@ class Nvrtbl
 
     $lst = "";
     $p = $config['bdd_prefix'];
-    $this->db->RequestSelectInit(
+    $this->db->Select(
             array("rec", "users", "sets", "maps"),
             array(
               $p."rec.id AS id",
@@ -234,13 +234,13 @@ class Nvrtbl
               $p."maps.map_solfile AS map_solfile",
             )
             );
-     $this->db->RequestGenericFilter(
+     $this->db->Where(
             array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
             array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
             "AND", false
         );
-     $this->db->helper->RequestFilterFolder($folder);
-     $this->db->RequestGenericSort(array("id"), "ASC");
+     $this->db->helper->FolderFilter($folder);
+     $this->db->Sort(array("id"), "ASC");
 
      $res =   $this->db->Query();
      if(!$res)
@@ -270,7 +270,7 @@ class Nvrtbl
   function ManageBestRecords($updated_record_fields, $type)
   {
     $val = $updated_record_fields;
-    $ret = $this->db->helper->RequestSetBestRecordByFields($val['level'], $val['levelset'], $type);
+    $ret = $this->db->helper->SetBestRecordByFields($val['level'], $val['levelset'], $type);
     switch ($val['type'])
     {
      case get_type_by_name("best time") : $critera = "time"; $check=true; break;
@@ -279,7 +279,7 @@ class Nvrtbl
     }
     if($check)
     {
-      $best= $this->db->helper->RequestGetBestRecord($val['type'], get_folder_by_name("contest"));
+      $best= $this->db->helper->GetBestRecord($val['type'], get_folder_by_name("contest"));
       $ret['isbest'] = is_a_best_record($val, $best, $critera);
     }
     return $ret;
@@ -289,10 +289,10 @@ class Nvrtbl
   function AddOnlineUser()
   {
     /* on enlève l'utilisateur de la liste des guests */
-    $this->db->RequestInit("DELETE", "online");
-    $this->db->RequestGenericFilter("user_id", 0);
-    $this->db->RequestGenericFilter("ident", $_SERVER['REMOTE_ADDR']);
-    $this->db->RequestLimit(1);
+    $this->db->NewQuery("DELETE", "online");
+    $this->db->Where("user_id", 0);
+    $this->db->Where("ident", $_SERVER['REMOTE_ADDR']);
+    $this->db->Limit(1);
     if(!$this->db->Query()) {
       gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
       return false;
@@ -307,9 +307,9 @@ class Nvrtbl
   function UpdateLoggedOnlineUser()
   {
     /* recherche de l'utilisateur déjà présent dans la liste */
-    $this->db->RequestInit("SELECT", "online", "COUNT(user_id)");
-    $this->db->RequestGenericFilter("user_id", $_SESSION['user_id']);
-    $this->db->RequestGenericFilter("ident", $_SESSION['user_pseudo']);
+    $this->db->NewQuery("SELECT", "online", "COUNT(user_id)");
+    $this->db->Where("user_id", $_SESSION['user_id']);
+    $this->db->Where("ident", $_SESSION['user_pseudo']);
     if(!$this->db->Query()) {
       gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
       return false;
@@ -317,9 +317,9 @@ class Nvrtbl
     $res = $this->db->FetchArray();
     if ($res['COUNT(user_id)'] > 0) /* déjà présent */
     {
-      $this->db->RequestInit("UPDATE", "online");
-      $this->db->RequestUpdateSet(array("logged_time" => $this->start_time));
-      $this->db->RequestGenericFilter("user_id", $_SESSION['user_id']);
+      $this->db->NewQuery("UPDATE", "online");
+      $this->db->Update(array("logged_time" => $this->start_time));
+      $this->db->Where("user_id", $_SESSION['user_id']);
       if(!$this->db->Query()) {
         gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
         return false;
@@ -327,8 +327,8 @@ class Nvrtbl
     }
     else
     {
-      $this->db->RequestInit("INSERT", "online");
-      $this->db->RequestInsert(array(
+      $this->db->NewQuery("INSERT", "online");
+      $this->db->Insert(array(
                           "user_id"     => $_SESSION['user_id'],
                           "ident"       => $_SESSION['user_pseudo'],
                           "logged_time" => $this->start_time,
@@ -344,9 +344,9 @@ class Nvrtbl
   function AddOnlineGuest()
   {
     /* recherche de l'utilisateur déjà présent dans la liste */
-    $this->db->RequestInit("SELECT", "online", "COUNT(user_id)");
-    $this->db->RequestGenericFilter("user_id", $_SESSION['user_id']);
-    $this->db->RequestGenericFilter("ident", $_SERVER['REMOTE_ADDR']);
+    $this->db->NewQuery("SELECT", "online", "COUNT(user_id)");
+    $this->db->Where("user_id", $_SESSION['user_id']);
+    $this->db->Where("ident", $_SERVER['REMOTE_ADDR']);
     if(!$this->db->Query()) {
       gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
       return false;
@@ -354,9 +354,9 @@ class Nvrtbl
     $res = $this->db->FetchArray();
     if ($res['COUNT(user_id)'] > 0) /* déjà présent */
     {
-      $this->db->RequestInit("UPDATE", "online");
-      $this->db->RequestUpdateSet(array("logged_time" => $this->start_time));
-      $this->db->RequestGenericFilter("ident", $_SERVER['REMOTE_ADDR'] );
+      $this->db->NewQuery("UPDATE", "online");
+      $this->db->Update(array("logged_time" => $this->start_time));
+      $this->db->Where("ident", $_SERVER['REMOTE_ADDR'] );
       if(!$res = $this->db->Query()) {
         gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
         return false;
@@ -364,8 +364,8 @@ class Nvrtbl
     }
     else /* ajoute */
     {
-      $this->db->RequestInit("INSERT", "online");
-      $this->db->RequestInsert(array(
+      $this->db->NewQuery("INSERT", "online");
+      $this->db->Insert(array(
                           "user_id"     => $_SESSION['user_id'],
                           "ident"       => $_SERVER['REMOTE_ADDR'],
                           "logged_time" => $this->start_time,
@@ -380,9 +380,9 @@ class Nvrtbl
   /* Appelé quand un utilisateur se déloggue */
   function RemoveOnlineUser()
   {
-    $this->db->RequestInit("DELETE", "online");
-    $this->db->RequestGenericFilter("user_id", $_SESSION['user_id']);
-    $this->db->RequestLimit(1);
+    $this->db->NewQuery("DELETE", "online");
+    $this->db->Where("user_id", $_SESSION['user_id']);
+    $this->db->Limit(1);
     if(!$this->db->Query()) {
       gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
       return false;
@@ -400,15 +400,15 @@ class Nvrtbl
     }
 
     /* effacer les utilisateurs 'idle' */
-    $this->db->RequestInit("DELETE", "online");
-    $this->db->RequestGenericFilter_lt("logged_time", $this->start_time-$config['online_idletime']);
+    $this->db->NewQuery("DELETE", "online");
+    $this->db->Where_lt("logged_time", $this->start_time-$config['online_idletime']);
     if(!$this->db->Query()) {
       gui_button_error("UpdateOnlineUser::" . $this->db->GetError(), 300);
       return false;
     }
     
     /* récupère la liste */
-    $this->db->RequestInit("SELECT", "online");
+    $this->db->NewQuery("SELECT", "online");
     if(!$this->db->Query()) {
       gui_button_error("UpdateOnlineUser::" . $this->db->GetError(), 300);
       return false;
@@ -467,7 +467,7 @@ class Nvrtbl
 
     /* base query : tous les records */
     $fields = array("replay", "id", "folder");
-    $this->db->RequestInit("SELECT", "rec");
+    $this->db->NewQuery("SELECT", "rec");
     $res = $this->db->Query();
     if(!$res)
     {
@@ -554,23 +554,23 @@ class Nvrtbl
     $rec = new Record($this->db);
 
     /* clean up */    
-    $this->db->RequestInit("UPDATE", "rec");
+    $this->db->NewQuery("UPDATE", "rec");
     $my  = array("isbest" => "0");
-    $this->db->RequestUpdateSet($my, true);
-    $this->db->RequestGenericFilter("type", get_type_by_name("freestyle"));
+    $this->db->Update($my, true);
+    $this->db->Where("type", get_type_by_name("freestyle"));
     $res = $this->db->Query();
     if(!$res)
       gui_button_error($this->db->GetError(), 500);
 
     /* get best time records value */
     echo "<h2>best time </h2>";
-    $best = $this->db->helper->RequestGetBestRecord(get_type_by_name("best time"));
+    $best = $this->db->helper->GetBestRecord(get_type_by_name("best time"));
 
     /* browse all best time */
-    $this->db->RequestInit("SELECT", "rec");
-    $this->db->RequestGenericFilter("type", get_type_by_name("best time"));
-    //$this->db->RequestGenericFilter("folder", get_folder_by_name("contest"));
-    $this->db->RequestCustom("AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
+    $this->db->NewQuery("SELECT", "rec");
+    $this->db->Where("type", get_type_by_name("best time"));
+    //$this->db->Where("folder", get_folder_by_name("contest"));
+    $this->db->AppendCustom("AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
     $res = $this->db->Query();
     if(!$res)
       gui_button_error($this->db->GetError(), 500);
@@ -635,13 +635,13 @@ class Nvrtbl
 
     /* get most coins records value */
     echo "<h2>most coins </h2>";
-    $best = $this->db->helper->RequestGetBestRecord(get_type_by_name("most coins"));
+    $best = $this->db->helper->GetBestRecord(get_type_by_name("most coins"));
 
     /* browse all most coins */
-    $this->db->RequestInit("SELECT", "rec");
-    $this->db->RequestGenericFilter("type", get_type_by_name("most coins"));
-    //$this->db->RequestGenericFilter("folder", get_folder_by_name("contest"));
-    $this->db->RequestCustom("AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
+    $this->db->NewQuery("SELECT", "rec");
+    $this->db->Where("type", get_type_by_name("most coins"));
+    //$this->db->Where("folder", get_folder_by_name("contest"));
+    $this->db->AppendCustom("AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
     $res = $this->db->Query();
     if(!$res)
       gui_button_error($this->db->GetError(), 500);
@@ -705,7 +705,7 @@ class Nvrtbl
     echo $i ." records modified.";
 	
     /* Parcours tous pour les stats */
-    $this->db->RequestInit("SELECT", "rec");
+    $this->db->NewQuery("SELECT", "rec");
     $res = $this->db->Query();
     if(!$res)
       gui_button_error($this->db->GetError(), 500);
@@ -715,7 +715,7 @@ class Nvrtbl
     { 
       $rec->LoadFromId($val['id']);
       /* remet à jour les statistiques du record */
-      $count = $this->db->helper->RequestCountComments($rec->GetId());
+      $count = $this->db->helper->CountComments($rec->GetId());
       $rec->SetFields(array("comments_count" => $count));
       $rec->Update(true);
     }
@@ -723,7 +723,7 @@ class Nvrtbl
     /*  recalcule les statistiques utilisateurs */
     echo "<h2>user stats</h2>\n";
     
-    $this->db->RequestInit("SELECT", "users");
+    $this->db->NewQuery("SELECT", "users");
     $res = $this->db->Query();
     if(!$res)
     {

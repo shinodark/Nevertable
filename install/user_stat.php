@@ -43,7 +43,7 @@ $table = new Nvrtbl($config, "DialogStandard");
 <?php
 
   /* ouvre tous les users */
-  $table->db->RequestInit("SELECT", "users");
+  $table->db->NewQuery("SELECT", "users");
   $res = $table->db->Query();
 
   $u = new User($table->db);

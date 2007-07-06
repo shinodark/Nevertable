@@ -111,7 +111,7 @@ class SideBar
       $this->output .=  "<h2>".$lang['SIDEBAR_LAST_COMMENTS']."</h2>\n";
 
       $p = $config['bdd_prefix'];
-      $db->RequestSelectInit(
+      $db->Select(
         array("rec", "users", "com", "sets" ),
         array(
             $p."com.replay_id AS replay_id",
@@ -126,20 +126,20 @@ class SideBar
             )
       );
 
-      $db->RequestGenericFilter(
+      $db->Where(
         array($p."com.user_id", $p."com.replay_id", $p."rec.levelset"),
         array($p."users.id", $p."rec.id", $p."sets.id"),
         "AND", false
       );
       
-      $db->RequestGenericFilter(
+      $db->Where(
         array($p."rec.folder", $p."rec.folder"),
         array(get_folder_by_name("contest"), get_folder_by_name("oldones")),
         "OR"
       );
       
-      $db->RequestGenericSort(array($p."com.timestamp"), "DESC");
-      $db->RequestLimit($config['sidebar_comments']);
+      $db->Sort(array($p."com.timestamp"), "DESC");
+      $db->Limit($config['sidebar_comments']);
       $res = $db->Query();
 
       if (!$res)

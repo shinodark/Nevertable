@@ -89,7 +89,7 @@ class DialogStandard extends Dialog
       {
         $menu_main->AddItem($lang['MENU_ADMIN'], "admin/admin.php");
         $menu_sub = new Menu(1);
-        $count_incoming =  $this->db->helper->RequestCountRecords(get_folder_by_name("incoming"), get_type_by_name("all"));
+        $count_incoming =  $this->db->helper->CountRecords(get_folder_by_name("incoming"), get_type_by_name("all"));
 	if ($count_incoming > 0)
            $menu_sub->AddItem('<b>'.sprintf($lang['MENU_ADMIN_INCOMING'],$count_incoming).'</b>' , "admin/admin.php?folder=".get_folder_by_name("incoming")."&amp;type=".get_type_by_name('all'));
 	else
@@ -183,20 +183,20 @@ class DialogStandard extends Dialog
 
     /* Récupère le chemin du levelshot */
     $p = $config['bdd_prefix'];
-    $this->db->RequestSelectInit(
+    $this->db->Select(
         array("maps", "sets"),
         array($p."maps.map_solfile AS map_solfile", $p."sets.set_path AS set_path")
     );
-    $this->db->RequestGenericFilter(
+    $this->db->Where(
         array($p."sets.id"),
         array($p."maps.set_id"),
         "AND", false
     );
-    $this->db->RequestGenericFilter(
+    $this->db->Where(
         array($p."maps.set_id", $p."maps.level_num"),
         array($set, $level)
     );
-    $this->db->RequestLimit(1);
+    $this->db->Limit(1);
     $this->db->Query();
     $val = $this->db->FetchArray();
 
@@ -455,7 +455,7 @@ class DialogStandard extends Dialog
     $this->output .=   "<td><label for=\"levelset_f\">".$lang['TYPE_FORM_SET']."</label>\n";
     $this->output .=   "<select name=\"levelset_f\" id=\"levelset_f\">\n";
     $this->output .=     "<option value=\"0\">".$lang['all']."</option>\n";
-    foreach ($this->db->helper->GetSets() as $id => $name)
+    foreach ($this->db->helper->SelectSets() as $id => $name)
     {
       $this->output .=   "<option value=\"".$id."\">".$name."</option>\n";
     }

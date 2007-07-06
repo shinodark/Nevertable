@@ -289,15 +289,15 @@ if (!empty($args['comuser_id']))
   $off = ($args['page']-1) * $config['comments_limit'];
       
   /* Comptage du nombre total */
-  $table->db->RequestInit("SELECT", "com", "COUNT(id)");
-  $table->db->RequestGenericFilter("replay_id", $replay_id);
+  $table->db->NewQuery("SELECT", "com", "COUNT(id)");
+  $table->db->Where("replay_id", $replay_id);
   $table->db->Query();
   $val = $table->db->FetchArray();
   $total = $val['COUNT(id)'];
 
-  $results = $table->db->helper->RequestMatchRecords(array("id" => $replay_id));
+  $results = $table->db->helper->SelectRecords(array("id" => $replay_id));
   $p = $config['bdd_prefix'];
-  $table->db->RequestSelectInit(
+  $table->db->Select(
          array("com", "users"),
             array(
                 $p."com.id AS id",
@@ -309,10 +309,10 @@ if (!empty($args['comuser_id']))
                 $p."users.user_avatar AS user_avatar",
                 ),
             "SELECT", "com");
-  $table->db->RequestGenericFilter($p."com.user_id", $p."users.id", "AND", false);
-  $table->db->RequestGenericFilter($p."com.replay_id", $replay_id);
-  $table->db->RequestGenericSort(array($p."com.timestamp"), "ASC");
-  $table->db->RequestLimit($config['comments_limit'], $off);
+  $table->db->Where($p."com.user_id", $p."users.id", "AND", false);
+  $table->db->Where($p."com.replay_id", $replay_id);
+  $table->db->Sort(array($p."com.timestamp"), "ASC");
+  $table->db->Limit($config['comments_limit'], $off);
   if (!$res = $table->db->Query())
      gui_button_error("error on query.");
 
