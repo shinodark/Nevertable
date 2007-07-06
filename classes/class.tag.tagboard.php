@@ -125,7 +125,7 @@ class Tagboard
         "link"        => $link,
         );
       $this->db->NewQuery("UPDATE", "tags");
-      $this->db->Update($fields, true);
+      $this->db->UpdateSet($fields, true);
       $this->db->Where("id", $id);
       if(!$this->db->Query())
       {

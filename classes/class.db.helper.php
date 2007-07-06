@@ -281,7 +281,7 @@ class DBHelper
      $this->db->NewQuery("UPDATE", "rec");
      $my  = array("isbest" => 0);
      /* update conserving timestamp */
-     $this->db->Update($my, true);
+     $this->db->UpdateSet($my, true);
      $this->db->Where("level", (integer)$level);
      $this->db->Where("levelset", (integer)$levelset);
      $this->db->Where("type", (integer)$type);
@@ -353,7 +353,7 @@ class DBHelper
      $this->db->NewQuery("UPDATE", "rec");
      $my  = array("isbest" => $isbest);
      /* update conserving timestamp */
-     $this->db->Update($my, true);
+     $this->db->UpdateSet($my, true);
      $this->db->Where("id", $id);
      $this->db->Limit(1);
      $this->db->Query();

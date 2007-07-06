@@ -106,7 +106,7 @@ if (isset($args['upconfig']))
     foreach ($_POST AS $c => $v)
     {
       $table->db->NewQuery("UPDATE", "conf");
-      $table->db->Update(array("conf_value" => $v));
+      $table->db->UpdateSet(array("conf_value" => $v));
       $table->db->Where("conf_name", $c);
       $table->db->Limit(1);
       if(!$table->db->Query())

@@ -318,7 +318,7 @@ class Nvrtbl
     if ($res['COUNT(user_id)'] > 0) /* déjà présent */
     {
       $this->db->NewQuery("UPDATE", "online");
-      $this->db->Update(array("logged_time" => $this->start_time));
+      $this->db->UpdateSet(array("logged_time" => $this->start_time));
       $this->db->Where("user_id", $_SESSION['user_id']);
       if(!$this->db->Query()) {
         gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
@@ -355,7 +355,7 @@ class Nvrtbl
     if ($res['COUNT(user_id)'] > 0) /* déjà présent */
     {
       $this->db->NewQuery("UPDATE", "online");
-      $this->db->Update(array("logged_time" => $this->start_time));
+      $this->db->UpdateSet(array("logged_time" => $this->start_time));
       $this->db->Where("ident", $_SERVER['REMOTE_ADDR'] );
       if(!$res = $this->db->Query()) {
         gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
@@ -556,7 +556,7 @@ class Nvrtbl
     /* clean up */    
     $this->db->NewQuery("UPDATE", "rec");
     $my  = array("isbest" => "0");
-    $this->db->Update($my, true);
+    $this->db->UpdateSet($my, true);
     $this->db->Where("type", get_type_by_name("freestyle"));
     $res = $this->db->Query();
     if(!$res)

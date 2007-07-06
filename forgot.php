@@ -80,7 +80,7 @@ if(isset($args['run']))
   if (!isset($val['id']))
     exit;
   $table->db->NewQuery("UPDATE",  "users");
-  $table->db->Update(array("passwd" => md5($newpass)));
+  $table->db->UpdateSet(array("passwd" => md5($newpass)));
   $table->db->Where("id", $val['id']);
   $table->db->Limit(1);
   if(!$table->db->Query()) {

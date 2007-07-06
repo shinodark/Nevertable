@@ -107,7 +107,7 @@ class Record
       }
 
       $this->db->NewQuery("UPDATE", "rec");
-      $this->db->Update($this->fields, $conservative);
+      $this->db->UpdateSet($this->fields, $conservative);
       $this->db->Where("id", $this->fields['id']);
       $this->db->Limit(1);
       if(!$this->db->Query()) {

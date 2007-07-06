@@ -193,7 +193,7 @@ class DB
      $this->request = "SELECT " . $flist . " FROM " . $tlist . " ";
    }
    
-   function Update($fields_array, $timestamp_conserve=false)
+   function UpdateSet($fields_array, $timestamp_conserve=false)
    {
      if (empty($fields_array))  
        return;

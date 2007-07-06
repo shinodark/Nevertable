@@ -71,7 +71,7 @@ class Map
 
       $this->_CleanFields();
       $this->db->NewQuery("UPDATE", "maps");
-      $this->db->Update($this->fields, $conservative);
+      $this->db->UpdateSet($this->fields, $conservative);
       $this->db->Where("id", $id);
       $this->db->Limit(1);
       if(!$this->db->Query()) {
