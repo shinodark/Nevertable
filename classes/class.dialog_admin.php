@@ -406,9 +406,8 @@ class DialogAdmin extends Dialog
     /* pseudo */
     if ($fields['folder'] == get_folder_by_name("incoming"))
     { /* on affiche l'adresse mail */
-      $this->db->helper->MatchUserById($fields['user_id']);
-      $this->db->Query();
-      $val = $this->db->FetchArray();
+      $res = $this->db->helper->MatchUserById($fields['user_id']);
+      $val = $this->db->FetchArray($res);
       $this->output .=   "<td><a href=\"mailto:".$val['email']." \">";
       $this->output .=   $fields['pseudo'] ."</a></td>\n" ;
     }
@@ -421,8 +420,8 @@ class DialogAdmin extends Dialog
         $this->output .=   "<td><a href=\"editprofile.php?id=".$fields['user_id']."\">";
         $this->output .=   $fields['pseudo'] ."</a></td>\n" ;
       }
-
     }
+    
     /* levelset */
     $this->output .=   "<td>". $fields['set_name'] ."</td>\n" ;
     /* level */

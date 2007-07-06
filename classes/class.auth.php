@@ -57,19 +57,19 @@ class Auth
       if ($login !== addslashes($login))
         return false;
 
-      $this->db->helper->MatchUserByName($login);
+      $res = $this->db->helper->MatchUserByName($login);
       if ($this->db->NumRows() !== 1)
       {
         $this->SetError("No match !");
         return false;
       }
-      $val = $this->db->FetchArray();
+      $val = $this->db->FetchArray($res);
       
       if (!$md5_passwd)
         $passwd = md5($passwd);  
-
+       
       if($passwd == $val['passwd'])
-      {
+      { 
         $_SESSION['user_logged'] = true;
         $_SESSION['user_id']     = $val['id'];
         $_SESSION['user_pseudo'] = $login;
