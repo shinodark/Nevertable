@@ -41,7 +41,7 @@ class Dialog
     $this->table = &$parent;
     $this->smilies = new Smilies();
     $this->bbcode = new parse_bbcode();
-    $this->style = $o_style;
+    $this->style = &$o_style;
     $this->output = "";
   }
 

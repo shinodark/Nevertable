@@ -42,7 +42,7 @@ class Replay
 	*/
     function Replay(&$db, $filename, $type)
     {
-        $this->db = $db;
+        $this->db = &$db;
         $this->replayname = $filename;
         $this->type = $type;
 	}

@@ -25,9 +25,9 @@ include_once ROOT_PATH ."classes/class.dialog.php";
 class DialogAdmin extends Dialog
 {
   /*__CONSTRUCTEUR__*/
-  function DialogAdmin(&$db, $parent, $o_style)
+  function DialogAdmin(&$db, &$parent, &$o_style)
   {
-    parent::Dialog($db , $parent, $o_style);
+    parent::Dialog(&$db , &$parent, &$o_style);
   }
 
   function Prelude()

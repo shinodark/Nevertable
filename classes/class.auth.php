@@ -27,7 +27,7 @@ class Auth
 
   function Auth(&$db)
   {
-    $this->db = $db;
+    $this->db = &$db;
   }
   
   /* Commence une session vierge, ou récupération du cookie */
@@ -58,7 +58,7 @@ class Auth
         return false;
 
       $res = $this->db->helper->SelectUserByName($login);
-      if ($this->db->NumRows() !== 1)
+      if ($this->db->NumRows($res) !== 1)
       {
         $this->SetError("No match !");
         return false;

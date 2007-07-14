@@ -34,7 +34,7 @@ class Tagboard
     $this->out = "";
     $this->db = &$db;
     $this->cache  = new Cache("text");
-    $this->dialog = new Tag_Dialog($this->db, $this->cache, $bbcode, $smilies, $style, $this->out);
+    $this->dialog = new Tag_Dialog($this->db, $this->cache, &$bbcode, &$smilies, &$style, $this->out);
   }
 
   function Show($args)

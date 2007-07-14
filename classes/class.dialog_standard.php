@@ -28,7 +28,7 @@ class DialogStandard extends Dialog
   /*__CONSTRUCTEUR__*/
   function DialogStandard(&$db, &$parent, &$o_style)
   {
-    parent::Dialog($db , $parent, $o_style);
+    parent::Dialog(&$db , &$parent, &$o_style);
   }
 
   function Prelude()
