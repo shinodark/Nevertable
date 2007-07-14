@@ -72,9 +72,11 @@ class Dialog
 
   function Top()
   {
+  	global $config;
+  
     $this->output .=   "<div id=\"top\">\n"; 
     $this->output .=  "<center>";
-    $this->output .=   "<a href=\"http://www.nevercorner.net/table/\">".$this->style->GetImage('top')."</a>";
+    $this->output .=  '<a href="http://'.$_SERVER['SERVER_NAME'] .'/'.$config['nvtbl_path'].'">'.$this->style->GetImage('top').'</a>';
     $this->output .=  "</center>";
     $this->output .=   "</div>\n\n";
     $this->Output();

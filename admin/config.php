@@ -131,7 +131,7 @@ if (isset($args['upconfig']))
     return false;
   }
   
-  $form = new Form("post", "config?upconfig", "config_form", 700);
+  $form = new Form("post", "config.php?upconfig", "config_form", 700);
   $form->AddTitle($lang['ADMIN_CONFIG_FORM_TITLE']);
   while ($val = $table->db->FetchArray())
   {
