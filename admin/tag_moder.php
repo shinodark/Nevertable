@@ -116,7 +116,6 @@ if($args['to'] == "edit")
     if(!$tagboard->db->Query())
       gui_button_error($tagboard->db->GetError(), 400);
     $val = $tagboard->db->FetchArray();
-    print_r($val);
     echo "<script type=\"text/javascript\">
 	    change_form_input('tagpostform', 'tag_pseudo', '".JavaScriptize($val['pseudo'])."');\n
             change_form_textarea('tagpostform', 'content', '".JavaScriptize($val['content'])."')
