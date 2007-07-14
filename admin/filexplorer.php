@@ -64,8 +64,10 @@ if (!Auth::Check(get_userlevel_by_name("admin")))
 }
 
 /** RENOMMER **/
-if (isset($args['filecation']) && isset($args['rename']))
+if (isset($args['fileaction']) && isset($args['rename']))
 {
+
+
   $folder_name = $args['folder'];
   $replay = $args['replay'];
   $newname = $args['newname'];
@@ -78,16 +80,18 @@ if (isset($args['filecation']) && isset($args['rename']))
   /* recherche les records auxquels appartiennent ce fichier */
   $table->db->NewQuery("SELECT", "rec");
   $table->db->Where("replay", $replay);
-  $table->db->Where("folder", $args['folder']);
+  $table->db->Where("folder", $folder_name);
   $res = $table->db->Query();
+  
+
   if(!$res)
   {
-	  guibutton_error($this->db->GetError());
+	  guibutton_error($table->db->GetError());
 	  closepage();
   }
 
   /* affichage des records concernés par la modif */
-  if ($table->db->NumRows()>0)
+  if ($table->db->NumRows($res)>0)
   {
     echo "<br/><center><b>Record using that file : </b></center>\n";
     $nextargs="admin.php";
