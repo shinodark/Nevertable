@@ -196,6 +196,21 @@ function replay_link($folder, $replay_file)
   return "http://".$_SERVER['SERVER_NAME'] ."/".$config['nvtbl_path'] . $config['replay_dir']. get_folder_by_number($folder) ."/".$replay_file;
 }
 
+function GetShot($set_path, $map_solfile)
+{
+    global $config;
+    return "<img src=\"".ROOT_PATH.$config['shot_dir']."shot".strstr($set_path, '-')."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" />";
+}
+
+function GetShotMini($set_path, $map_solfile, $width="")
+{
+    global $config;
+    if (empty($width))
+      return GetShot($map_solfile);
+    else
+      return "<img src=\"".ROOT_PATH.$config['shot_dir']."shot".strstr($set_path, '-')."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" width=\"".$width."\"/>";
+}
+
 function GetDateFromTimestamp($timestamp)
 {
   global $config;

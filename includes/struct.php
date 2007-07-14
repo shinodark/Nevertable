@@ -84,20 +84,6 @@ $levels = array (
     25 => "25",
 );
 
-function GetShot($set_path, $map_solfile)
-{
-    global $config;
-    return "<img src=\"".ROOT_PATH.$config['shot_dir'].$set_path."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" />";
-}
-
-function GetShotMini($set_path, $map_solfile, $width="")
-{
-    global $config;
-    if (empty($width))
-      return GetShot($map_solfile);
-    else
-      return "<img src=\"".ROOT_PATH.$config['shot_dir'].$set_path."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" width=\"".$width."\"/>";
-}
 
 function get_level_by_name($name)
 {
