@@ -406,7 +406,7 @@ class DialogAdmin extends Dialog
     /* pseudo */
     if ($fields['folder'] == get_folder_by_name("incoming"))
     { /* on affiche l'adresse mail */
-      $res = $this->db->helper->SlectUserById($fields['user_id']);
+      $res = $this->db->helper->SelectUserById($fields['user_id']);
       $val = $this->db->FetchArray($res);
       $this->output .=   "<td><a href=\"mailto:".$val['email']." \">";
       $this->output .=   $fields['pseudo'] ."</a></td>\n" ;

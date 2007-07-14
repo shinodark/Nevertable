@@ -63,7 +63,7 @@ if(isset($args['valid']))
     closepage();
   }
 
-  $table->db->helper->SlectUserByName($args['pseudo']);
+  $table->db->helper->SelectUserByName($args['pseudo']);
   if ($table->db->NumRows() > 0) // dejà existant
   {
     gui_button_error($lang['REGISTER_PSEUDO_EXISTS'], 400);
@@ -71,7 +71,7 @@ if(isset($args['valid']))
     closepage();
   }
   
-  $table->db->helper->SlectUserByMail($args['email']);
+  $table->db->helper->SelectUserByMail($args['email']);
   if ($table->db->NumRows() > 0) // dejà existant
   {
     gui_button_error($lang['REGISTER_MAIL_EXISTS'], 500);

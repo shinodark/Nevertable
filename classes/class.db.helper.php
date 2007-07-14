@@ -157,21 +157,21 @@ class DBHelper
      return $ret;
    }
 
-   function SlectUserByName($name)
+   function SelectUserByName($name)
    {
      $this->db->NewQuery("SELECT", "users");
      $this->db->Where("pseudo", $name);
      return $this->db->Query();
    }
    
-   function SlectUserByMail($mail)
+   function SelectUserByMail($mail)
    {
      $this->db->NewQuery("SELECT", "users");
      $this->db->Where("email", $mail);
      return $this->db->Query();
    }
 
-   function SlectUserById($user_id)
+   function SelectUserById($user_id)
    {
      $this->db->NewQuery("SELECT", "users");
      $this->db->Where("id", $user_id);

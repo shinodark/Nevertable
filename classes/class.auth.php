@@ -57,7 +57,7 @@ class Auth
       if ($login !== addslashes($login))
         return false;
 
-      $res = $this->db->helper->SlectUserByName($login);
+      $res = $this->db->helper->SelectUserByName($login);
       if ($this->db->NumRows() !== 1)
       {
         $this->SetError("No match !");

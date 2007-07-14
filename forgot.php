@@ -60,7 +60,7 @@ if(isset($args['run']))
     closepage();
   }
   
-  $res = $table->db->helper->SlectUserByMail($args['email']);
+  $res = $table->db->helper->SelectUserByMail($args['email']);
   if ($table->db->NumRows() == 0) // pas trouvé
   {
     gui_button_error($lang['FORGOT_INVALID_MAIL'], 500);
