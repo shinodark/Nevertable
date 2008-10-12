@@ -112,6 +112,11 @@ caption {
    clear: both;
 }
 
+
+.results table {
+	border-collapse:collapse;
+}
+
 .results tr:hover {
     background : #fff;
 }
