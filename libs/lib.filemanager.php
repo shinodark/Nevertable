@@ -343,8 +343,23 @@ class FileManager
       if (!$ret)
         return false;
     }
+    
+    $c = chr(0);
+    $str = " ";
+    $i=0;
+    $max = $length;
+    do
+    {
+    	$c = fgetc($this->handle);
+    	$str{$i} = $c;
+    	$i++;
+    }
+    while ((ord($c) != 0) && ($max-- > 0) );
+    
+    if (ord($str{$i-1}) != 0)
+    	$str{$i-1} = chr(0);
 
-    return  fread($this->handle, $length);
+    return  $str;
   }
 
 

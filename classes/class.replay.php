@@ -51,42 +51,42 @@ class Replay
     {
         global $config;
 
-	$f = new FileManager($this->replayname);
-
-	if (!$f->Open())
-	{
-            $this->error = "Error opening file";
-            return false;
-	}
-
-	$this->struct_replay['magic'] = $f->ReadInt();
-        if ($this->struct_replay['magic'] != MAGIC_1_5)
-	{
-	    if ($this->struct_replay['magic'] == MAGIC_1_4)
-               $this->error = "File is replay file from Neverball 1.4. Please convert it to 1.5 before uploading.";
-	    else
-               $this->error = "File is probably not a replay file";
-            return false;
-        }
-
-	$this->struct_replay['version'] = $f->ReadInt();
-
-        $this->struct_replay['timer']   = $f->ReadInt() / 100.0;
-        $this->struct_replay['coins']   = $f->ReadInt() ;
-        $this->struct_replay['state']   = $f->ReadInt();
-	$this->struct_replay['mode']    = $f->ReadInt() ;
-
-        $this->struct_replay['player']  = trim($f->ReadStringLength(MAXNAM));
-	$this->struct_replay['date']    = trim($f->ReadStringLength(DATELEN));
-
-        $this->struct_replay['shot']    = trim($f->ReadStringLength(PATHMAX));
-	$this->struct_replay['solfile'] = trim($f->ReadStringLength(PATHMAX));
-
-        $this->struct_replay['time']    = $f->ReadInt();
-        $this->struct_replay['goal']    = $f->ReadInt();
-        $this->struct_replay['score']   = $f->ReadInt();
-	$this->struct_replay['balls']   = $f->ReadInt();
-	$this->struct_replay['times']   = $f->ReadInt();
+		$f = new FileManager($this->replayname);
+	
+		if (!$f->Open())
+		{
+	            $this->error = "Error opening file";
+	            return false;
+		}
+	
+		$this->struct_replay['magic'] = $f->ReadInt();
+	        if ($this->struct_replay['magic'] != MAGIC_1_5)
+		{
+		    if ($this->struct_replay['magic'] == MAGIC_1_4)
+	               $this->error = "File is replay file from Neverball 1.4. Please convert it to 1.5 before uploading.";
+		    else
+	               $this->error = "File is probably not a replay file";
+	            return false;
+	        }
+	
+		$this->struct_replay['version'] = $f->ReadInt();
+	
+	    $this->struct_replay['timer']   = $f->ReadInt() / 100.0;
+	    $this->struct_replay['coins']   = $f->ReadInt() ;
+	    $this->struct_replay['state']   = $f->ReadInt();
+		$this->struct_replay['mode']    = $f->ReadInt() ;
+	
+	    $this->struct_replay['player']  = trim($f->ReadStringLength(MAXNAM));
+		$this->struct_replay['date']    = trim($f->ReadStringLength(DATELEN));
+	
+	    $this->struct_replay['shot']    = trim($f->ReadStringLength(PATHMAX));
+		$this->struct_replay['solfile'] = trim($f->ReadStringLength(PATHMAX));
+	
+	    $this->struct_replay['time']    = $f->ReadInt();
+	    $this->struct_replay['goal']    = $f->ReadInt();
+	    $this->struct_replay['score']   = $f->ReadInt();
+		$this->struct_replay['balls']   = $f->ReadInt();
+		$this->struct_replay['times']   = $f->ReadInt();
 
         $f->Close();
 
