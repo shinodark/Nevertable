@@ -127,26 +127,6 @@ class Replay
        $val = $this->db->FetchArray();
        $this->level = $val['level_num'];
        $this->set   = $val['set_id'];
-
-       /* test replay name convention */
-       $name = basename($this->replayname);
-       if ($this->type == get_type_by_name("most coins"))
-       {
-          if ($name[0] !== 'c')
-          {
-            $this->error = "Most coin replay filename should start with 'c', see conditions.";
-            return false;
-          }
-       }
-        
-       if ($this->type == get_type_by_name("freestyle"))
-       {
-          if ($name[0] !== 'f')
-          {
-            $this->error = "Freestyle replay filename should start with 'f', see conditions.";
-            return false;
-          }
-       }
         
        return true;
     }

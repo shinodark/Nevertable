@@ -83,11 +83,19 @@ if(isset($args['autoadd']))
 	  );
   $rec->SetFields($fields);
     
-  $up_dir = ROOT_PATH. $config['replay_dir'] . get_folder_by_number($rec->GetFolder());
+  $up_dir = ROOT_PATH. $config['replay_dir'];
     
   /* Upload du fichier */
   $f = new FileManager();
-  $ret = $f->Upload($_FILES, 'replayfile', $up_dir, basename($_FILES['replayfile']['name']));
+  $u = new User($table->db);
+  $u->LoadFromId($rec->GetUserId());
+  $replayName = sprintf("S%02dL%02d_%s_%05d.nbr",
+  	$rec->GetSet(),
+  	$rec->GetLevel(),
+  	$u->GetPseudo(),
+  	0 //Id non encore connu ˆ ce stade
+  	);
+  $ret = $f->Upload($_FILES, 'replayfile', $up_dir, $replayName);
 
   if(!$ret)
   {
@@ -125,9 +133,30 @@ if(isset($args['autoadd']))
      ));
   }
     
-  $rec->SetFields(array("replay" => $f->GetBaseName()));
+  $rec->SetFields(array("replay" => $replayName));
 
   $ret = $rec->Insert();
+  
+  if(!$ret)
+  {
+     gui_button_error($rec->GetError(), 500);
+     if ($f->Unlink())
+        gui_button_error($f->GetError(), 500);
+     closepage();
+  }
+  
+  /* Mise ˆ jour de l'ID */
+  $replayName = sprintf("S%02dL%02d_%s_%05d.nbr",
+  	$rec->GetSet(),
+  	$rec->GetLevel(),
+  	$u->GetPseudo(),
+  	$rec->GetId()
+  );
+  
+  $ret = $f->Move($up_dir, $replayName);
+  
+  $rec->SetFields(array("replay" => $replayName));
+  $rec->Update(true);
       
   if(!$ret)
   {

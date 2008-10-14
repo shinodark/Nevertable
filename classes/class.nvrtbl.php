@@ -444,26 +444,20 @@ class Nvrtbl
     $dir_list = array();
     $f = new FileManager();
 
-    /* listing de tous les repertoires */
-    foreach ($folders as $nb => $value)
+    /* listing du rŽpertoire replays  */
+    $res = $f->DirList($replay_path);
+    if(!$res)
     {
-      if ($value != "all")
-      {
-        $dir = $replay_path.$value;
-        $res = $f->DirList($dir);
-        if(!$res)
-        {
-          gui_button_error($f->GetError(), 500);
-          return;
-        }
-        $dir_list[$value] = $res["files"] ;
-        if (!$dir_list)
-        {
-          gui_button_error("Error opening \"".$dir."\" directory.",500);
-          return;
-        }
-      }
+       gui_button_error($f->GetError(), 500);
+       return;
     }
+    $dir_list = $res["files"] ;
+    if (!$dir_list)
+    {
+       gui_button_error("Error opening \"".$dir."\" directory.",500);
+       return;
+    }
+    
 
     /* base query : tous les records */
     $fields = array("replay", "id", "folder");
@@ -482,30 +476,26 @@ class Nvrtbl
  
     $dup_arr = array(); $dup=1;
     $dir_list_found = array();
-    $count = array();
-    foreach ($folders as $nb => $value)
-    {
-      $count[$value] = 0;
-    }
+    $count = 0;
+
     while ($val = $this->db->FetchArray())
     {
       /* Recherche du replay */
       if (!empty($val['replay']))  
       {
-        $folder_name = get_folder_by_number($val['folder']);
-        if (array_search($folder_name."/".$val['replay'], $dup_arr, true))
-          $status = "<span style=\"color: orange;\">Duplicate</span>";
+        if (array_search($val['replay'], $dup_arr, true))
+           $status = "<span style=\"color: orange;\">Duplicate</span>";
         else
         {
-          if (file_exists($replay_path.$folder_name."/".$val['replay']))
+          if (file_exists($replay_path."/".$val['replay']))
           {
             $status = "<span style=\"color: green;\">OK</span>";
             /* test les fichiers dupliques, 2 records pointent vers le meme fichier */
-            $dup_arr[$dup] =  $folder_name."/".$val['replay'];
+            $dup_arr[$dup] =  $val['replay'];
             $dup++;
             /* ajoute le fichier a la liste des fichiers trouves */
-            $dir_list_found[$folder_name][$count[$folder_name]] = $val['replay'];
-            $count[$folder_name]++;
+            $dir_list_found[$count] = $val['replay'];
+            $count++;
           }
           else
           {
@@ -527,26 +517,23 @@ class Nvrtbl
     echo "</div>\n";
 
     /* Affichage des fichiers orphelins, utilises par aucun record */
-    foreach ($dir_list as $key => $value)
-    {
-      $folder_name = $key;
-      echo "<div class=\"results\" style=\"width: 100%;\">\n";
-      echo "<table>\n";
-      echo "<tr><th>files uploaded, but not used in ".$folder_name."</th></tr>\n";
 
-      /* des fichiers non-orphelins ont été trouvés, affichage des différences */
-      if (!empty($dir_list_found[$key]))
-        $orphans = array_diff($value, $dir_list_found[$key]);
+    echo "<div class=\"results\" style=\"width: 100%;\">\n";
+    echo "<table>\n";
+    echo "<tr><th>files uploaded, but not used</th></tr>\n";
+
+    /* des fichiers non-orphelins ont ŽtŽ trouvŽs, affichage des diffŽrences */
+    if (!empty($dir_list_found))
+        $orphans = array_diff($dir_list, $dir_list_found);
       /* ce ne sont que des fichiers orphelins, si il y en a */
       else
-        $orphans = $dir_list[$key];
+        $orphans = $dir_list;
 
       while($f=array_pop($orphans))
-      echo "<tr><td><a href=\"filexplorer.php?grep=".$f."\">".$f."</a></td></tr>\n";
+        echo "<tr><td><a href=\"filexplorer.php?grep=".$f."\">".$f."</a></td></tr>\n";
+      
       echo "</table>\n";
       echo "</div>\n";
-    }
-
   }
 
   function CheckAllRecords()

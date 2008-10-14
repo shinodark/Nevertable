@@ -29,7 +29,7 @@ class Record
     /*__Constructeur__
     Cette fonction initialise l'objet Record.
 
-    @param: pointeur vers la base de donnée
+    @param: pointeur vers la base de donnŽe
     */
     function Record(&$db)
     {
@@ -37,7 +37,7 @@ class Record
        $this->isload = false;
     }
 
-    /* Chargement des champs d'un record à partir de l'id */
+    /* Chargement des champs d'un record ˆ partir de l'id */
     function LoadFromId($id)
     {
       if (empty($id))
@@ -61,7 +61,7 @@ class Record
       }
     }
 
-    /* Chargement des champs d'un record à partir de l'id */
+    /* Chargement des champs d'un record ˆ partir de l'id */
     /* @return: $hash['nb'] : Nombre de records trouvés 
                 $hash['id'] : array("id1", "id2", ...) : liste des ids trouvés 
     */
@@ -92,7 +92,7 @@ class Record
       }
     }
 
-    /* Mise à jour du record dans la bdd avec les champs actuellement chargé */
+    /* Mise à jour du record dans la bdd avec les champs actuellement chargŽ */
     function Update($conservative=false)
     {
       if(!$this->isload)
@@ -131,7 +131,7 @@ class Record
         $this->SetError($this->db->GetError());
         return false;
       }
-      /* le but ici est de récupérer le nouveau record pour mise à jour des infos */
+      /* le but ici est de rŽcupŽrer le nouveau record pour mise ˆ jour des infos */
       /* cela permet d'avoir le bon id surtout, pour un affichage correct */
       $this->db->NewQuery("SELECT", "rec");
       $this->db->Sort(array("id"), "DESC");
@@ -155,35 +155,17 @@ class Record
 
       if (!$this->isload)
 	      return false;
-
+	  
+      /* DŽjˆ dans le bon dossier */
       if ($this->fields['folder'] == $folder)
         return true;
       
       $ret = true;
      
-      if ($this->GetReplayRelativePath())
-        $f = new FileManager($this->GetReplayRelativePath());
-      else
-      {
-        gui_button_error("Error in GetReplayRelativePath(), replay:".$this->fields['replay']. " folder: ".$this->fields['folder'], 500);
-        return false;
-      }
-
-      /* Déplacement hors du contest -> Plus un best record */
+      /* DŽplacement hors du contest -> Plus un best record */
       if ($folder != get_folder_by_name("contest"))
       {
         $this->SetIsBest(0);
-      }
-      if (!$f->Move(ROOT_PATH.$config['replay_dir'].get_folder_by_number($folder)))
-      {
-        $this->SetError($f->GetError()." But record is moved.");
-        /* affiche l'erreur car avec le ret=true, elle ne sera pas affichée sinon */
-        gui_button_error($this->GetError(), 500);
-        $ret = true;
-      }
-      else /* change le nom au cas où il est changer par $f->Move()... */
-      {
-        $this->SetFields(array("replay" => $f->GetBaseName()));
       }
       
       $this->SetFields(array("folder" => $folder));
@@ -193,7 +175,7 @@ class Record
       return $ret;
     }
 
-    /* Fusionne le replay avec target. Le replay en cours est effacé et la clible est modifiée ! */
+    /* Fusionne le replay avec target. Le replay en cours est effacŽ et la clible est modifiŽe ! */
     function Merge($target_id)
     {
       global $config;
@@ -204,25 +186,15 @@ class Record
       {
         /* effacement du fichier replay de la cible */
         $target_folder_name = get_folder_by_number($target->GetFolder());
-        $f = new FileManager($config['replay_dir'].$target_folder_name."/".$target->GetReplay());
+        $f = new FileManager($config['replay_dir']."/".$target->GetReplay());
         $ret_file = $f->Unlink();
         if ($ret_file)
         {
-           /* les deux ne sont dans le meme repertoire */
-           if (!$target->GetFolder() == $this->GetFolder())
-           {
-             $folder_name = get_folder_by_number($this->GetFolder());
-             /* déplacement du fichier replay ds le repertoire de la cible */
-             $f->SetFileName($config['replay_dir'].$folder_name."/".$this->GetReplay());
-             $ret_file = $f->Move(ROOT_PATH.$config['replay_dir'].$target_folder_name);
-             /* mise à jour, pour le chargement des parametres juste après */
-             $this->SetFields(array("replay" => $f->GetBaseName()));
-           }
-
-           if ($ret_file)
-           {
-             /* charge la cible avec ses nouveaux parametres */
-             $fields_load = array (
+           // Le record actuel prend le nom de la cible        
+           $this->SetFields(array("replay" => $f->GetBaseName()));       
+ 
+           /* charge la cible avec ses nouveaux parametres */
+           $fields_load = array (
                  "pseudo" => $this->fields['pseudo'],
                  "levelset" => $this->fields['levelset'],
                  "level" => $this->fields['level'],
@@ -231,12 +203,11 @@ class Record
                  "replay" => $this->fields['replay'],
                  "type" => $this->fields['type'],
                  );
-             $target->SetFields($fields_load);
-             /* effacement du record,en gardant le fichier replay qui est a la cible maintenant */
-             $this->Purge(false);
-             /* le record de $this est maintenant la cible */
-             $this->SetFields($target->GetFields());
-           }
+           $target->SetFields($fields_load);
+           /* effacement du record,en gardant le fichier replay qui est a la cible maintenant */
+           $this->Purge(false);
+           /* le record de $this est maintenant la cible */
+           $this->SetFields($target->GetFields());
         }
 
         if (!$ret_file)
@@ -259,7 +230,7 @@ class Record
       return true;
     }
 
-    /* Effacement définitif d'un record + fichier attaché si parametre est true */
+    /* Effacement dŽfinitif d'un record + fichier attachŽ si parametre est true */
     function Purge($filedelete=false)
     {
       if(!$this->isload)
@@ -347,11 +318,7 @@ class Record
     {
       global $config;
 
-      $replay_name = get_folder_by_number($this->fields['folder']);
-      if ( empty($this->fields['replay']) || empty($replay_name) )
-	     return false;
-      else
-	     return $config['replay_dir'].get_folder_by_number($this->GetFolder())."/".$this->GetReplay();
+      return $config['replay_dir'].$this->GetReplay();
     }
     
     function GetType()
