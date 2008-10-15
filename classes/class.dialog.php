@@ -338,6 +338,97 @@ class Dialog
     $this->Output();
   }
   
+function TypeForm($args)
+  {
+    global $types, $levels, $folders, $folders_user, $newonly, $lang;
+  
+    $this->output .=   "<div class=\"generic_form\" style=\"width: 700px;\">\n";
+    $this->output .=   "<form method=\"post\" action=\"?\" name=\"typeform\">\n";
+    $this->output .=   "<table><tr>\n";
+    $this->output .=   "<th colspan=\"6\">".$lang['TYPE_FORM_TITLE']."</th>\n";
+    $this->output .=   "</tr><tr>\n";
+    $this->output .=   "<td><label for=\"table\">".$lang['TYPE_FORM_TABLE_SELECT']."</label>\n";
+    $this->output .=   "<select name=\"type\" id=\"type\">\n";
+  
+    foreach ($types as $nb => $value)
+      $this->output .=   "<option value=\"".$nb."\">".$lang[$types[$nb]]."</option>\n";
+  
+    $this->output .=   "</select></td>\n";
+
+    $this->output .=   "<td><label for=\"folder\">".$lang['TYPE_FORM_FOLDER_SELECT']."</label>\n";
+    $this->output .=   "<select name=\"folder\" id=\"folder\">\n";
+  
+    if (!Auth::Check(get_userlevel_by_name('admin')))
+    	$folders_list = $folders_user;
+    else
+    	$folders_list = $folders;
+    foreach ($folders_list as $nb => $name)
+    {
+      $this->output .=   "<option value=\"".$nb."\">".$lang[$name]."</option>\n";
+    }
+    $this->output .=   "</select></td>\n";
+  
+    $this->output .=   "<td><label for=\"levelset_f\">".$lang['TYPE_FORM_SET']."</label>\n";
+    $this->output .=   "<select name=\"levelset_f\" id=\"levelset_f\">\n";
+    $this->output .=     "<option value=\"0\">".$lang['all']."</option>\n";
+    foreach ($this->db->helper->SelectSets() as $id => $name)
+    {
+      $this->output .=   "<option value=\"".$id."\">".$name."</option>\n";
+    }
+    $this->output .=   "</select></td>\n";
+    $this->output .=   "<td><label for=\"level_f\">".$lang['TYPE_FORM_LEVEL']."</label>\n";
+    $this->output .=   "<select name=\"level_f\" id=\"level_f\">\n";
+    $this->output .=   "<option value=\"0\">".$lang['all']."</option>\n";
+    foreach ($levels as $name => $value)
+    {
+      $this->output .=   "<option value=\"".$value."\">".$name."</option>\n";
+    }
+    $this->output .=   "</select></td>\n";
+  
+    $this->output .=   "</tr></table>\n";
+    $this->output .=  "<br />\n";
+  
+    $this->output .=   "<table><tr>\n";
+    $this->output .=   "<th colspan=\"6\">".$lang['TYPE_FORM_FILTERS']."</th>\n";
+    $this->output .=   "</tr><tr>\n";
+    $this->output .=   "<td><label for=\"diffview\">".$lang['TYPE_FORM_DIFFVIEW']."</label>\n";
+    $this->output .=   "<input type=\"checkbox\" name=\"diffview\" id=\"diffview\" value=\"on\" /></td>\n";
+    $this->output .=   "<td><label for=\"newonly\">".$lang['TYPE_FORM_NEWONLY']."</label>\n";
+    $this->output .=   "<select name=\"newonly\" id=\"newonly\">\n";
+  
+    foreach ($newonly as $nb => $name)
+      $this->output .=   "<option value=\"".$nb."\">".$lang[$name]."</option>\n";
+  
+    $this->output .=   "</select></td>\n";
+    $this->output .=   "</tr></table>\n";
+    $this->output .=  "<br />\n";
+    $this->output .=   "<center><input type=\"submit\" value=\"".$lang['GUI_BUTTON_APPLY']."\" /></center>\n";
+  
+    $this->output .=   "</form>\n";
+    $this->output .=   "</div>\n\n";
+
+    
+    //Calcul de l'index du set pour la liste
+    $i = 1;
+    foreach ($this->db->helper->SelectSets() as $id => $name)
+    {
+      $ind_set_arr[$id] = $i;
+      $i++;
+    }
+   
+    $this->output .= "<script type=\"text/javascript\">\n";
+    $this->output .=  "change_form_select('type',".$args['type'].");\n";
+    $this->output .=  "change_form_select('folder',".$args['folder'].");\n";
+    if ($args['levelset_f'] != 0) // Tout afficher, premire option
+    	$this->output .=  "change_form_select('levelset_f',".$ind_set_arr[$args['levelset_f']].");\n";
+    $this->output .=  "change_form_select('level_f',".$args['level_f'].");\n";
+    $this->output .=  "change_form_checkbox('diffview','".$args['diffview']."');\n";
+    $this->output .=  "change_form_select('newonly',".$args['newonly'].");\n";
+    $this->output .= "</script>\n";
+
+    $this->Output();
+  }
+  
   /*__FORMULAIRES__*/
 
 }

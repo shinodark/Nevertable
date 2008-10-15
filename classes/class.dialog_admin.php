@@ -199,82 +199,7 @@ class DialogAdmin extends Dialog
   
   /*__FORMULAIRES__*/
 
-  function TypeForm($args)
-  {
-    global $types, $levels, $folders, $newonly, $lang;
   
-    $this->output .=   "<div class=\"generic_form\" style=\"width: 700px;\">\n";
-    $this->output .=   "<form method=\"post\" action=\"?\" name=\"typeform\">\n";
-    $this->output .=   "<table><tr>\n";
-    $this->output .=   "<th colspan=\"6\">".$lang['TYPE_FORM_TITLE']."</th>\n";
-    $this->output .=   "</tr><tr>\n";
-    $this->output .=   "<td><label for=\"table\">".$lang['TYPE_FORM_TABLE_SELECT']."</label>\n";
-    $this->output .=   "<select name=\"type\" id=\"table\">\n";
-  
-    foreach ($types as $nb => $value)
-      $this->output .=   "<option value=\"".$nb."\">".$lang[$types[$nb]]."</option>\n";
-  
-    $this->output .=   "</select></td>\n";
-
-    $this->output .=   "<td><label for=\"folder\">".$lang['TYPE_FORM_FOLDER_SELECT']."</label>\n";
-    $this->output .=   "<select name=\"folder\" id=\"folder\">\n";
-  
-    foreach ($folders as $nb => $name)
-    {
-      $this->output .=   "<option value=\"".$nb."\">".$lang[$name]."</option>\n";
-    }
-    $this->output .=   "</select></td>\n";
-  
-    $this->output .=   "<td><label for=\"levelset_f\">".$lang['TYPE_FORM_SET']."</label>\n";
-    $this->output .=   "<select name=\"levelset_f\" id=\"levelset_f\">\n";
-    $this->output .=     "<option value=\"0\">".$lang['all']."</option>\n";
-    foreach ($this->db->helper->SelectSets() as $id => $name)
-    {
-      $this->output .=   "<option value=\"".$id."\">".$name."</option>\n";
-    }
-    $this->output .=   "</select></td>\n";
-    $this->output .=   "<td><label for=\"level_f\">".$lang['TYPE_FORM_LEVEL']."</label>\n";
-    $this->output .=   "<select name=\"level_f\" id=\"level_f\">\n";
-    $this->output .=   "<option value=\"0\">".$lang['all']."</option>\n";
-    foreach ($levels as $name => $value)
-    {
-      $this->output .=   "<option value=\"".$value."\">".$name."</option>\n";
-    }
-    $this->output .=   "</select></td>\n";
-  
-    $this->output .=   "</tr></table>\n";
-    $this->output .=  "<br />\n";
-  
-    $this->output .=   "<table><tr>\n";
-    $this->output .=   "<th colspan=\"6\">".$lang['TYPE_FORM_FILTERS']."</th>\n";
-    $this->output .=   "</tr><tr>\n";
-    $this->output .=   "<td><label for=\"diffview\">".$lang['TYPE_FORM_DIFFVIEW']."</label>\n";
-    $this->output .=   "<input type=\"checkbox\" name=\"diffview\" id=\"diffview\" value=\"on\" /></td>\n";
-    $this->output .=   "<td><label for=\"newonly\">".$lang['TYPE_FORM_NEWONLY']."</label>\n";
-    $this->output .=   "<select name=\"newonly\" id=\"newonly\">\n";
-  
-    foreach ($newonly as $nb => $name)
-      $this->output .=   "<option value=\"".$nb."\">".$lang[$name]."</option>\n";
-  
-    $this->output .=   "</select></td>\n";
-    $this->output .=   "</tr></table>\n";
-    $this->output .=  "<br />\n";
-    $this->output .=   "<center><input type=\"submit\" value=\"".$lang['GUI_BUTTON_APPLY']."\" /></center>\n";
-  
-    $this->output .=   "</form>\n";
-    $this->output .=   "</div>\n\n";
-
-    $this->output .= "<script type=\"text/javascript\">\n";
-      $this->output .=  "change_form_select('typeform', 'type',".$args['type'].");\n";
-      $this->output .=  "change_form_select('typeform', 'folder',".$args['folder'].");\n";
-      $this->output .=  "change_form_select('typeform', 'levelset_f',".$args['levelset_f'].");\n";
-      $this->output .=  "change_form_select('typeform', 'level_f',".$args['level_f'].");\n";
-      $this->output .=  "change_form_checkbox('typeform', 'diffview','".$args['diffview']."');\n";
-      $this->output .=  "change_form_select('typeform', 'newonly',".$args['newonly'].");\n";
-    $this->output .= "</script>\n";
-
-    $this->Output();
-  }
 
   function EditForm()
   {
@@ -284,16 +209,16 @@ class DialogAdmin extends Dialog
     $this->output .=   "<form method=\"post\" action=\"admin.php?edit\" name=\"editform\">\n";
     $this->output .=   "<table><tr>\n";
     $this->output .=   "<th colspan=\"6\">".$lang['ADMIN_EDIT_FORM_TITLE']."</th></tr><tr>\n";
-    $this->output .=   "<td><label for=\"id\">id:</label></td>\n";
-    $this->output .=   "<td><input type=\"text\" id=\"id\" name=\"id\" size=\"3\" readonly />\n";
+    $this->output .=   "<td><label for=\"edit_id\">id:</label></td>\n";
+    $this->output .=   "<td><input type=\"text\" id=\"edit_id\" name=\"edit_id\" size=\"3\" readonly />\n";
     $this->output .=   "</td></tr><tr>\n";
     /* pseudo est donné à titre indicatif, non utilisé */
-    $this->output .=   "<td><label for=\"pseudo\">".$lang['ADMIN_EDIT_FORM_PSEUDO']."</label></td>\n";
-    $this->output .=   "<td><input type=\"text\" id=\"pseudo\" name=\"pseudo_info\" size=\"15\" readonly /></td>\n";
-    $this->output .=   "<td><label for=\"user_id\"> # </label></td>\n";
-    $this->output .=   "<td><input type=\"text\" id=\"user_id\" name=\"user_id\" size=\"5\" readonly /></td><td colspan=\"2\"></td></tr>\n<tr>";
-    $this->output .=   "<td><label for=\"levelset\">".$lang['ADMIN_EDIT_FORM_SET'] ."</label></td>\n";
-    $this->output .=   "<td><select name=\"levelset\" id=\"levelset\">\n";
+    $this->output .=   "<td><label for=\"edit_pseudo\">".$lang['ADMIN_EDIT_FORM_PSEUDO']."</label></td>\n";
+    $this->output .=   "<td><input type=\"text\" id=\"edit_pseudo\" name=\"edit_pseudo\" size=\"15\" readonly /></td>\n";
+    $this->output .=   "<td><label for=\"edit_user_id\"> # </label></td>\n";
+    $this->output .=   "<td><input type=\"text\" id=\"edit_user_id\" name=\"edit_user_id\" size=\"5\" readonly /></td><td colspan=\"2\"></td></tr>\n<tr>";
+    $this->output .=   "<td><label for=\"edit_levelset\">".$lang['ADMIN_EDIT_FORM_SET'] ."</label></td>\n";
+    $this->output .=   "<td><select name=\"edit_levelset\" id=\"edit_levelset\">\n";
   
     foreach ($this->db->helper->SelectSets() as $id => $name)
     {
@@ -301,8 +226,8 @@ class DialogAdmin extends Dialog
     }
   
     $this->output .=   "</select></td>\n";
-    $this->output .=   "<td><label for=\"level\">".$lang['ADMIN_EDIT_FORM_LEVEL']."</label></td>\n";
-    $this->output .=   "<td><select name=\"level\" id=\"level\">\n";
+    $this->output .=   "<td><label for=\"edit_level\">".$lang['ADMIN_EDIT_FORM_LEVEL']."</label></td>\n";
+    $this->output .=   "<td><select name=\"edit_level\" id=\"edit_level\">\n";
   
     foreach ($levels as $name => $value)
     {
@@ -310,8 +235,8 @@ class DialogAdmin extends Dialog
     }
   
     $this->output .=   "</select>\n</td>\n";
-    $this->output .=   "<td><label for=\"type\">".$lang['ADMIN_EDIT_FORM_TYPE']."</label></td>\n";
-    $this->output .=   "<td><select id=\"type\" name=\"type\">\n";
+    $this->output .=   "<td><label for=\"edit_type\">".$lang['ADMIN_EDIT_FORM_TYPE']."</label></td>\n";
+    $this->output .=   "<td><select id=\"edit_type\" name=\"edit_type\">\n";
   
     foreach ($types as $nb => $value)
     {
@@ -321,12 +246,12 @@ class DialogAdmin extends Dialog
   
     $this->output .=   "</select>\n</td></tr><tr>\n";
 
-    $this->output .=   "<td colspan=\"3\"><label for=\"time\">".$lang['ADMIN_EDIT_FORM_TIME']."</label></td>\n";
-    $this->output .=   "<td><input type=\"text\" id=\"time\" name=\"time\" size=\"7\" /></td>\n";
-    $this->output .=   "<td><label for=\"coins\">".$lang['ADMIN_EDIT_FORM_COINS']."</label></td>\n";
-    $this->output .=   "<td><input type=\"text\" id=\"coins\" name=\"coins\" size=\"5\"/></td></tr>\n<tr>";
-    $this->output .=   "<td><label for=\"replay\">".$lang['ADMIN_EDIT_FORM_REPLAY_FILE']."</label></td>\n";
-    $this->output .=   "<td colspan=\"5\"><input type=\"text\" id=\"replay\" name=\"replay\" size=\"50\" />\n";
+    $this->output .=   "<td colspan=\"3\"><label for=\"edit_time\">".$lang['ADMIN_EDIT_FORM_TIME']."</label></td>\n";
+    $this->output .=   "<td><input type=\"text\" id=\"edit_time\" name=\"edit_time\" size=\"7\" /></td>\n";
+    $this->output .=   "<td><label for=\"edit_coins\">".$lang['ADMIN_EDIT_FORM_COINS']."</label></td>\n";
+    $this->output .=   "<td><input type=\"text\" id=\"edit_coins\" name=\"edit_coins\" size=\"5\"/></td></tr>\n<tr>";
+    $this->output .=   "<td><label for=\"edit_replay\">".$lang['ADMIN_EDIT_FORM_REPLAY_FILE']."</label></td>\n";
+    $this->output .=   "<td colspan=\"5\"><input type=\"text\" id=\"edit_replay\" name=\"edit_replay\" size=\"50\" />\n";
   
     $this->output .=   "</td></tr><tr>\n";
 
@@ -363,23 +288,31 @@ class DialogAdmin extends Dialog
 
     // select
     $this->output .= "<script type=\"text/javascript\">\n";
-      $this->output .=  "function change_editform(idP,user_idP, pseudoP, levelsetP, levelP, timeP, coinsP, replayP, typeP) {;\n";
-        $this->output .=  "change_form_input('editform', 'id', idP);\n";
-        $this->output .=  "change_form_input('editform', 'user_id', user_idP);\n";
-        $this->output .=  "change_form_input('editform', 'pseudo', pseudoP);\n";
-        $this->output .=  "change_form_select('editform', 'levelset', levelsetP-1);\n";
-	$this->output .=  "change_form_select('editform', 'level', levelP);\n";
-        $this->output .=  "change_form_input('editform', 'time', timeP);\n";
-        $this->output .=  "change_form_input('editform', 'coins', coinsP);\n";
-        $this->output .=  "change_form_input('editform', 'replay', replayP);\n";
-	$this->output .=  "change_form_select('editform', 'type', typeP-1);\n";
-      $this->output .= "}\n";
+    $this->output .=  "function change_editform(idP,user_idP, pseudoP, levelsetP, levelP, timeP, coinsP, replayP, typeP) {;\n";
+    $this->output .=  "change_form_input('edit_id', idP);\n";
+    $this->output .=  "change_form_input('edit_user_id', user_idP);\n";
+    $this->output .=  "change_form_input('edit_pseudo', pseudoP);\n";
+    $this->output .=  "change_form_select('edit_levelset', levelsetP-1);\n";
+	$this->output .=  "change_form_select('edit_level', levelP);\n";
+    $this->output .=  "change_form_input('edit_time', timeP);\n";
+    $this->output .=  "change_form_input('edit_coins', coinsP);\n";
+    $this->output .=  "change_form_input('edit_replay', replayP);\n";
+	$this->output .=  "change_form_select('edit_type', typeP-1);\n";
+    $this->output .= "}\n";
     $this->output .= "</script>\n";
+    
+    //Calcul de l'index du set pour la liste
+    $i = 1;
+    foreach ($this->db->helper->SelectSets() as $id => $name)
+    {
+      $ind_set_arr[$id] = $i;
+      $i++;
+    }
 
     $jsargs  = "'".$fields['id']."',";
     $jsargs .= "'".$fields['user_id']."',";
     $jsargs .= "'".$fields['pseudo']."',";
-    $jsargs .= "'".$fields['levelset']."',";
+    $jsargs .= "'".$ind_set_arr[$fields['levelset']]."',";
     $jsargs .= "'".get_level_by_name($fields['level'])."',";
     $jsargs .= "'".$fields['time']."',";
     $jsargs .= "'".$fields['coins']."',";

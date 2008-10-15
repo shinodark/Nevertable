@@ -275,19 +275,20 @@ if (isset($args['repcontest']))
 
 if (isset($args['edit']))
 {
-  $args['coins'] = (integer)$args['coins'];
-  $args['time']  = (integer)$args['time'];
-  $args['type']  = (integer)$args['type'];
-  $args['pseudo']  = trim($args['pseudo']);
+  $args['edit_coins'] = (integer)$args['edit_coins'];
+  $args['edit_time']  = (integer)$args['edit_time'];
+  $args['edit_type']  = (integer)$args['edit_type'];
+  $args['edit_level']  = (integer)$args['edit_level'];
+  $args['edit_pseudo']  = trim($args['edit_pseudo']);
 
   // champs obligatoires (coins n'est pas testé il peut être == 0)
-  if (empty($args['user_id']) || empty($args['time']))
+  if (empty($args['edit_user_id']) || empty($args['edit_time']))
   {
       gui_button_error("Please fill all fields. Only replay is optional.", 300);
       closepage();
   }
   $rec = new Record($table->db);
-  $ret = $rec->LoadFromId($args['id']);
+  $ret = $rec->LoadFromId($args['edit_id']);
   if (!$ret)
   {
 	  gui_button_error($rec->GetError(), 300);
@@ -296,7 +297,7 @@ if (isset($args['edit']))
   $oldtype   = $rec->GetType();
   $oldfields = $rec->GetFields();
   /* un freestyle est forcément dans contest */
-  if($args['type']==get_type_by_name("freestyle"))
+  if($args['edit_type']==get_type_by_name("freestyle"))
   {
     if (!$rec->Move(get_folder_by_name("contest")))
     {
@@ -305,14 +306,14 @@ if (isset($args['edit']))
     }
     $rec->SetIsBest(false);
   }
-  
+    
   $fields = array(
-	  'levelset' => $args['levelset'],
-	  'level'    => $args['level'],
-	  'type'     => $args['type'],
-	  'time'     => $args['time'],
-	  'coins'    => $args['coins'],
-	  'replay'   => $args['replay'],
+	  'levelset' => $args['edit_levelset'],
+	  'level'    => $args['edit_level'],
+	  'type'     => $args['edit_type'],
+	  'time'     => $args['edit_time'],
+	  'coins'    => $args['edit_coins'],
+	  'replay'   => $args['edit_replay'],
 	  );
   $rec->SetFields($fields);
   $table->dialog->Record($rec->GetFields());

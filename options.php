@@ -154,9 +154,9 @@ if(isset($args['upoptions']))
   echo $form->End();
 
   echo '<script>';
-    echo "change_form_select('options_form', 'sort',  '".$user->GetSort()."');";
-    echo "change_form_select('options_form', 'theme',  '".$user->GetTheme()."');";
-    echo "change_form_select('options_form', 'lang',  '".get_lang_by_name($user->GetLang())."');";
+    echo "change_form_select('sort',  '".$user->GetSort()."');";
+    echo "change_form_select('theme',  '".$user->GetTheme()."');";
+    echo "change_form_select('lang',  '".get_lang_by_name($user->GetLang())."');";
   echo '</script>';
 
 gui_button_main_page();

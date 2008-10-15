@@ -27,7 +27,8 @@
 
 $types     = array ("all", "best time", "most coins", "freestyle");
 
-$folders   = array ("all", "contest", "incoming", "trash", "oldones");
+$folders   = array (0 => "all", 1 => "contest",  2 => "oldones", 3 => "incoming", 4 => "trash");
+$folders_user = array(0 => "all", 1 => "contest", 2 => "oldones");
 
 $newonly   = array ("off", "3 days", "1 week", "2 weeks", "1 month");
 
