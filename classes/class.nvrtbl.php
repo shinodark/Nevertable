@@ -101,9 +101,12 @@ class Nvrtbl
     
     if (!in_array($langcode, $langs))
     {
-	gui_button_error("lang is not supported.", 200);
-	exit;
+		gui_button_error("lang is not supported.", 200);
+		exit;
     }
+    // anglais par dŽfaut pour les chaines, puis Žcrasement avec la langue de l'utilisateur
+    if ($langcode != "en")
+    	include (ROOT_PATH.$config['lang_dir']."lang.en.php");
     include (ROOT_PATH.$config['lang_dir']."lang.".$langcode.".php");
 
     /* Compte et gère les utilisateur en ligne */

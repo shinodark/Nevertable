@@ -19,21 +19,21 @@
 #
 # ***** END LICENSE BLOCK *****/
 
-function change_form_input(formP, idP, P) {
-	document.forms[formP].eval(idP).value  = P;
+function change_form_input( idP, P) {
+	document.getElementById(idP).value  = P;
 }
 
-function change_form_select(formP, idP, P) {
-	document.forms[formP].eval(idP).selectedIndex  = P;
+function change_form_select(idP, P) {
+	document.getElementById(idP).selectedIndex  = P;
 }
 
-function change_form_textarea(formP, idP, P) {
-	document.forms[formP].eval(idP).value  = P;
+function change_form_textarea(idP, P) {
+	document.getElementById(idP).value  = P;
 }
 
-function change_form_checkbox(formP, idP, P) {
+function change_form_checkbox(idP, P) {
 	if (P == "on")
-  	   document.forms[formP].eval(idP).checked  = true;
+  	   document.getElementById(idP).checked  = true;
 	else
-  	   document.forms[formP].eval(idP).checked  = false;
+  	   document.getElementById(idP).checked  = false;
 }

@@ -435,8 +435,8 @@ class DialogStandard extends Dialog
     $this->output .=   "<table><tr>\n";
     $this->output .=   "<th colspan=\"6\">".$lang['TYPE_FORM_TITLE']."</th>\n";
     $this->output .=   "</tr><tr>\n";
-    $this->output .=   "<td><label for=\"table\">".$lang['TYPE_FORM_TABLE_SELECT']."</label>\n";
-    $this->output .=   "<select name=\"type\" id=\"table\">\n";
+    $this->output .=   "<td><label for=\"type\">".$lang['TYPE_FORM_TABLE_SELECT']."</label>\n";
+    $this->output .=   "<select name=\"type\" id=\"type\">\n";
   
     foreach ($types as $nb => $value)
       $this->output .=   "<option value=\"".$nb."\">".$lang[$types[$nb]]."</option>\n";
@@ -499,14 +499,22 @@ class DialogStandard extends Dialog
        case get_folder_by_name("oldones") : $ind_folder = 1; break;
        default :$ind_folder = 2; break;
     }
+    //Calcul de l'index du set pour la liste
+    $i = 1;
+    foreach ($this->db->helper->SelectSets() as $id => $name)
+    {
+      $ind_set_arr[$id] = $i;
+      $i++;
+    }
 
     $this->output .= "<script type=\"text/javascript\">\n";
-      $this->output .=  "change_form_select('typeform', 'type',".$args['type'].");\n";
-      $this->output .=  "change_form_select('typeform', 'folder',".$ind_folder.");\n";
-      $this->output .=  "change_form_select('typeform', 'levelset_f',".$args['levelset_f'].");\n";
-      $this->output .=  "change_form_select('typeform', 'level_f',".$args['level_f'].");\n";
-      $this->output .=  "change_form_checkbox('typeform', 'diffview','".$args['diffview']."');\n";
-      $this->output .=  "change_form_select('typeform', 'newonly',".$args['newonly'].");\n";
+    $this->output .=  "change_form_select('type',".$args['type'].");\n";
+    $this->output .=  "change_form_select('folder',".$ind_folder.");\n";
+
+    $this->output .=  "change_form_select('levelset_f',".$ind_set_arr[$args['levelset_f']].");\n";
+    $this->output .=  "change_form_select('level_f',".$args['level_f'].");\n";
+    $this->output .=  "change_form_checkbox('diffview','".$args['diffview']."');\n";
+    $this->output .=  "change_form_select('newonly',".$args['newonly'].");\n";
     $this->output .= "</script>\n";
 
     $this->Output();
@@ -563,7 +571,7 @@ class DialogStandard extends Dialog
    if (!empty($content))
    {
     $this->output .= "<script type=\"text/javascript\">\n";
-      $this->output .=  "change_form_textarea('commentform', 'content',  '".addcslashes($content, '\0..\37')."')\n";
+      $this->output .=  "change_form_textarea('content',  '".$content."')\n";
     $this->output .= "</script>\n";
    }
    $this->Output();

@@ -40,7 +40,7 @@ class Dialog
     $this->db = &$db;
     $this->table = &$parent;
     $this->smilies = new Smilies();
-    $this->bbcode = new parse_bbcode();
+    $this->bbcode = new parse_bbcode("none");
     $this->style = &$o_style;
     $this->output = "";
   }

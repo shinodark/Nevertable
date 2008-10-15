@@ -284,13 +284,15 @@ function TimestampDiffSecs($u_t1,$u_t2)
 
 
 /* pour mettre dans un javascript ou une URL, la total */
-function CleanContent($content)
+function CleanContent($content, $slashes = true, $cslashes = false)
 { 
   $content = str_replace("&lt;","<", $content);
   $content = str_replace("&gt;",">", $content);
   $content = strip_tags($content);
-  $content = addslashes($content);
-  $content = addcslashes($content, "\0..\37");
+  if ($slashes)
+  	$content = addslashes($content);
+  if ($cslashes)
+    $content = addcslashes($content, "\0..\37");
 
   return $content;
 }

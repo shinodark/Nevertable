@@ -264,7 +264,7 @@ if (!empty($args['comuser_id']))
     echo "</div>\n"; /* fin comments_contents */
    
    
-    $jsfriendly = CleanContent($args['content']);
+    $jsfriendly = CleanContent($args['content'], false);
     if (isset($args['comedit2']))
       $nextargs = "record.php?comedit2";
     else
@@ -281,9 +281,10 @@ if (!empty($args['comuser_id']))
  */
   $table->dialog->Record($rec->GetFields());
   $table->dialog->RecordLink($rec->GetFields());
+  
+
 
   $table->dialog->Output('<div id="comments">'."\n");
-
  
   /* gestion du numéro de page et de l'offset */
   $off = ($args['page']-1) * $config['comments_limit'];
@@ -316,6 +317,7 @@ if (!empty($args['comuser_id']))
   if (!$res = $table->db->Query())
      gui_button_error("error on query.");
 
+  $table->dialog->NavBar($total, $config['comments_limit'], 'record.php', '&amp;id='.$args['id']);
   $table->dialog->Comments($res);
   
 
@@ -332,7 +334,7 @@ else
  $table->dialog->CommentForm($_SESSION['user_id'], $_SESSION['user_pseudo'], "", 'record.php?upcomments') ;
 }
 
-  $table->dialog->NavBar($total, $config['comments_limit'], 'record.php', '&amp;id='.$args['id']);
+$table->dialog->NavBar($total, $config['comments_limit'], 'record.php', '&amp;id='.$args['id']);
 
 $table->dialog->Output('</div><!-- comments -->');
 
