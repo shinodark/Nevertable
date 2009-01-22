@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 class Set
 {
     var $db;
@@ -46,32 +48,28 @@ class Set
         return false;
       $this->db->NewQuery("SELECT", "sets");
       $this->db->Where("id", $id);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
-      else {
-        if ($this->db->NumRows()<1)
-        {
-          $this->error = "No set match this id!";
+      $this->db->Query();
+      
+      if ($this->db->NumRows()<1)
+      {
+          $this->SetError("No set match this id!");
           return false;
-        }
-        $this->SetFields($this->db->FetchArray());
-        $this->isload=true;
-        return true;
       }
+      $this->SetFields($this->db->FetchArray());
+      $this->isload=true;
+      return true;
     }
 
     function Update($conservative=false)
     {
       if(!$this->isload)
       {
-        $this->error = "Set is not loaded!";
-	return false;
+        $this->SetError("Set is not loaded!");
+	    return false;
       }
       if(empty($this->fields['id']))
       {
-        $this->error = "Trying to update with no id specified!";
+        $this->SetError("Trying to update with no id specified!");
         return false;
       }
 
@@ -79,70 +77,48 @@ class Set
       $this->db->UpdateSet($this->fields, $conservative);
       $this->db->Where("id", $this->fields['id']);
       $this->db->Limit(1);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
-      else {
-        return true;
-      }
+      $this->db->Query();
+      
+      return true;
     }
 
     function Purge()
     {
       if(!$this->isload)
       {
-        $this->error = "Set is not loaded!";
-	return false;
+        $this->SetError("Set is not loaded!");
+	    return false;
       }
       if(empty($this->fields['id']))
       {
-        $this->error = "Trying to purge with no id specified!";
+        $this->SetError("Trying to purge with no id specified!");
         return false;
       }
 
       /* efface les maps */
       $this->db->NewQuery("DELETE", "maps");
       $this->db->Where("set_id", $this->fields['id']);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
-      
+      $this->db->Query();
+        
       /* efface les records */
       $this->db->NewQuery("SELECT", "rec");
       $this->db->Where("levelset", $this->fields['id']);
-      $res = $this->db->Query();
-      if(!$res) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
-
+      $this->db->Query();
+      
       $rec = new Record($this->db);
 
       /* boucle sur tous les records */
       while ($val = $this->db->FetchArray($res))
       {
-        if(!$rec->LoadFromId($val['id']))
-        {
-          $this->SetError($rec->GetError());
-          return false;
-        }
-	if (!$rec->Purge(true))
-	{
-          $this->SetError($rec->GetError());
-          return false;
-	}
+        $rec->LoadFromId($val['id']); 
+	    $rec->Purge(true);
       }
       
       /* efface le set */
       $this->db->NewQuery("DELETE", "sets");
       $this->db->Where("id", $this->fields['id']);
       $this->db->Limit(1);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+      $this->db->Query();
 
       $this->isload = false;
 
@@ -155,22 +131,15 @@ class Set
 	      return false;
       $this->db->NewQuery("INSERT",  "sets");
       $this->db->Insert($this->fields);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+      $this->db->Query();
+      
       /* le but ici est de récupérer le nouveau set pour mise à jour des infos */
       /* cela permet d'avoir le bon id surtout, pour un affichage correct */
       $this->db->NewQuery("SELECT", "sets");
       $this->db->Sort(array("id"), "DESC");
       $this->db->Limit(1);
-      if($this->db->Query()) 
-         $this->SetFields($this->db->FetchArray());
-      else
-      {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+      $this->db->Query(); 
+      $this->SetFields($this->db->FetchArray());
 
       return true;
     }
@@ -180,10 +149,7 @@ class Set
       $this->db->NewQuery("SELECT", "maps");
       $this->db->Where("set_id", $this->fields['id']);
       $res = $this->db->Query();
-      if(!$res) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+
       return $res;
     }
     
@@ -196,10 +162,8 @@ class Set
 	      "map_solfile" => $map_solfile,
       );
       $this->db->Insert($map_fields);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-    }
+      $this->db->Query();
+
       return true;
     }
 
@@ -240,6 +204,7 @@ class Set
     function SetError($error)
     {
       $this->error = $error;
+      throw Exception($this->error);
     }
     
     function GetError()

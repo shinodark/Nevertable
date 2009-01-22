@@ -20,6 +20,9 @@
 #
 # ***** END LICENSE BLOCK *****
 #
+if (!defined('NVRTBL'))
+	exit;
+	
 include_once ROOT_PATH ."libs/lib.filemanager.php";
 
 class Cache
@@ -59,34 +62,24 @@ class Cache
     $this->CacheFile->SetFileName($this->cache_dir .  $ident . ".cache");
     if (is_array($cache_data))
        $cache_data = serialize($cache_data);
-    if (!$this->CacheFile->Write($cache_data))
-    {
-      $this->SetError($this->CacheFile->GetError());
-      return false;
-    }
+    
     return true;
   }
 
   function Dirty($ident)
   {
     $this->CacheFile->SetFileName($this->cache_dir . $ident . ".cache");
-    if($this->CacheFile->Stat())
-    {
-      if(! $this->CacheFile->Unlink()) 
-      {
-        $this->SetError("Error on Cache->Dirty:" . $this->CacheFile->GetError());
-        return false;
-      }
-    }
-    else
-      return true;
+    if ($this->CacheFile->Exists())
+    	$this->CacheFile->Unlink(); 
+
+    return true;
   }
 
   function Read()
   {
     if (!$this->cache_hit)
     {
-      $this->SetError("Tring to read a non-existent cache.");
+      $this->SetError("Trying to read a non-existent cache.");
       return false;
     }
     if($this->type === "array") $ret = $this->_ReadArray();
@@ -121,6 +114,7 @@ class Cache
   function SetError($error)
   {
     $this->error = $error;
+    throw new Exception($this->error);
   }
     
   function GetError()

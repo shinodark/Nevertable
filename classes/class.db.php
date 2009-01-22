@@ -20,8 +20,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
-define('SQL_DEBUG', 1);
+if (!defined('NVRTBL'))
+	exit;
+	
 class DB
 {
    var $db_server;
@@ -48,6 +49,7 @@ class DB
         $this->db_user   = $user;
         $this->db_passwd = $passwd;
         $this->request_count = 0;
+        $this->last_result   = false;
 
    }
    
@@ -121,7 +123,9 @@ class DB
    
    function SetError()
    {
-     if (SQL_DEBUG) 
+   	global $config;
+   	
+     if (!empty($config['bdd_debug']) && ($config['bdd_debug'] == true) ) 
      {
        if ($this->con_id)
        {
@@ -137,7 +141,9 @@ class DB
      else
      {
         $this->error = "SQL Error. Debug mode is not set.";
+        throw new DBException($this->error);
      }
+     throw new DBException($this->error . "  errno: " . $this->errno);
    }
    
    function GetError()
@@ -175,6 +181,7 @@ class DB
    
    function Select($table_arr, $fields_arr)
    {
+   	 $flist = "";
      while (($f=array_pop($fields_arr)) != NULL)
      {
        if (!empty($flist))  
@@ -182,6 +189,7 @@ class DB
        $flist .= $f;
      }
      
+     $tlist = "";
      while (($f=array_pop($table_arr)) != NULL)
      {
        if (!empty($tlist))  
@@ -223,7 +231,9 @@ class DB
    {
      if (empty($fields_array))  
        return;
-       
+
+     $flist = "";
+     $vlist = "";
      foreach($fields_array as $f => $value)
      {
        if (!empty($flist))
@@ -417,10 +427,14 @@ class DB
      {
        return $this->ProtectArray($string);
      }
-
+     
      // Stripslashes
      if (get_magic_quotes_gpc()) {
        $ret = stripslashes($string);
+     }
+     else
+     {
+     	$ret = $string;
      }
      // Protection si ce n'est pas un entier
      if (!is_numeric($string)) {

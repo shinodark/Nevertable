@@ -24,6 +24,9 @@
 /******************************************************/
 /*------------ OTHERS  -------------------------------*/
 /******************************************************/
+if (!defined('NVRTBL'))
+	exit;
+	
 function is_a_best_record($record, $best, $critera)
 {
   global $table; /* pour accès à la base de donnée */
@@ -145,7 +148,7 @@ function gui_button($str, $width)
   $button = "<div class=\"button\" style=\"width:".$width."px;\">\n";
   $button .= $str;
   $button .= "</div>\n\n";
-  echo $button;
+  return $button;
 }
 
 function gui_button_noecho($str, $width)
@@ -163,37 +166,37 @@ function gui_button_error($str, $width)
   $button = "<div class=\"error\" style=\"width:".$width."px;\">\n";
   $button .= $str;
   $button .= "</div>\n\n";
-  echo $button;
+  return $button;
 }
 
 function gui_button_back()
 {
   global $lang;
-  gui_button("<a href=\"javascript:history.go(-1)\">".$lang['GUI_BUTTON_BACK']."</a>", 200);
+  return gui_button("<a href=\"javascript:history.go(-1)\">".$lang['GUI_BUTTON_BACK']."</a>", 200);
 }
 
 function gui_button_main_page()
 {
   global $lang;
-  gui_button("<a href=\"index.php\">".$lang['GUI_BUTTON_MAINPAGE']."</a>", 300);
+  return gui_button("<a href=\"".ROOT_PATH."/index.php\">".$lang['GUI_BUTTON_MAINPAGE']."</a>", 300);
 }
 
 function gui_button_main_page_admin()
 {
   global $lang;
-  gui_button("<a href=\"admin.php\">".$lang['GUI_BUTTON_MAINPAGE_ADMIN']."</a>", 300);
+  return gui_button("<a href=\"admin.php\">".$lang['GUI_BUTTON_MAINPAGE_ADMIN']."</a>", 300);
 }
 
 function gui_button_return($name, $page)
 {
   global $lang;
-  gui_button("<a href=\"".$page."\">".sprintf($lang['GUI_BUTTON_RETURN'], $name)."</a>", 300);
+  return gui_button("<a href=\"".$page."\">".sprintf($lang['GUI_BUTTON_RETURN'], $name)."</a>", 300);
 }
 
-function replay_link($folder, $replay_file)
+function replay_link($replay_file)
 {
   global $config;
-  return "http://".$_SERVER['SERVER_NAME'] ."/".$config['nvtbl_path'] . $config['replay_dir']. get_folder_by_number($folder) ."/".$replay_file;
+  return "http://".$_SERVER['SERVER_NAME'] ."/".$config['nvtbl_path'] . $config['replay_dir']. $replay_file;
 }
 
 function GetShot($set_path, $map_solfile)
@@ -311,7 +314,8 @@ function CleanContentPost($content)
 
 function GetContentFromPost($content)
 {
-  $content = stripslashes($content);
+  if (get_magic_quotes_gpc())
+    $content = stripslashes($content);
   $content = str_replace("&lt;","<", $content);
   $content = str_replace("&gt;",">", $content);
   $content = strip_tags($content);
@@ -323,8 +327,9 @@ function CleanContentHtml($content)
 { 
   $content = str_replace("&lt;","<", $content);
   $content = str_replace("&gt;",">", $content);
+  if (get_magic_quotes_gpc())
+    $content = strip_tags($content);
   $content = LineFeed2Html($content);
-  $content = strip_tags($content);
 
   return $content;
 }
@@ -334,6 +339,25 @@ function LineFeed2Html($content)
   $content = str_replace("\n", "<br />", $content);
 
   return $content;
+}
+
+function HtmlLineFeed2Text($content)
+{
+  $content = str_replace("<br />", "\n", $content);
+
+  return $content;
+}
+
+function layout_wrap($str, $i)
+{
+    $j = $i;
+    while ($i < strlen($str)) {
+        if (strpos($str, ' ', $i-$j+1) > $i+$j || strpos($str, ' ', $i-$j+1) === false) {
+            $str = substr($str, 0, $i) . ' ' . substr($str, $i);
+        }
+        $i += $j;
+    }
+    return $str;
 }
 
 function Javascriptize($string)
@@ -382,8 +406,7 @@ function CheckLimitInterval($var, $limit_min, $limit_max, $field_name="")
 
   $var = (integer) $var;
   if ( ($var > $limit_max) || ($var < $limit_min) ) {
-    gui_button_error(sprintf($lang['CHECK_ERR_LIMITS'], '"'.$field_name.'"', $limit_min, $limit_max), 500);
-    return false;
+    throw new Exception(sprintf($lang['CHECK_ERR_LIMITS'], '"'.$field_name.'"', $limit_min, $limit_max));
   }
   else
     return true;

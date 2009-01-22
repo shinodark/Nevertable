@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 class User
 {
     var $db;
@@ -443,6 +445,7 @@ class User
     function SetError($error)
     {
       $this->error = $error;
+      throw Exception($this->error);
     }
     
     function GetError()

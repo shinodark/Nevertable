@@ -21,46 +21,21 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "../");
+define('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
-include_once ROOT_PATH ."classes/class.dialog_admin.php";
+
 
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl("DialogAdmin");
-?>
+try {
+	
+$table = new Nvrtbl();
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php
-
-$table->dialog->Head("Nevertable - Neverball Hall of Fame");
-?>
-
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<?php
-
-function closepage()
-{   global $table;
-    gui_button_back();
-    echo "</div><!-- fin \"main\" -->\n";
-    $table->Close();
-    $table->dialog->Footer();
-    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
-    exit;
-}
-
-if (!Auth::Check(get_userlevel_by_name("admin")))
-{
-  gui_button_error($lang['NOT_ADMIN'], 400);
-  closepage();;
-}
+if (!Auth::Check(get_userlevel_by_name("root")))
+  throw new Exception($lang['NOT_ROOT']);
 
 
 function CheckConfig($conf_arr)
@@ -109,47 +84,30 @@ if (isset($args['upconfig']))
       $table->db->UpdateSet(array("conf_value" => $v));
       $table->db->Where("conf_name", $c);
       $table->db->Limit(1);
-      if(!$table->db->Query())
-      {
-        gui_button_error($table->db->GetError(), 400);
-        $ok=false;
-        break;
-      }
+      $table->db->Query();
     }
-  }
 
-  if ($ok)
-  {
-    gui_button("Configuration successfully updated.", 200);
+    $tpl_params['message_array'] = array();
+    array_push( $tpl_params['message_array'], $lang['GUI_UPDATE_OK']);
+    $tpl_params['redirect'] = "config.php";
+    $tpl_params['delay'] = 2;
+    $table->template->Show('redirect', $tpl_params);
   }
 }
 
+else
+{
   $table->db->NewQuery("SELECT", "conf");
-  if(!$table->db->Query())
-  {
-    gui_button_error($table->db->GetError(), 400);
-    return false;
-  }
   
-  $form = new Form("post", "config.php?upconfig", "config_form", 700);
-  $form->AddTitle($lang['ADMIN_CONFIG_FORM_TITLE']);
-  while ($val = $table->db->FetchArray())
-  {
-     $option = 'onmouseover="return escape(\''.$val['conf_desc'].'\')" ';
-     $form->AddInputText($val['conf_name'], $val['conf_name'], $val['conf_name'], 30, $val['conf_value'], $option);
-     $form->Br();
-  }
-  $form->AddInputSubmit();
-  echo $form->End();
+  $table->template->Show('admin/config', array('config_res' => $table->db->Query()));
+}
 
-gui_button_main_page_admin();
-?>
-</div> <!-- fin main-->
-<?php
+
+}
+catch (Exception $ex) {
+	$table->template->Show('error', array("exception" => $ex)); 
+}
+
 $table->Close();
-$table->dialog->Footer();
-?>
 
-</div><!-- fin "page" -->
-</body>
-</html>
+?>

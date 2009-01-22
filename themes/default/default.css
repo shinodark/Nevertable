@@ -1,8 +1,7 @@
 @import url('layout.css');
 
 body {
-    font-family: Verdana,Helvetica,Arial,sans-serif;
-    font-size: 10px;
+	font: 11px Verdana, Helvetica, Arial, sans-serif;
     background : #eee;
 }
 
@@ -28,7 +27,6 @@ img {
 
 input, textarea {
     border : 1px solid gray;
-    padding : 2px;
     background: #fcc;
 }
 select, option {
@@ -71,16 +69,12 @@ caption {
 
 .embedded table, .embedded td, .embedded tr, .embedded th {
     border: 0px;
-    padding: 0 0 0 0;
-}
-
-.embedded td {
-    height: 40px;
+    padding: 0px;
 }
 
 .embedded input {
     font-family: "Courier New";
-    font-size: 14px;
+    font-size: 0.9em;
     border: 1px;
     border-color: #888;
     background: #ffe;
@@ -109,7 +103,6 @@ caption {
    clear: both;
 }
 
-
 .results table {
 	border-collapse:collapse;
 }
@@ -137,14 +130,17 @@ caption {
     background: #f4f4f4;  
 }
 
-/******** ONE result table *********/
+.oneresult table {	
+	border-collapse:collapse;
+}
+
 .oneresult a {
     color: #633;
-}
+}	
 
 /******** Comments table ********************/
 
-.comments a {
+.comment a {
     color: #633;
 }
 
@@ -153,9 +149,9 @@ caption {
 }
 
 td .com_content {
-    border: 2px solid #f8d0d0;
-    padding: 10px 10px 10px 10px;
+    border: 1px solid #f8d0d0;
     background: #fdd; 
+    padding: 10px 10px 10px 10px;
 }
 
 /******** Prelude ****************************/
@@ -185,28 +181,32 @@ td .com_content {
 
 /******** Navbar *****************************/
 .navbar {
-    background: #FFF url(images/back-vertic.png) repeat-x;
+ /* background: #FFF url(images/back-vertic.png) repeat-x; */
     color : #f38;
-}
-.navbar a {
-    color : #558;
 }
 
 
 /******** Sidebar ****************************/
 #sidebar {
-background: #FFF url(images/back-vertic.png) repeat-x;
+/*background: #FFF url(images/back-vertic.png) repeat-x;*/
+font-size: 0.9em;
+}
+
+#sidebar h1, h2 {
+    font-size: 1em;
+    font-weight: bold;
+    color: #533;
+    border-bottom: 1px solid #c66;
 }
 
 #sidebar h2 {
-    background: #faa;
-    font-size: 12px;
-    font-weight: bold;
-    color: #533;
+	border: 1px solid #c66;
+	border-bottom: none;
 }
 
 .comPreviewHeader {
     background: #eee;
+    font-size: 0.9em;
 }
 .comPreviewHeader a{
     color: #411;
@@ -215,16 +215,14 @@ background: #FFF url(images/back-vertic.png) repeat-x;
     background: #fff;
 }
 .menuitem {
-    border-top: 1px solid #f8f8f8;
-    background: #fbfbfb;
+ /*   border-top: 1px solid #f8f8f8;
+    border-bottom: 1px solid #f8f8f8;*/
+/*    background: #fbfbfb;*/
 }
 .menuitem:hover {    background: url(images/curseur.gif) repeat-y left; }
 .menuitem a:hover { color: #335 ; }
 
 /******** Tagform ****************************/
-#tagboard {
-
-}
 
 #tagform label {
     font-weight: bold;
@@ -233,6 +231,18 @@ background: #FFF url(images/back-vertic.png) repeat-x;
 
 
 /*********** Tags **************/
+#tags {
+	font-size: 0.9em;
+}
+
+#content {
+    font-size:1em;
+}
+
+#tags textarea {
+    font-size: 1.1em;
+	}
+
 #tags table {
     background: transparent;
     table-layout: fixed;

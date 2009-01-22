@@ -19,26 +19,28 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
-define('ROOT_PATH', "./");
-include_once ROOT_PATH ."classes/class.db.php";
-include_once ROOT_PATH ."classes/class.db.helper.php";
-include_once ROOT_PATH ."classes/class.nvrtbl.php";
-include_once ROOT_PATH ."classes/class.auth.php";
-include_once ROOT_PATH ."classes/class.dialog_standard.php";
-include_once ROOT_PATH ."classes/class.replay.php";
-include_once ROOT_PATH ."classes/class.record.php";
-include_once ROOT_PATH ."classes/class.comment.php";
-include_once ROOT_PATH ."classes/class.user.php";
-include_once ROOT_PATH ."classes/class.smilies.php";
-include_once ROOT_PATH ."classes/class.style.php";
-include_once ROOT_PATH ."classes/class.set.php";
-include_once ROOT_PATH ."classes/class.map.php";
-include_once ROOT_PATH ."classes/class.tag.tagboard.php";
-include_once ROOT_PATH ."libs/lib.filemanager.php";
-include_once ROOT_PATH ."libs/lib.mail.php";
-include_once ROOT_PATH ."libs/lib.bbcode.php";
-include_once ROOT_PATH ."libs/lib.cache.php";
-include_once ROOT_PATH ."libs/lib.form.php";
-include_once ROOT_PATH ."libs/lib.photo.php";
-//include_once ROOT_PATH ."libs/lib.template.php";
+if (!defined('NVRTBL'))
+	exit;
+	
+include_once ROOT_PATH."classes/class.exception.php";
+include_once ROOT_PATH."classes/class.db.php";
+include_once ROOT_PATH."classes/class.db.helper.php";
+include_once ROOT_PATH."classes/class.nvrtbl.php";
+include_once ROOT_PATH."classes/class.auth.php";
+include_once ROOT_PATH."classes/class.template.php";
+include_once ROOT_PATH."classes/class.replay.php";
+include_once ROOT_PATH."classes/class.record.php";
+include_once ROOT_PATH."classes/class.comment.php";
+include_once ROOT_PATH."classes/class.user.php";
+include_once ROOT_PATH."classes/class.smilies.php";
+include_once ROOT_PATH."classes/class.style.php";
+include_once ROOT_PATH."classes/class.form.php";
+include_once ROOT_PATH."classes/class.set.php";
+include_once ROOT_PATH."classes/class.map.php";
+include_once ROOT_PATH."classes/class.tag.tagboard.php";
+include_once ROOT_PATH."libs/lib.filemanager.php";
+include_once ROOT_PATH."libs/lib.mail.php";
+include_once ROOT_PATH."libs/lib.bbcode.php";
+include_once ROOT_PATH."libs/lib.cache.php";
+include_once ROOT_PATH."libs/lib.form.php";
+include_once ROOT_PATH."libs/lib.photo.php";

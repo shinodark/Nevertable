@@ -61,20 +61,20 @@ textarea {
 }
 
 .navbar {
-    width: 880px;
+    width: 100%;
+    min-height: 16px;
     clear: both;
-    margin-left: auto;
-    margin-right: auto;
     margin-top: 30px;
     margin-bottom: 30px;
     text-align: center;
     font-weight: bold;
 }
+.navbar img {
+	vertical-align: bottom;
+}
 
 /*********** Sidebar **************/
 #sidebar {
-    position : relative;
-    float : left;
     top : 0px;
     left : 3px;
     bottom: auto;
@@ -83,12 +83,21 @@ textarea {
     width: 170px;
 }
 
-#sidebar h2 {
+#sidebar h1, h2{
+	text-align: center;
+}
+
+#sidebar h1 {
     padding-top: 6px;
     padding-bottom: 6px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 6px;
+}
+
+#sidebar h2 {
+    padding-top: 6px;
+    padding-bottom: 0px;
+    margin-bottom: 3px;
 }
 
 #sidebar table {
@@ -103,7 +112,14 @@ textarea {
 
 .menuitem {
     padding-left: 6px;
+	vertical-align:middle;
 }
+
+.menuitem img {
+	padding-right: 6px;
+}
+
+
 
 
 /*********** Tagboard **************/
@@ -113,18 +129,25 @@ textarea {
 
 #tags {
     margin : 0 auto;
-    margin-top : 5px;
     width: 170px;
-    height: 220px;
-    overflow: auto;
+    max-height: 220px;
+    overflow-x:hidden;
+    overflow-y:auto;
 }
 
+.tag_pseudo { float: left; }
 .tag_date { float: right; }
+
+#tags textarea {
+    max-width: 160px;
+    min-height: 60px;
+	}
 
 #tagform {
     margin : 0 auto;
     width: 170px;
 }
+
 
 /******** Record table ********************/
 
@@ -157,14 +180,41 @@ textarea {
     clear: both;
 }
 
-/******** Comments ********************/
-.comments {
-    margin : 20px auto;
+.oneresult td {
+    text-align: center;
+}	
+
+
+/************* Coments *************/
+.comPreview a img {
+    max-width: 24px;
+    max-height: 24px;
+}
+
+.com_avatar {
+	width: 130px;
+	height: 130px;
+}
+
+td .com_content {
+    min-height: 130px;
+}
+
+.comment {
     width : 650px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
+.comment table {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
 }
 
 .com_header {
-    height: 30px;
+    height: 20px;
     padding: 2px;
 }
 
@@ -194,7 +244,7 @@ textarea {
     padding: 0;
     text-align: center;
     width: 929px;
-    height: 20px;
+    height: 35px;
 }
 
 #perfs
@@ -214,6 +264,7 @@ textarea {
 
 .button {
     margin-top: 30px;
+    margin-bottom: 30px;
     margin-left: auto;
     margin-right: auto;
     clear: both;

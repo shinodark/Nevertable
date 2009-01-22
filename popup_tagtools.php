@@ -21,6 +21,8 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
+define('NVRTBL', 1);
+include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
 
@@ -30,7 +32,7 @@ if(empty($_GET['css']))
       $css = $_GET['css'];
 
 /* nécessaire pour le chargement de la conf */
-$table = new Nvrtbl("null");
+$table = new Nvrtbl();
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -40,8 +42,8 @@ $table = new Nvrtbl("null");
 
 <head>
 <title>Tag Tools</title>
-<meta http-equiv="Content-Type" content="text/html"; charset=utf-8\"/>
-<?php echo "<link rel=\"stylesheet\" href=\"".$css."\" type=\"text/css\" />\n";?>
+<meta http-equiv="Content-Type" content="text/html"; charset="utf-8"/>
+<link rel="stylesheet" href="<?php echo $css?>" type="text/css" />
 <script type="text/javascript" src="includes/js/toolbar.js"></script>
 </head>
 <body>

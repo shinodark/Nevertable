@@ -20,7 +20,9 @@
 #
 # ***** END LICENSE BLOCK *****
 #
-
+if (!defined('NVRTBL'))
+	exit;
+	
 global $lang;
 
 $lang['code']			= "fr";
@@ -63,12 +65,11 @@ $lang['GUI_YES']        	= "OUI";
 $lang['GUI_NO']      		= "NON";
 
 $lang['GUI_BUTTON_BACK']        = "Précédent";
-$lang['GUI_BUTTON_RETURN']      = "Retour";
 $lang['GUI_BUTTON_MAINPAGE']    = "Retourner à la page principale";
-$lang['GUI_BUTTON_MAINPAGE_ADMIN'] = "Retourner à la page d'administration";
 $lang['GUI_BUTTON_RETURN']      = "Retourner à la page %s";
 $lang['GUI_BUTTON_APPLY']       = "Appliquer";
 $lang['GUI_BUTTON_REDIRECT']    = "Redirection...";
+$lang['GUI_BUTTON_CONTINUE']    = "Continuer";
 
 $lang['GUI_INVALID_USER']       = "Utilisateur invalide";
 
@@ -122,6 +123,7 @@ $lang['LOGIN_NOTLOGIN'] 	    = "Vous n'êtes pas connecté(e)";
 $lang['LOGIN_ALREADYLOGIN'] 	    = "Vous êtes déjà connecté(e)";
 $lang['LOGIN_LOGIN'] 	            = "Vous êtes conneté(e)<br/>Redirection vers la page principale...";
 $lang['LOGIN_LOGOUT'] 	            = "Vous êtes déconneté(e)<br/>Redirection vers la page principale...";
+$lang['LOGIN_AUTH_FAILED']			= "Authentification erron�e. Essayez encore ... (ou pas)";
 
 $lang['LOGIN_FORM_TITLE']           = "Connexion";
 $lang['LOGIN_FORM_PSEUDO']          = "login";
@@ -130,7 +132,7 @@ $lang['LOGIN_FORM_PASSWD']          = "pass";
 /*
   TABLE
 */
-$lang['RESULTS_PRELUDE']	    = "%d records affichés";
+$lang['RESULTS_PRELUDE']	    = "%d records";
 $lang['TABLE_HEADER_OLD']	    = "âge";
 $lang['TABLE_HEADER_PLAYER']	    = "joueur";
 $lang['TABLE_HEADER_SET']	    = "set";
@@ -142,8 +144,8 @@ $lang['TABLE_RESULTS_LIST']	    = "Télécharger la liste des records affichés 
 $lang['TABLE_ATTACH']		    = "Montrer tous les records de ce niveau";
 
 $lang['TABLE_NO_COMMENT']	    = "Postez !";
-$lang['TABLE_ONE_COMMENT']	    = "1 comm";
-$lang['TABLE_COMMENTS']	            = "%d comme";
+$lang['TABLE_ONE_COMMENT']	    = "1 commentaire";
+$lang['TABLE_COMMENTS']	            = "%d commentaires";
 
 /*
   MEMBER
@@ -186,7 +188,7 @@ $lang['TAG_TOO_LONG']               = "Votre tag est trop long.";
 /*
   MENU DE LA SIDEBAR
 */
-$lang['SIDEBAR_WELCOME']	    = "Bienvenue %s";
+$lang['SIDEBAR_WELCOME']	    = "Bienvenue";
 
 $lang['SIDEBAR_LOGIN']		    = "Connexion";
 $lang['SIDEBAR_LAST_COMMENTS']	    = "Derniers commentaires";
@@ -195,7 +197,8 @@ $lang['SIDEBAR_LEGEND_BEST_TIME']   = "Meilleur temps.";
 $lang['SIDEBAR_LEGEND_MOST_COINS']  = "Meilleur pièces.";
 $lang['SIDEBAR_LEGEND_FREESTYLE']   = "Freestyle.";
 
-$lang['MENU_ADMIN']		    = "Panneau d'administration";
+$lang['MENU_ROOT']		    = "Menu Root";
+$lang['MENU_ADMIN']		    = "Menu d'administration";
 $lang['MENU_ADMIN_INCOMING']	    = "En attente (%d)";
 $lang['MENU_ADMIN_MANAGEMENT']	    = "Gestion contenu";
 $lang['MENU_ADMIN_MEMBERS']	    = "Gestion des membres";
@@ -307,15 +310,6 @@ $lang['TYPE_FORM_NEWONLY']          = "Nouveaux records seulement : ";
  *********/
 
 /*
-  PAGE PRINCIPALE
-*/
-
-$lang['ADMIN_PRELUDE_INCOMING']  = "en attente (%d)";
-$lang['ADMIN_PRELUDE_TRASH']     = "poubelle (%d)";
-$lang['ADMIN_PRELUDE_OLDONES']   = "obsolètes (%d)";
-$lang['ADMIN_PRELUDE_CONTEST']   = "contest (%d)";
-
-/*
   MENU DE LA SIDEBAR
 */
 $lang['ADMIN_MENU_TITLE']   	 = "Menu d'administration";
@@ -328,7 +322,6 @@ $lang['ADMIN_MENU_SETS']  	 = "Sets / Niveaux";
 $lang['ADMIN_MENU_FILE_EXPLORER']= "Gestion des fichiers";
 $lang['ADMIN_MENU_PURGE_TRASH']  = "Vider la poubelle";
 $lang['ADMIN_MENU_TAGBOARD_MOD'] = "Modération du tagboard";
-$lang['ADMIN_MENU_LEAVE']        = "Quitte le panneau d'administration";
 
 /*
   CONFIG
@@ -354,22 +347,6 @@ $lang['ADMIN_MANAGEMENT_ANNOUNCE_FORM_TITLE']  = "Editer l'annonce de la page pr
 $lang['ADMIN_MANAGEMENT_SPEECH_FORM_TITLE']    = "Editer le texte de présentation";
 $lang['ADMIN_MANAGEMENT_CONDITIONS_FORM_TITLE']= "Editer les conditions";
 
-/*
-  PURGETRASH
-*/
-$lang['ADMIN_PURGETRASH_SURE']     = "Etes-vous sûr de vouloir vider la poubelle ?";
-
-/*
-  EDITFORM
-*/
-$lang['ADMIN_EDIT_FORM_TITLE']     = "Edition d'un record";
-$lang['ADMIN_EDIT_FORM_PSEUDO']    = "Pseudo : ";
-$lang['ADMIN_EDIT_FORM_SET']       = "Set : ";
-$lang['ADMIN_EDIT_FORM_LEVEL']     = "Niveau : ";
-$lang['ADMIN_EDIT_FORM_TYPE']      = "Type : ";
-$lang['ADMIN_EDIT_FORM_TIME']      = "Temps en secondes, >=9999 si le goal n'est pas atteint : ";
-$lang['ADMIN_EDIT_FORM_COINS']     = "Pièces : ";
-$lang['ADMIN_EDIT_FORM_REPLAY_FILE']= "Nom du fichier replay : ";
 
 /* 
   AUTRES

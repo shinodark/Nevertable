@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 define('PATHMAX',64);
 	
 class Photo
@@ -48,7 +50,7 @@ class Photo
        $picprop = getimagesize($this->photofile->GetFileName());
        if ($picprop == false)
        {
-         $this->error = $lang['PHOTO_ERR_OPEN'];
+         $this->SetError($lang['PHOTO_ERR_OPEN']);
          return false;
        }
        $this->width  = $picprop[0];
@@ -62,12 +64,12 @@ class Photo
     {
        switch($this->format)
        {
-	 case "JPG": 
-            $this->res_gd = imagecreatefromjpeg($this->photofile->GetFileName()); break;
-	 case "GIF": 
-            $this->res_gd = imagecreatefromgif($this->photofile->GetFileName()); break;
-	 case "PNG": 
-            $this->res_gd = imagecreatefrompng($this->photofile->GetFileName()); break;
+		 case "JPG": 
+	            $this->res_gd = imagecreatefromjpeg($this->photofile->GetFileName()); break;
+		 case "GIF": 
+	            $this->res_gd = imagecreatefromgif($this->photofile->GetFileName()); break;
+		 case "PNG": 
+	            $this->res_gd = imagecreatefrompng($this->photofile->GetFileName()); break;
          default :
 	   return false;
        }
@@ -85,12 +87,12 @@ class Photo
 
        if (!$this->_OpenResGD2())
        {
-         $this->error = $lang['PHOTO_ERR_FORMAT'];
+         $this->SetError($lang['PHOTO_ERR_FORMAT']);
          return false;
        }
 
        $new_photo = imagecreatetruecolor($x, $y);
-	imagecopyresized($new_photo, $this->res_gd, 0, 0, 0, 0, $x, $y, $this->width, $this->height);
+	   imagecopyresized($new_photo, $this->res_gd, 0, 0, 0, 0, $x, $y, $this->width, $this->height);
 
        /* Remplacement du fichier par l'image redimensionnée */
        $this->photofile->Unlink();
@@ -118,6 +120,12 @@ class Photo
     function GetFormat()
     {
       return $this->format;
+    }
+    
+    function SetError($error)
+    {
+      $this->error = $error;
+      throw new Exception($this->error);
     }
     
     function GetError()

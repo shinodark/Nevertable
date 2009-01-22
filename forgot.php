@@ -21,6 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
+define('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
@@ -28,46 +29,22 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl("DialogStandard");
-?>
+try {
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<? $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
-
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<?php
-
-function closepage()
-{  global $table;
-    gui_button_back();
-    echo "</div><!-- fin \"main\" -->\n";
-    $table->Close();
-    $table->dialog->Footer();
-    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
-    exit;
-}
+$table = new Nvrtbl();
 
 if(isset($args['run']))
 {
   if (empty($args['email']))
-  {
-    gui_button_error($lang['FORGOT_EMPTY_MAIL'], 400);
-    closepage();
-  }
+    throw new Exception($lang['FORGOT_EMPTY_MAIL']);
   
   $res = $table->db->helper->SelectUserByMail($args['email']);
   if ($table->db->NumRows() == 0) // pas trouvé
   {
-    gui_button_error($lang['FORGOT_INVALID_MAIL'], 500);
-    closepage();
+    throw new Exception ($lang['FORGOT_INVALID_MAIL']);
   }
-  else
-    $val = $table->db->FetchArray($res);
+
+  $val = $table->db->FetchArray($res);
 
   $keychars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   $length = 8;
@@ -76,18 +53,15 @@ if(isset($args['run']))
   for ($i=0;$i<$length;$i++)
     $newpass .= substr($keychars, rand(0, $max), 1);
 
-  //mise à jour du nouveau mot de passe
+  //Update password
   if (!isset($val['id']))
     exit;
   $table->db->NewQuery("UPDATE",  "users");
   $table->db->UpdateSet(array("passwd" => md5($newpass)));
   $table->db->Where("id", $val['id']);
   $table->db->Limit(1);
-  if(!$table->db->Query()) {
-    gui_button_error($table->db->GetError(),500);
-    closepage();
-  }
-
+  $table->db->Query();
+  
   //envoie du mail
   $m= new Mail; // create the mail
   $m->From( $config['admin_mail']);
@@ -100,32 +74,21 @@ if(isset($args['run']))
   $m->Body( $message);	// set the body
   $m->Send();	// send the mail
   
-  gui_button($lang['FORGOT_EMAIL_SENT'], 400);
-  gui_button_main_page();
-    
-  echo "</div>\n";
-  $trombi->Close();
-  $trombi->dialog->Footer();
-  exit;
+  $tpl_params = array();
+  $tpl_params['message_array'] = array($lang['FORGOT_EMAIL_SENT']);
+  $tpl_params['delay'] = 0;
+  $tpl_params['redirect'] = "index.php"; 
+  $table->template->Show('redirect', $tpl_params);    
 }
 else
 {
-  $form = new Form("post", "forgot.php?run", "forgot", 400);
-  $form->AddTitle($lang['FORGOT_FORM_TITLE']);
-  $form->Br();
-  $form->AddInputText("email", "email", $lang['REGISTER_FORM_EMAIL'], 40);
-  $form->Br();
-  $form->AddInputSubmit();
-  echo $form->End();
+  $table->template->Show('forgot');
 }
-gui_button_main_page();
-?>
-</div> <!-- fin main-->
-<?php
-$table->Close();
-$table->dialog->Footer();
-?>
 
-</div><!-- fin "page" -->
-</body>
-</html>
+} catch (Exception $ex)
+{
+  $table->template->Show('error', array("exception" => $ex));
+}
+
+$table->Close();
+

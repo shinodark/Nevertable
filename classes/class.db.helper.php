@@ -20,7 +20,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 class DBHelper
 {
    var $db;
@@ -190,6 +192,28 @@ class DBHelper
      else
          return  $this->db->CountRows("rec", array("folder"=>$folder,"type"=>$type));
    }
+   
+   /*
+    * Count records iltered from params of main page (index.php)
+    * @param: args params from url
+    */
+   function CountFilteredRecords($args)
+   {
+   	  $ret = -1;
+   	  $this->db->NewQuery("SELECT", "rec", "COUNT(id)");
+      $this->db->Where($args['filter'], $args['filterval']);
+      $this->db->helper->LevelsFilter($args['levelset_f'], $args['level_f']);
+      $this->db->helper->TypeFilter($args['type']);
+      $this->db->helper->NewFilter($args['newonly']);
+      $this->db->helper->FolderFilter($args['folder']);
+      $res = $this->db->Query();
+      if($res)
+      {
+         $res = $this->db->FetchArray();
+         $ret = $res['COUNT(id)'];
+      }
+      return $ret ;
+   }
 
    function CountUserRecords($user_id)
    {
@@ -210,6 +234,179 @@ class DBHelper
      return $this->db->CountRows("com", array("user_id"=>$user_id));
    }
    
+   function CountRecordComments($replay_id)
+   {
+   	  $this->db->NewQuery("SELECT", "com", "COUNT(id)");
+	  $this->db->Where("replay_id", $replay_id);
+	  $this->db->Query();
+	  $val = $this->db->FetchArray();
+	  return $val['COUNT(id)'];
+   }
+
+   /*
+   * Get records filtered from params of main page (index.php)
+   * @param: args params from url
+   * @return: db array results
+   */
+   function GetFilteredRecords($args)
+   {
+   	  global $config;
+   	  
+      /* gestion du numéro de page et de l'offset */
+      $off = ($args['page']-1) * $config['limit'];
+      
+      /* requête avec tous les champs mais limitée à "limit" */
+      $p = $config['bdd_prefix'];
+      $this->db->Select(
+          array("rec", "users", "sets", "maps"),
+          array(
+            $p."rec.id AS id",
+            $p."rec.levelset AS levelset",
+            $p."rec.level AS level",
+            $p."rec.time AS time",
+            $p."rec.coins AS coins",
+            $p."rec.replay AS replay",
+            $p."rec.type AS type",
+            $p."rec.folder AS folder",
+            $p."rec.timestamp AS timestamp",
+            $p."rec.isbest AS isbest",
+            $p."rec.comments_count AS comments_count",
+            $p."rec.user_id AS user_id",
+            $p."users.pseudo AS pseudo",
+            $p."sets.set_name AS set_name",
+            $p."sets.set_path AS set_path",
+            $p."maps.map_solfile AS map_solfile",
+          )
+          );
+      $this->db->Where(
+          array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
+          array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
+          "AND", false
+      );
+      
+      $this->db->Where($args['filter'], $args['filterval']);
+      $this->LevelsFilter($args['levelset_f'], $args['level_f']);
+      $this->TypeFilter($args['type']);
+      $this->NewFilter($args['newonly']);
+      $this->FolderFilter($args['folder']);
+      
+      if($args['bestonly'] == "on")
+        $this->db->Where("isbest", 1);
+      
+      /* dans le cas du diffview, on trie par pieces, ou par temps */
+      if($args['diffview'] == "on")
+      {
+        /* diff impossible pour type "tous" et "freestyle" */
+        if ($args['type'] == get_type_by_name("all") || $args['type'] == get_type_by_name("freestyle"))
+        {
+          gui_button_error("can't select diff view with type : \"".get_type_by_number($args['type'])."\"", 400);
+          $args['diffview'] = "off";
+        }
+        /* choix automatique de l'ordre de tri */
+        if ($args['type'] == get_type_by_name("best time") )
+          $sort=get_sort_by_name("time");
+        else if ($args['type'] == get_type_by_name("most coins") )
+          $sort=get_sort_by_name("coins");
+
+        /* petit hack pas joli joli pour faire sauter la limite du nombre de record, dans le cas du diff */
+        $config['limit'] = 255;
+      }
+
+      $this->SortFilter($sort);
+      $this->db->Limit($config['limit'], $off);
+      return $this->db->Query();
+   }
+   
+   /*
+   * Get records filtered from params of main page (index.php)
+   * used for level mode (one level from one set is selected)
+   * @param: args params from url
+   * @return: array with 2 keys: 'rec_contest' for records of contest and 'rec_oldones' for records out of contest
+   */
+   function GetFilteredRecordsLevel($args)
+   {
+   	  global $config;
+   	   
+   	         /* requête pour les records du contest */
+      $p = $config['bdd_prefix'];
+      $this->db->Select(
+          array("rec", "users", "sets", "maps"),
+          array(
+            $p."rec.id AS id",
+            $p."rec.levelset AS levelset",
+            $p."rec.level AS level",
+            $p."rec.time AS time",
+            $p."rec.coins AS coins",
+            $p."rec.replay AS replay",
+            $p."rec.type AS type",
+            $p."rec.folder AS folder",
+            $p."rec.timestamp AS timestamp",
+            $p."rec.isbest AS isbest",
+            $p."rec.comments_count AS comments_count",
+            $p."rec.user_id AS user_id",
+            $p."users.pseudo AS pseudo",
+            $p."sets.set_name AS set_name",
+            $p."sets.set_path AS set_path",
+            $p."maps.map_solfile AS map_solfile",
+          )
+          );
+      $this->db->Where(
+          array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
+          array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
+          "AND", false
+      );
+      
+      $this->db->Where($args['filter'], $args['filterval']);
+      $this->db->Where("folder", get_folder_by_name("contest"));
+      $this->LevelsFilter($args['levelset_f'], $args['level_f']);
+      $this->TypeFilter($args['type']);
+      $this->SortFilter($sort);
+      $ret['rec_contest'] = $this->db->Query();
+        
+      /* requête pour les records anciens */
+      $this->db->Select(
+          array("rec", "users", "sets", "maps"),
+          array(
+            $p."rec.id AS id",
+            $p."rec.levelset AS levelset",
+            $p."rec.level AS level",
+            $p."rec.time AS time",
+            $p."rec.coins AS coins",
+            $p."rec.replay AS replay",
+            $p."rec.type AS type",
+            $p."rec.folder AS folder",
+            $p."rec.timestamp AS timestamp",
+            $p."rec.isbest AS isbest",
+            $p."rec.comments_count AS comments_count",
+            $p."rec.user_id AS user_id",
+            $p."users.pseudo AS pseudo",
+            $p."sets.set_name AS set_name",
+            $p."sets.set_path AS set_path",
+            $p."maps.map_solfile AS map_solfile",
+          )
+          );
+      $this->db->Where(
+          array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
+          array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
+          "AND", false
+      );
+      
+      $this->db->Where($args['filter'], $args['filterval']);
+      $this->db->Where("folder", get_folder_by_name("oldones"));
+      $this->LevelsFilter($args['levelset_f'], $args['level_f']);
+      $this->TypeFilter($args['type']);
+      $this->SortFilter($sort);
+      $ret['rec_oldones'] = $this->db->Query();
+
+      return $ret;
+   }
+   
+   /* Gestion des meilleurs records d'un certain level/set/type
+    * @return :
+            $ret['nb']: nb of records seen as "best" ones 
+            $ret['beaten']: nb of records moved to "oldones" folder
+            $ret['imports']: nb of records moved to "oldones" folder
+   */
    function GetBestRecord($type, $folder="")
    {
      global $config;
@@ -254,13 +451,153 @@ class DBHelper
    
      return $ret;
    }
-   
-   /* Gestion des meilleurs records d'un certain level/set/type */
-   /* @return :
-            $ret['nb']: nb of records seen as "best" ones 
-            $ret['beaten']: nb of records moved to "oldones" folder
-            $ret['imports']: nb of records moved to "oldones" folder
+
+   /*
+   * Get comments for a gien record (record.php)
+   * @param: record_id id of the record
+   * @return: db array results
    */
+   function GetComments($args)
+   {
+   	  global $config;
+   	  
+	  /* gestion du numéro de page et de l'offset */
+      $off = ($args['page']-1) * $config['comments_limit'];
+   	
+	  $p = $config['bdd_prefix'];
+	  $this->db->Select(
+	         array("com", "users"),
+	            array(
+	                $p."com.id AS id",
+	                $p."com.replay_id AS replay_id",
+	                $p."com.user_id AS user_id",
+	                $p."com.content AS content",
+	                $p."com.timestamp AS timestamp",
+	                $p."users.pseudo AS user_pseudo",
+	                $p."users.user_avatar AS user_avatar",
+	                ),
+	            "SELECT", "com");
+	  $this->db->Where($p."com.user_id", $p."users.id", "AND", false);
+	  $this->db->Where($p."com.replay_id", $args['id']);
+	  $this->db->Sort(array($p."com.timestamp"), "DESC");
+	  $this->db->Limit($config['comments_limit'], $off);
+	  return $this->db->Query();
+   }
+   
+   /*
+   * Get comments for a gien record (record.php)
+   * @param: record_id id of the record
+   * @return: fields of record
+   */
+   function GetRecordFields($record_id)
+   {
+   	  global $config;
+   	
+	  $p = $config['bdd_prefix'];
+	  $this->db->Select(
+	         array("rec", "users", "sets", "maps"),
+	            array(
+	                $p."rec.id AS id",
+		            $p."rec.levelset AS levelset",
+		            $p."rec.level AS level",
+		            $p."rec.time AS time",
+		            $p."rec.coins AS coins",
+		            $p."rec.replay AS replay",
+		            $p."rec.type AS type",
+		            $p."rec.folder AS folder",
+		            $p."rec.timestamp AS timestamp",
+		            $p."rec.isbest AS isbest",
+		            $p."rec.user_id AS user_id",
+	                $p."sets.set_name AS set_name",
+	                $p."sets.set_path AS set_path",
+	                $p."maps.map_solfile AS map_solfile",
+	                $p."users.pseudo AS pseudo",
+	                ),
+	            "SELECT", "com");
+	  
+	  $this->db->Where(
+        array($p."rec.user_id", $p."rec.levelset", $p."rec.level"),
+        array($p."users.id", $p."sets.id", $p."maps.level_num"),
+        "AND", false
+      );
+	  $this->db->Where($p."rec.replay_id", $replay_id);
+	  $this->db->Limit(1);
+	  $this->db->Query();
+	  return $this->db->FetchArray();
+   }
+   
+   /* Get last comments posted 
+   *
+   */
+   function GetLastComments()
+   {
+   	  global $config;
+   	
+      $p = $config['bdd_prefix'];
+      $this->db->Select(
+        array("rec", "users", "com", "sets" ),
+        array(
+            $p."com.replay_id AS replay_id",
+            $p."com.id AS com_id",
+            $p."com.user_id AS user_id",
+            $p."com.content AS content",
+            $p."com.timestamp AS timestamp",
+            $p."rec.levelset AS levelset",
+            $p."rec.level AS level",
+            $p."users.pseudo AS pseudo",
+            $p."sets.set_name AS set_name",
+            )
+      );
+
+      $this->db->Where(
+        array($p."com.user_id", $p."com.replay_id", $p."rec.levelset"),
+        array($p."users.id", $p."rec.id", $p."sets.id"),
+        "AND", false
+      );
+      
+      $this->db->Where(
+        array($p."rec.folder", $p."rec.folder"),
+        array(get_folder_by_name("contest"), get_folder_by_name("oldones")),
+        "OR"
+      );
+      
+      $this->db->Sort(array($p."com.timestamp"), "DESC");
+      $this->db->Limit($config['sidebar_comments']);
+      return $this->db->Query();
+   }
+   
+   /* Get a level snapshot
+    * @return : the path to snapshot
+   */
+   function GetLevelShot($level, $set)
+   {
+   	  global $config;
+   	
+   	  $level = (integer) $level;
+      $set   = (integer) $set;
+
+     /* R�cup�re le chemin du levelshot */
+     $p = $config['bdd_prefix'];
+     $this->db->Select(
+        array("maps", "sets"),
+        array($p."maps.map_solfile AS map_solfile", $p."sets.set_path AS set_path")
+     );
+     $this->db->Where(
+        array($p."sets.id"),
+        array($p."maps.set_id"),
+        "AND", false
+     );
+     $this->db->Where(
+        array($p."maps.set_id", $p."maps.level_num"),
+        array($set, $level)
+     );
+     $this->db->Limit(1);
+     $res = $this->db->Query();
+     $val = $this->db->FetchArray();
+     
+     return GetShot($val['set_path'], $val['map_solfile']);
+   }
+   
    function SetBestRecordByFields($level, $levelset, $type)
    {
      $rec = new Record($this->db);

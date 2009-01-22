@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 class SideBar
 {
 
@@ -31,12 +33,11 @@ class SideBar
 	*/
 	function SideBar()
     {
-       $this->output = "<div id=\"sidebar\">\n"; 
+       
     }
 
     function End()
     {
-       $this->output .=  "</div><!-- sidebar-->\n\n";
        return $this->output;
     }
 
@@ -85,22 +86,7 @@ class SideBar
     /* Login form */
     function AddBlock_LoginForm()
     {
-      global $lang;
-
-      $this->output .=  "<form action=\"login.php\" method=\"post\" name=\"login\">\n";
-      $this->output .=  "<table>\n";
-      $this->output .=  "<tr>\n";
-      $this->output .=  "<th>".$lang['SIDEBAR_LOGIN']."</th>\n";
-      $this->output .=  "</tr>\n";
-      $this->output .=  "<tr>\n";
-      $this->output .=  "<td><center><input type=\"text\" id=\"pseudo\" name=\"pseudo\" size=\"10\" value=\"Login\" onfocus=\"if (this.value=='Login') this.value=''\" /></center></td>\n";
-      $this->output .=  "</tr><tr>\n";
-      $this->output .=  "<td><center>&nbsp;&nbsp;<input type=\"password\" id=\"passwd\" name=\"passwd\" size=\"10\" value=\"passwd\" onfocus=\"this.value=''\" /></center></td>\n";
-      $this->output .=  "</tr><tr>\n";
-      $this->output .=  "<td><center><input type=\"submit\" value=\"Go!\" /></center><br/></td>\n";
-      $this->output .=  "</tr></table>\n";
-      $this->output .=  "</form>\n";
-      $this->output .=  "<br/>\n";
+ 
     }
     
     /* Last Comments */
@@ -185,43 +171,18 @@ class SideBar
     /* Last Comments */
     function AddBlock_TagBoard(&$db, &$bbcode, &$smilies, &$style)
     {
-       global $args;
 
-       $tagboard = new TagBoard($db, $bbcode, $smilies, $style);
-       
-       $this->output .=  "<h2>TagBoard</h2>\n";
-
-       $this->output .= "<div id=\"tagboard\">\n";
-       $this->output .= $tagboard->Show($args);
-       $this->output .= "</div>\n";
     }
 
     function AddBlock_Legend(&$style)
     {
-      global $lang;
 
-      $this->output .=  "<table><tr>\n";
-      $this->output .=  "<td>".$style->GetImage('best')."</td><td>".$lang['SIDEBAR_LEGEND_BEST']."</td>\n";
-      $this->output .=  "</tr><tr>\n";
-      $this->output .=  "<td>".$style->GetImage('best time')."</td><td>".$lang['SIDEBAR_LEGEND_BEST_TIME'] ."</td>\n";
-      $this->output .=  "</tr><tr>\n";
-      $this->output .=  "<td>".$style->GetImage('most coins')."</td><td>".$lang['SIDEBAR_LEGEND_MOST_COINS']."</td>\n";
-      $this->output .=  "</tr><tr>\n";
-      $this->output .=  "<td>".$style->GetImage('freestyle')."</td><td>".$lang['SIDEBAR_LEGEND_FREESTYLE']."</td>\n";
-      $this->output .=  "</tr>\n";
-      $this->output .=  "</table>\n";
+
     }
 
     function AddBlock_Baneers()
     {
-      global $config;
 
-      $this->output .=  "<center>";
-      $this->output .=  "<a href=\"rss.php\">flux rss&nbsp;<img src=\"".ROOT_PATH.$config['image_dir']."xml.gif\" alt=\"xml\" /></a><br/><br/>\n";
-      //$this->output .=  "<a href=\"http://validator.w3.org/check?uri=referer\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-xhtml.png\" alt=\"Valid XHTML 1.0!\" /></a><br/>\n";
-      //$this->output .=  "<a href=\"http://jigsaw.w3.org/css-validator/check/referer\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-css2.png\" alt=\"Valid CSS2 !\" /></a><br/><br/>\n";
-      //$this->output .=  "<a href=\"http://www.mozilla.org/products/firefox/\"><img src=\"".ROOT_PATH.$config['image_dir']."logo-firefox.png\" alt=\"Valid CSS2 !\" /></a><br/><br/><br/>\n";
-      $this->output .=  "</center>\n";
     }
 
 }

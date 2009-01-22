@@ -34,7 +34,9 @@
 *
 *	
 *******/
-
+if (!defined('NVRTBL'))
+	exit;
+	
 
 
 class parse_bbcode
@@ -199,7 +201,7 @@ class parse_bbcode
 		RETURN $text;
  }
  
- function _list($text) {
+  function _list($text) {
  
  //lists
  // Listes à puces
@@ -265,7 +267,7 @@ class parse_bbcode
   
   
 	// this function appeal the "phpmethod" function 
-	function _php($text)
+    function _php($text)
 	{
 		if($this->phpmethod == "string")
 		{
@@ -304,8 +306,8 @@ class parse_bbcode
 	
 	
 
-	// function pagephp to show the php code colored in a table with number of line		
-	function pagephp($text)
+    // function pagephp to show the php code colored in a table with number of line		
+    function pagephp($text)
 	{
 	
 		if(preg_match_all("#\[php\](.+?)\[/php\]#si", $text, $match))
@@ -350,7 +352,7 @@ class parse_bbcode
 			
 			
 			
-			 function _classcolourhtml($text) {
+  function _classcolourhtml($text) {
 	return preg_replace("#\[html\](.*?)\[/html\]#si", "<span class=\"html\">\\1</span>", $text);
 	  } 
 				

@@ -21,6 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "../");
+define('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
@@ -29,88 +30,56 @@ include_once ROOT_PATH ."classes/class.dialog_admin.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl("DialogAdmin");
-?>
+try {
+	
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php
+$table = new Nvrtbl();
 
-
-$table->dialog->Head("Nevertable - Neverball Hall of Fame");
-?>
-
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<?php
-
-function closepage()
-{   global $table;
-    gui_button_return("Member list", "memberlist.php");
-    gui_button_main_page_admin();
-    echo "</div><!-- fin \"main\" -->\n";
-    $table->Close();
-    $table->dialog->Footer();
-    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
-    exit;
-}
-
-if (!Auth::Check(get_userlevel_by_name("admin")))
-{
-  gui_button_error($lang['NOT_ADMIN'], 400);
-  closepage();;
-}
+if (!Auth::Check(get_userlevel_by_name("root")))
+  throw new Exception($lang['NOT_ROOT']);
 
 if (isset($args['upmember']))
 {
-  if (!Auth::Check(get_userlevel_by_name('root'))) {
-	  gui_button_error($lang['NOT_ROOT'], 400);
-	  closepage();
-  }
   if (!empty($args['id']) && !empty($args['pseudo'])) {
     $u = new user($table->db);
     $u->LoadFromId($args['id']);
     $u->SetFields(array("pseudo" => $args['pseudo'], "level" => $args['authlevel']));
-    if(!$u->Update())
-    {
-	    gui_button_error($u->GetError(), 400);
-	    closepage();
-    }
-    gui_button("user #".$args['id']." updated.", 300);
+    $u->Update();
+    
+    $tpl_params['message_array'] = array();
+    array_push( $tpl_params['message_array'], "user #".$args['id']." updated.");
+    $tpl_params['redirect'] = "memberlist.php";
+    $tpl_params['delay'] = 2;
+    $table->template->Show('redirect', $tpl_params);
   }
 }
 
-if (isset($args['delmember']))
+else if (isset($args['delmember']))
 {
-  if (!Auth::Check(get_userlevel_by_name('root'))) {
-	  gui_button_error($lang['NOT_ROOT'], 400);
-	  closepage();
-  }
-
-  gui_button($lang['ADMIN_MEMBERS_CONFIRM_DELETE'], 500);
-  gui_button('<a href="?delete2&amp;id='.$args['id'].'" style="color: red;"><b>'.$lang['GUI_YES'].'</b></a>', 100);
-
-  closepage();
+  $tpl_params['message_array'] = array();
+  array_push( $tpl_params['message_array'], $lang['ADMIN_MEMBERS_CONFIRM_DELETE']);
+  array_push( $tpl_params['message_array'], '<a href="?delete2&amp;id='.$args['id'].'" style="color: red;"><b>'.$lang['GUI_YES'].'</b></a>');
+  $tpl_params['redirect'] = "memberlist.php";
+  $tpl_params['delay'] = 0;
+  $table->template->Show('redirect', $tpl_params);
 }
 
-if (isset($args['delete2']))
+else if (isset($args['delete2']))
 {
-
   if (!empty($args['id'])) {
     $u = new user($table->db);
     $u->LoadFromId($args['id']);
-    if(!$u->Purge())
-    {
-       gui_button_error($u->GetError(), 400);
-       closepage();
-    }
-    gui_button("user #".$args['id']." is deleted !", 300);
+    $u->Purge();
+    
+    $tpl_params['message_array'] = array();
+    array_push( $tpl_params['message_array'], "user #".$args['id']." is deleted !");
+    $tpl_params['redirect'] = "memberlist.php";
+    $tpl_params['delay'] = 2;
+    $table->template->Show('redirect', $tpl_params);
   }
 }
-
+else
+{
   $table->db->NewQuery("SELECT", "users");
   /* Contre le problème du sort=0 si aucun get n'est passé */
   if (!isset($_GET['sort']))
@@ -127,24 +96,16 @@ if (isset($args['delete2']))
      case 4: $table->db->Sort(array("level"), "ASC"); break;
      case 5: $table->db->Sort(array("id"), "ASC"); break;
   }
-  $res = $table->db->Query();
-  if(!$res) {
-      echo gui_button_error(  $table->db->GetError(), 400);
-  }
-  else
-  {
-    $table->dialog->MemberList($res);
-  }
+  $table->db->Query();
+
+  $table->template->Show('admin/memberlist');
+}
 
 
-gui_button_main_page_admin();
-?>
-</div> <!-- fin main-->
-<?php
+} catch (Exception $ex)
+{
+	$table->template->Show('error', array("exception" => $ex)); 
+}
+
 $table->Close();
-$table->dialog->Footer();
-?>
 
-</div><!-- fin "page" -->
-</body>
-</html>

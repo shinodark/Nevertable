@@ -19,8 +19,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
-define('ROOT_PATH', "./");
-include_once ROOT_PATH ."config.inc.php";
+if (!defined('NVRTBL'))
+	exit;
+	
 include_once ROOT_PATH ."includes/struct.php";
 include_once ROOT_PATH ."functions/util.php";

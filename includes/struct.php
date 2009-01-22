@@ -20,7 +20,9 @@
 #
 # ***** END LICENSE BLOCK *****
 #
-
+if (!defined('NVRTBL'))
+	exit;
+	
 /*****************/
 /* TABLE STRUCTS */
 /*****************/
@@ -236,12 +238,12 @@ function CalculRank($this_record)
 /*****************/
 
 $toolbar_el = array (
-    "strong" => "tbStrong",
-    "em"     => "tbEm",
-    "ins"    => "tbUnderline",
+    "text_bold"   => "tbStrong",
+    "text_italic" => "tbEm",
+    "text_underline" => "tbUnderline",
     "bquote" => "tbQuote",
-    "link"   => "tbLink",
-    "img_link" => "tbImg",
+    "link_add" => "tbLink",
+    "image_link" => "tbImg",
     );
 
 $themes = array(
@@ -254,18 +256,48 @@ $icons = array (
     "freestyle"   => "freestyle.png",
     "new"         => "new.png",
     "attach"      => "attach.png",
-    "edit"        => "edit.png",
+    "edit"        => "script_edit.png",
     "del"         => "del.png",
     "best"        => "best.png",
     "rank"        => "rank.png",
-    "del"         => "del.png",
-    "trash"       => "trash.png",
-    "arrow"       => "arrow.gif",
-    "undo"        => "undo.png",
-    "tocontest+"  => "tocontest+.png",
-    "tocontestx"  => "tocontestx.png",
+	"replay"	  => "controller.png",
+	"no_replay"	  => "controller_delete.png",
+	"comments"	  => "comments.png",
+	"comments_blank" => "comment.png",
+    "del"         => "cross.png",
+    "trash"       => "bin_empty.png",
+	"trash_full"  => "bin.png",
+    "arrow"       => "resultset_next.png",
+    "undo"        => "application_side_contract.png",
+    "tocontest+"  => "application_add.png",
+    "tocontestx"  => "application_get.png",
     "top"         => "top.jpg",
-    );
+	"menu_upload" => "folder_go.png",
+	"menu_userslist"  => "vcard.png",
+	"menu_profile"	  => "user.png",
+	"menu_options"	  => "user_edit.png",
+	"menu_login"	  => "door_in.png",
+	"menu_logout"	  => "door_out.png",
+	"menu_register"	  => "door.png",
+	"menu_forgot"	  => "lightbulb.png",
+	"menu_incoming"	  => "hourglass.png",
+	"menu_management"   => "page_white_edit.png",
+	"menu_config"	=> "cog.png",
+	"menu_sets"	=> "application_view_detail.png",
+	"menu_checkdatabase" => "application_error.png",
+	"menu_recompute"	=> "arrow_rotate_clockwise.png",
+	"menu_members" 		=> "group_edit.png",
+	"menu_tagboardmoder" =>	"phone_sound.png",
+	"navbar_l" => "resultset_previous.png",
+	"navbar_r" => "resultset_next.png",
+	"smilies"  => "emoticon_smile.png",
+	"rank_0" => "bullet_white.png",
+	"rank_1" => "medal_bronze_1.png",
+	"rank_2" => "award_star_bronze_1.png",
+	"rank_3" => "medal_silver_1.png",
+	"rank_4" => "award_star_silver_1.png",
+	"rank_5" => "award_star_gold_1.png",
+	    );
 
 function get_theme_by_name($name)
 {

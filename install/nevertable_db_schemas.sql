@@ -24,7 +24,7 @@ CREATE TABLE `nvrtbl_com` (
   `content` longtext NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `ind_replay` (`replay_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='commentaires de la nevertable';
+) ENGINE=MyISAM  DEFAULT CHARSET=tuf8 COMMENT='commentaires de la nevertable';
 
 -- --------------------------------------------------------
 
@@ -33,11 +33,11 @@ CREATE TABLE `nvrtbl_com` (
 -- 
 
 CREATE TABLE `nvrtbl_conf` (
-  `conf_name` varchar(255) character set latin1 collate latin1_bin NOT NULL default '',
+  `conf_name` varchar(255) character set tuf8 collate tuf8_bin NOT NULL default '',
   `conf_value` text,
   `conf_desc` text,
   PRIMARY KEY  (`conf_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=tuf8;
 
 -- --------------------------------------------------------
 
@@ -51,7 +51,7 @@ CREATE TABLE `nvrtbl_maps` (
   `level_num` tinyint(4) NOT NULL default '0',
   `map_solfile` varchar(64) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=tuf8;
 
 -- --------------------------------------------------------
 
@@ -63,7 +63,7 @@ CREATE TABLE `nvrtbl_online` (
   `user_id` int(11) NOT NULL default '1',
   `ident` varchar(200) NOT NULL default '',
   `logged_time` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=tuf8;
 
 -- --------------------------------------------------------
 
@@ -87,7 +87,7 @@ CREATE TABLE `nvrtbl_rec` (
   PRIMARY KEY  (`id`),
   KEY `ind_level` (`levelset`,`level`),
   KEY `ind_folder` (`folder`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=tuf8;
 
 -- --------------------------------------------------------
 
@@ -100,7 +100,7 @@ CREATE TABLE `nvrtbl_sets` (
   `set_name` varchar(64) NOT NULL default '',
   `set_path` varchar(64) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=tuf8;
 
 -- --------------------------------------------------------
 
@@ -117,7 +117,7 @@ CREATE TABLE `nvrtbl_tags` (
   `ip_log` varchar(16) NOT NULL,
   `pub` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=tuf8;
 
 -- --------------------------------------------------------
 
@@ -136,19 +136,19 @@ CREATE TABLE `nvrtbl_users` (
   `user_sidebar_comments` smallint(6) NOT NULL default '0',
   `user_sidebar_comlength` smallint(6) NOT NULL default '0',
   `user_sort` tinyint(4) NOT NULL default '0',
-  `user_theme` varchar(40) character set latin1 collate latin1_bin NOT NULL default '',
+  `user_theme` varchar(40) character set tuf8 collate tuf8_bin NOT NULL default '',
   `user_lang` varchar(2) NOT NULL default 'en',
-  `user_avatar` varchar(40) character set latin1 collate latin1_bin NOT NULL default '',
+  `user_avatar` varchar(40) character set tuf8 collate tuf8_bin NOT NULL default '',
   `user_speech` text NOT NULL,
-  `user_localisation` varchar(40) character set latin1 collate latin1_bin NOT NULL default '',
-  `user_web` varchar(80) character set latin1 collate latin1_bin NOT NULL default '',
+  `user_localisation` varchar(40) character set tuf8 collate tuf8_bin NOT NULL default '',
+  `user_web` varchar(80) character set tuf8 collate tuf8_bin NOT NULL default '',
   `stat_total_records` int(11) NOT NULL default '0',
   `stat_best_records` int(11) NOT NULL default '0',
   `stat_comments` int(11) NOT NULL default '0',
   `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `ind_pseudo` (`pseudo`(1))
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=tuf8;
 
 
 -- 

@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 define('PATHMAX',64);
 	
 class FileManager
@@ -64,7 +66,7 @@ class FileManager
         case 4 : $str = "What ? No file uploaded !"; break;
         default: $str = "Unknown error, code ".$udp_error.".";
       }
-      $this->error = $str;
+      $this->SetError($str);
       return false;
     }
 
@@ -86,7 +88,7 @@ class FileManager
     }
     else
     { 
-      $this->error = "Error uploading file on server.";
+      $this->SetError("Error uploading file on server.");
       return false;
     }
   
@@ -99,8 +101,7 @@ class FileManager
         return true;
       }
       else {
-        $this->error = "Error deleting file ".$this->filename." from server !";
-        return false;
+        $this->SetError("Error deleting file ".$this->filename." from server !");
       }
   }
 
@@ -220,7 +221,7 @@ class FileManager
   {
     if (!isset($this->handle))
     {
-        if (!file_exists($this->filename) || !is_readable($this->filename) )
+        if ($att == "r" && (!file_exists($this->filename) || !is_readable($this->filename)) )
         {
             $this->SetError("file ".$this->filename." doesn't exist or is not readable");
             return false;
@@ -229,7 +230,7 @@ class FileManager
     }
     if (!$this->handle)
     {
-      $this->SetError("Error opening file ".$this->filename." for reading.");
+      $this->SetError("Error opening file ".$this->filename." with attribute ". $att);
       return false;
     }
     return true;
@@ -386,6 +387,7 @@ class FileManager
   function SetError($error)
   {
     $this->error = $error;
+    throw new Exception($this->error);
   }
     
   function GetError()

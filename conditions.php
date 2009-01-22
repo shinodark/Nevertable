@@ -21,44 +21,26 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
+define('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
 
-$table = new Nvrtbl("DialogStandard");
-?>
+try {
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<div id="prelude">
-<?php 
+$table = new Nvrtbl();
 
 $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 $conditions  = $langpath . "conditions.txt";
 $f = new FileManager($conditions);
 if ($f->Exists())
-	echo $f->ReadString() . "<br />\n";
+	$tpl_params['content'] = $f->ReadString() . '<br/>'. gui_button_back();
+$table->template->Show("generic", $tpl_params);
 
-?>
-</div><!-- fin "prelude" -->
-
-<?php gui_button_back();?>
-
-</div><!-- fin "main" -->
-
-<?php
-/* Close avant le footer, car db inutile et pour les statistiques de temps */
+} catch (Exception $ex)
+{
+	$table->template->Show('error', array("exception" => $ex)); 
+}	
+	
 $table->Close();
-$table->dialog->Footer();
-?>
-
-</div><!-- fin "page" -->
-</body>
-</html>

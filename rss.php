@@ -21,13 +21,14 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
+define('NVRTBL', 1);
 define('NVRTBL_PATH', "http://www.nevercorner.net/table/");
 define('LEVEL', 30);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
 
-$table = new Nvrtbl("DialogStandard");
+$table = new Nvrtbl();
 
 
 $ts = $table->GetEarlierDate();

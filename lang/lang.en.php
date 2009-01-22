@@ -20,7 +20,9 @@
 #
 # ***** END LICENSE BLOCK *****
 #
-
+if (!defined('NVRTBL'))
+	exit;
+	
 global $lang;
 
 $lang['code']			= "en";
@@ -63,12 +65,11 @@ $lang['GUI_YES']        	= "YES";
 $lang['GUI_NO']      		= "NO";
 
 $lang['GUI_BUTTON_BACK']        = "Go back";
-$lang['GUI_BUTTON_RETURN']      = "Back";
 $lang['GUI_BUTTON_MAINPAGE']    = "Back to main page";
-$lang['GUI_BUTTON_MAINPAGE_ADMIN'] = "Back to admin panel";
 $lang['GUI_BUTTON_RETURN']      = "Back to  %s";
 $lang['GUI_BUTTON_APPLY']       = "Apply";
 $lang['GUI_BUTTON_REDIRECT']    = "Redirecting...";
+$lang['GUI_BUTTON_CONTINUE']    = "Continue";
 
 $lang['GUI_INVALID_USER']       = "Invlid user";
 
@@ -112,8 +113,8 @@ $lang['REGISTER_FORM_PASSWD2'] 	    = "Password, again : ";
 
 $lang['FORGOT_FORM_TITLE']          = "I've forgot my password...";
 $lang['FORGOT_EMPTY_MAIL']          = "You have to fill your email.";
-$lang['FORGOT_INVALID_MAIL']        = "Invalid email, not fonud in database.";
-$lang['FORGOT_EMAIL_SENT']          = "new password created, email sent.";
+$lang['FORGOT_INVALID_MAIL']        = "Invalid email, not found in database.";
+$lang['FORGOT_EMAIL_SENT']          = "New password created, email sent.";
 
 /*
   LOGIN
@@ -122,6 +123,7 @@ $lang['LOGIN_NOTLOGIN'] 	    = "You're not logged in";
 $lang['LOGIN_ALREADYLOGIN'] 	    = "You're already logged in";
 $lang['LOGIN_LOGIN'] 	            = "You're logged in<br/>Redirecting to main page...";
 $lang['LOGIN_LOGOUT'] 	            = "You're logged out<br/>Redirecting to main page...";
+$lang['LOGIN_AUTH_FAILED']			= "Auth failed. Try again...";
 
 $lang['LOGIN_FORM_TITLE']           = "Connection";
 $lang['LOGIN_FORM_PSEUDO']          = "login";
@@ -130,7 +132,7 @@ $lang['LOGIN_FORM_PASSWD']          = "pass";
 /*
   TABLE
 */
-$lang['RESULTS_PRELUDE']	    = "%d displayed records";
+$lang['RESULTS_PRELUDE']	    = "%d records";
 $lang['TABLE_HEADER_OLD']	    = "old";
 $lang['TABLE_HEADER_PLAYER']	    = "player";
 $lang['TABLE_HEADER_SET']	    = "set";
@@ -186,7 +188,7 @@ $lang['TAG_TOO_LONG']               = "Tag too long.";
 /*
   MENU DE LA SIDEBAR
 */
-$lang['SIDEBAR_WELCOME']	    = "Welcome %s";
+$lang['SIDEBAR_WELCOME']	    = "Welcome";
 
 $lang['SIDEBAR_LOGIN']		    = "Connection";
 $lang['SIDEBAR_LAST_COMMENTS']	    = "Last comments";
@@ -195,7 +197,8 @@ $lang['SIDEBAR_LEGEND_BEST_TIME']   = "Best time.";
 $lang['SIDEBAR_LEGEND_MOST_COINS']  = "Most coins.";
 $lang['SIDEBAR_LEGEND_FREESTYLE']   = "Freestyle.";
 
-$lang['MENU_ADMIN']		    = "Admin panel";
+$lang['MENU_ROOT']		    = "Root menu";
+$lang['MENU_ADMIN']		    = "Admin menu";
 $lang['MENU_ADMIN_INCOMING']	    = "Incoming (%d)";
 $lang['MENU_ADMIN_MANAGEMENT']	    = "Content management";
 $lang['MENU_ADMIN_MEMBERS']	    = "Members management";
@@ -307,15 +310,6 @@ $lang['TYPE_FORM_NEWONLY']          = "New records only : ";
  *********/
 
 /*
-  PAGE PRINCIPALE
-*/
-
-$lang['ADMIN_PRELUDE_INCOMING']  = "incoming (%d)";
-$lang['ADMIN_PRELUDE_TRASH']     = "trash (%d)";
-$lang['ADMIN_PRELUDE_OLDONES']   = "oldones (%d)";
-$lang['ADMIN_PRELUDE_CONTEST']   = "contest (%d)";
-
-/*
   MENU DE LA SIDEBAR
 */
 $lang['ADMIN_MENU_TITLE']   	 = "Admin menu";
@@ -328,7 +322,6 @@ $lang['ADMIN_MENU_SETS']  	 = "Sets / Levels";
 $lang['ADMIN_MENU_FILE_EXPLORER']= "Files management";
 $lang['ADMIN_MENU_PURGE_TRASH']  = "Empty trash";
 $lang['ADMIN_MENU_TAGBOARD_MOD'] = "Tagboard moderation";
-$lang['ADMIN_MENU_LEAVE']        = "Leave admin panel";
 
 /*
   CONFIG
@@ -353,23 +346,6 @@ $lang['ADMIN_MANAGEMENT_LANG_FORM_LANG']       = "Lang : ";
 $lang['ADMIN_MANAGEMENT_ANNOUNCE_FORM_TITLE']  = "Annoucement editor";
 $lang['ADMIN_MANAGEMENT_SPEECH_FORM_TITLE']    = "Speech editor";
 $lang['ADMIN_MANAGEMENT_CONDITIONS_FORM_TITLE']= "Conditions editor";
-
-/*
-  PURGETRASH
-*/
-$lang['ADMIN_PURGETRASH_SURE']     = "Confirm you want to empty trash ?";
-
-/*
-  EDITFORM
-*/
-$lang['ADMIN_EDIT_FORM_TITLE']     = "Edit a record";
-$lang['ADMIN_EDIT_FORM_PSEUDO']    = "Pseudo : ";
-$lang['ADMIN_EDIT_FORM_SET']       = "Set : ";
-$lang['ADMIN_EDIT_FORM_LEVEL']     = "Level : ";
-$lang['ADMIN_EDIT_FORM_TYPE']      = "Type : ";
-$lang['ADMIN_EDIT_FORM_TIME']      = "Time (sesconds), >=9999 if goal is not reached : ";
-$lang['ADMIN_EDIT_FORM_COINS']     = "Coins : ";
-$lang['ADMIN_EDIT_FORM_REPLAY_FILE']= "Name of r eplay file : ";
 
 /* 
   AUTRES

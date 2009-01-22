@@ -21,122 +21,76 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "../");
+define('NVRTBL' ,1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
-include_once ROOT_PATH ."classes/class.dialog_admin.php";
 
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl("DialogAdmin");
-?>
+try {
+	
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php
-
-
-$table->dialog->Head("Nevertable - Neverball Hall of Fame");
-?>
-
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<?php
-
-function closepage()
-{   global $table;
-    gui_button_back();
-    echo "</div><!-- fin \"main\" -->\n";
-    $table->Close();
-    $table->dialog->Footer();
-    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
-    exit;
-}
+$table = new Nvrtbl();
 
 if (!Auth::Check(get_userlevel_by_name("admin")))
-{
-  gui_button_error($lang['NOT_ADMIN'], 400);
-  closepage();;
-}
+  throw new Exception($lang['NOT_ADMIN']);
 
 $manage_lang = get_lang_by_number($args['manage_lang']);
 if (!in_array($manage_lang, $langs))
    $manage_lang = $lang['code'];
 
 $langpath = ROOT_PATH . $config['lang_dir']. $manage_lang . "/";
+$tpl_params['message_array'] = array();
 
 if (isset($args['upannounce']))
 {
     file_put_contents($langpath . "announce.txt", stripslashes($args['announce']));
-    gui_button("Announcement updated.", 200);
+    array_push( $tpl_params['message_array'], "Announcement updated.");
+    $tpl_params['redirect'] = "management.php";
+    $tpl_params['delay'] = 2;
+    $table->template->Show('redirect', $tpl_params);
 }
 
-if (isset($args['upspeech']))
+else if (isset($args['upspeech']))
 {
     file_put_contents($langpath . "speech.txt", stripslashes($args['speech']));
-    gui_button("Speech updated.", 200);
+    array_push( $tpl_params['message_array'], "Speech updated.");
+    $tpl_params['redirect'] = "management.php";
+    $tpl_params['delay'] = 2;
+    $table->template->Show('redirect', $tpl_params);
 }
 
-if (isset($args['upconditions']))
+else if (isset($args['upconditions']))
 {
     file_put_contents($langpath . "conditions.txt", stripslashes($args['conditions']));
-    gui_button("Conditions updated.", 200);
+    array_push( $tpl_params['message_array'], "Conditions updated.");
+    $tpl_params['redirect'] = "management.php";
+    $tpl_params['delay'] = 2;
+    $table->template->Show('redirect', $tpl_params);
 }
 
+else
+{
 
-  $form = new Form("post", "management.php", "lang_form", 400);
-  $form->AddTitle($lang['ADMIN_MANAGEMENT_LANG_FORM_TITLE']);
-  $form->Br();
-  $form->AddSelect("manage_lang", "manage_lang", $langs, $lang['ADMIN_MANAGEMENT_LANG_FORM_LANG']);
-  $form->Br();
-  $form->AddInputSubmit();
-  echo $form->End();
-
-  echo '<script>';
-    echo "change_form_select('lang_form', 'manage_lang',  '".get_lang_by_name($manage_lang)."');";
-  echo '</script>';
-
+  
+  $tpl_params['manage_lang'] = $manage_lang;
 
   if (file_exists($langpath . "announce.txt"))
-    $cur_announce = file_get_contents($langpath . "announce.txt");
+    $tpl_params['announce'] = file_get_contents($langpath . "announce.txt");
   if (file_exists($langpath . "speech.txt"))
-    $cur_speech = file_get_contents($langpath . "speech.txt");
+    $tpl_params['speech'] = file_get_contents($langpath . "speech.txt");
   if (file_exists($langpath . "conditions.txt"))
-    $cur_conditions = file_get_contents($langpath . "conditions.txt");
-    
-  $form = new Form("post", "management.php?upannounce&amp;manage_lang=".get_lang_by_name($manage_lang)."", "announce_form", 700);
-  $form->AddTitle($lang['ADMIN_MANAGEMENT_ANNOUNCE_FORM_TITLE']);
-  $form->AddTextArea("announce", "announce", "", 5, $cur_announce);
-  $form->Br();
-  $form->AddInputSubmit();
-  echo $form->End();
+    $tpl_params['conditions'] = file_get_contents($langpath . "conditions.txt");
 
-  $form = new Form("post", "management.php?upspeech&amp;manage_lang=".get_lang_by_name($manage_lang)."", "speech_form", 700);
-  $form->AddTitle($lang['ADMIN_MANAGEMENT_SPEECH_FORM_TITLE']);
-  $form->AddTextArea("speech", "speech", "", 20, $cur_speech);
-  $form->Br();
-  $form->AddInputSubmit();
-  echo $form->End();
+  
+  $table->template->Show('admin/management', $tpl_params);
+}
 
-  $form = new Form("post", "management.php?upconditions&amp;manage_lang=".get_lang_by_name($manage_lang)."", "conditions_form", 700);
-  $form->AddTitle($lang['ADMIN_MANAGEMENT_CONDITIONS_FORM_TITLE']);
-  $form->AddTextArea("conditions", "conditions", "", 60, $cur_conditions);
-  $form->Br();
-  $form->AddInputSubmit();
-  echo $form->End();
+} catch (Exception $ex)
+{
+	$table->template->Show('error', array("exception" => $ex)); 
+}
 
-gui_button_main_page_admin();
-?>
-</div> <!-- fin main-->
-<?php
 $table->Close();
-$table->dialog->Footer();
-?>
-
-</div><!-- fin "page" -->
-</body>
-</html>

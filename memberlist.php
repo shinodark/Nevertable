@@ -21,6 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
+define('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
@@ -28,56 +29,31 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl("DialogStandard");
-?>
+try {
+	
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
+$table = new Nvrtbl();
 
-<body>
-<div id="page">
-<?php 
-  $table->dialog->Top();
-  $table->dialog->Prelude();
-?>
-<div id="main">
-<?php
+$table->db->NewQuery("SELECT", "users");
+/* Contre le problème du osrt=0 si aucun get n'est passé */
+if (!isset($_GET['sort']))
+   $args['sort'] = 2;
+switch($args['sort'])
+{
+   case 0: $table->db->Sort(array("pseudo"), "ASC"); break;
+   case 1: $table->db->Sort(array("stat_total_records", "stat_best_records"), array("DESC", "DESC"));
+       break;
+   default: 
+   case 2: $table->db->Sort(array("stat_best_records", "stat_total_records"), array("DESC", "DESC"));
+       break;
+   case 3: $table->db->Sort(array("stat_comments"), "DESC"); break;
+   case 4: $table->db->Sort(array("level"), "ASC"); break;
+   case 5: $table->db->Sort(array("id"), "ASC"); break;
+}
+$tpl_params['members'] = $table->db->Query();
+$table->template->Show('memberlist', $tpl_params);
 
-  $table->db->NewQuery("SELECT", "users");
-  /* Contre le problème du osrt=0 si aucun get n'est passé */
-  if (!isset($_GET['sort']))
-     $args['sort'] = 2;
-  switch($args['sort'])
-  {
-     case 0: $table->db->Sort(array("pseudo"), "ASC"); break;
-     case 1: $table->db->Sort(array("stat_total_records", "stat_best_records"), array("DESC", "DESC"));
-         break;
-     default: 
-     case 2: $table->db->Sort(array("stat_best_records", "stat_total_records"), array("DESC", "DESC"));
-         break;
-     case 3: $table->db->Sort(array("stat_comments"), "DESC"); break;
-     case 4: $table->db->Sort(array("level"), "ASC"); break;
-     case 5: $table->db->Sort(array("id"), "ASC"); break;
-  }
-  $res = $table->db->Query();
-  if(!$res) {
-      echo gui_button_error(  $table->db->GetError(), 400);
-  }
-  else
-  {
-    $table->dialog->MemberList($res);
-  }
-
-  gui_button_main_page();
-?>
-</div> <!-- fin main-->
-<?php
-$table->Close();
-$table->dialog->Footer();
-?>
-
-</div><!-- fin "page" -->
-</body>
-</html>
+} catch (Exception $ex)
+{
+  $table->template->Show('error', array("exception" => $ex));
+}

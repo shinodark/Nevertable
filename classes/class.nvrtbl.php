@@ -19,11 +19,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 class Nvrtbl
 {
   var $db;
   var $dialog;
+  var $template;
   var $current_user;
   var $style;
   var $start_time;
@@ -33,7 +36,7 @@ class Nvrtbl
   var $online_users_guest;
   var $online_users_list;
     
-  function Nvrtbl($mode="DialogStandard")
+  function Nvrtbl()
   {
     global $config, $langs;
   
@@ -49,19 +52,12 @@ class Nvrtbl
                  $config['bdd_prefix'],
                  $config['bdd_user'],
                  $config['bdd_passwd']);
-    if(!$this->db->Connect())
-    {
-      gui_button_error($this->db->GetError(), 500);
-      exit;
-    }
+    $this->db->Connect();
 
     /* Chargement de la configuration dans la variable globale */
     $this->db->NewQuery("SELECT", "conf");
-    if(!$this->db->Query())
-    {
-      gui_button_error($this->db->GetError(), 500);
-      exit;
-    }
+    $this->db->Query();
+
     while ($val = $this->db->FetchArray())
 	    $config[$val['conf_name']] = $val['conf_value'];
     
@@ -94,15 +90,14 @@ class Nvrtbl
     }
 
     /* Chargement de la lang */
-    if (!empty($config['opt_user_lang']))
-       $langcode = $config['opt_user_lang'];
-    else if (!empty($config['default_lang']))
-       $langcode = $config['default_lang'];
+    if (empty($config['opt_user_lang']))
+    	$config['opt_user_lang'] = $config['default_lang'];
+    	
+    $langcode = $config['opt_user_lang'];
     
     if (!in_array($langcode, $langs))
     {
-		gui_button_error("lang is not supported.", 200);
-		exit;
+		throw new Exception("lang is not supported.", 200);
     }
     // anglais par dŽfaut pour les chaines, puis Žcrasement avec la langue de l'utilisateur
     if ($langcode != "en")
@@ -111,13 +106,8 @@ class Nvrtbl
 
     /* Compte et gère les utilisateur en ligne */
     $this->UpdateOnlineUsers();
-    
-    if ($mode=="DialogStandard" || $mode=="DialogAdmin")
-      $this->dialog = new $mode($this->db, $this, $this->style);
-    else if ($mode == "null")
-      $this->dialog = null;
-    else
-      $this->dialog = new DialogStandard($this->db, $this, $this->style);
+      
+    $this->template = new Template($this);
 
     $this->mode = $mode;
   }
@@ -134,7 +124,7 @@ class Nvrtbl
   function GetEarlierDate()
   {
     $this->db->NewQuery("SELECT", "rec");
-    $this->db->SortFilter("old");
+    $this->db->helper->SortFilter("old");
     $this->db->Limit(1, 0);
     $res = $this->db->Query();
 
@@ -168,7 +158,7 @@ class Nvrtbl
     );
         
     $this->db->Where("folder", get_folder_by_name($folder));
-    $this->db->SortFilter("old");
+    $this->db->helper->SortFilter("old");
     $this->db->Limit($order, 0);
     $this->db->Query();
 
@@ -193,7 +183,7 @@ class Nvrtbl
   function getEarlierDateComments()
   {
     $this->db->NewQuery("SELECT", "com");
-    $this->db->SortFilter("old");
+    $this->db->helper->SortFilter("old");
     $this->db->Limit(1, 0);
     $res = $this->db->Query();
 
@@ -246,9 +236,7 @@ class Nvrtbl
      $this->db->Sort(array("id"), "ASC");
 
      $res =   $this->db->Query();
-     if(!$res)
-        echo gui_button_error(  $this->db->GetError(), 500);
-
+     
      $lst .= "id\tdate\ttype\tmember\tlevel\tset\tcoins\ttime\treplay\n";
      while ($val = $this->db->FetchArray())
      {
@@ -296,14 +284,7 @@ class Nvrtbl
     $this->db->Where("user_id", 0);
     $this->db->Where("ident", $_SERVER['REMOTE_ADDR']);
     $this->db->Limit(1);
-    if(!$this->db->Query()) {
-      gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
-      return false;
-    }
-
-    /* Ajout de l'utilisateur loggué */
-    /* Fait automatiquement par  UpdateOnlineUsers() */
-    return true;
+    $this->db->Query();
   }
 
   /* Ajout d'un utilisateur loggué dans la liste des online */
@@ -313,20 +294,15 @@ class Nvrtbl
     $this->db->NewQuery("SELECT", "online", "COUNT(user_id)");
     $this->db->Where("user_id", $_SESSION['user_id']);
     $this->db->Where("ident", $_SESSION['user_pseudo']);
-    if(!$this->db->Query()) {
-      gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
-      return false;
-    }
+    $this->db->Query();
+
     $res = $this->db->FetchArray();
     if ($res['COUNT(user_id)'] > 0) /* déjà présent */
     {
       $this->db->NewQuery("UPDATE", "online");
       $this->db->UpdateSet(array("logged_time" => $this->start_time));
       $this->db->Where("user_id", $_SESSION['user_id']);
-      if(!$this->db->Query()) {
-        gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
-        return false;
-      }
+      $this->db->Query();
     }
     else
     {
@@ -336,10 +312,7 @@ class Nvrtbl
                           "ident"       => $_SESSION['user_pseudo'],
                           "logged_time" => $this->start_time,
                            ));
-      if(!$this->db->Query()) {
-        gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
-        return false;
-      }
+      $this->db->Query();
     }
   }
 
@@ -350,20 +323,14 @@ class Nvrtbl
     $this->db->NewQuery("SELECT", "online", "COUNT(user_id)");
     $this->db->Where("user_id", $_SESSION['user_id']);
     $this->db->Where("ident", $_SERVER['REMOTE_ADDR']);
-    if(!$this->db->Query()) {
-      gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
-      return false;
-    }
+    $this->db->Query();
     $res = $this->db->FetchArray();
     if ($res['COUNT(user_id)'] > 0) /* déjà présent */
     {
       $this->db->NewQuery("UPDATE", "online");
       $this->db->UpdateSet(array("logged_time" => $this->start_time));
       $this->db->Where("ident", $_SERVER['REMOTE_ADDR'] );
-      if(!$res = $this->db->Query()) {
-        gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
-        return false;
-      }
+      $res = $this->db->Query();
     }
     else /* ajoute */
     {
@@ -373,10 +340,7 @@ class Nvrtbl
                           "ident"       => $_SERVER['REMOTE_ADDR'],
                           "logged_time" => $this->start_time,
                            ));
-      if(!$res = $this->db->Query()) {
-        gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
-        return false;
-      }
+      $res = $this->db->Query();
     }
   }
 
@@ -386,11 +350,9 @@ class Nvrtbl
     $this->db->NewQuery("DELETE", "online");
     $this->db->Where("user_id", $_SESSION['user_id']);
     $this->db->Limit(1);
-    if(!$this->db->Query()) {
-      gui_button_error("RemoveOnlineUser::".$this->db->GetError(), 300);
-      return false;
-    }
-   return true;
+    $this->db->Query();
+
+    return true;
   }
 
   function UpdateOnlineUsers()
@@ -405,17 +367,11 @@ class Nvrtbl
     /* effacer les utilisateurs 'idle' */
     $this->db->NewQuery("DELETE", "online");
     $this->db->Where_lt("logged_time", $this->start_time-$config['online_idletime']);
-    if(!$this->db->Query()) {
-      gui_button_error("UpdateOnlineUser::" . $this->db->GetError(), 300);
-      return false;
-    }
+    $this->db->Query();
     
     /* récupère la liste */
     $this->db->NewQuery("SELECT", "online");
-    if(!$this->db->Query()) {
-      gui_button_error("UpdateOnlineUser::" . $this->db->GetError(), 300);
-      return false;
-    }
+    $this->db->Query();
 
     while ($val = $this->db->FetchArray())
     {
@@ -449,16 +405,10 @@ class Nvrtbl
 
     /* listing du rŽpertoire replays  */
     $res = $f->DirList($replay_path);
-    if(!$res)
-    {
-       gui_button_error($f->GetError(), 500);
-       return;
-    }
     $dir_list = $res["files"] ;
     if (!$dir_list)
     {
-       gui_button_error("Error opening \"".$dir."\" directory.",500);
-       return;
+       throw new Exception("Error opening \"".$dir."\" directory.",500);
     }
     
 
@@ -466,11 +416,7 @@ class Nvrtbl
     $fields = array("replay", "id", "folder");
     $this->db->NewQuery("SELECT", "rec");
     $res = $this->db->Query();
-    if(!$res)
-    {
-      gui_button_error($db->GetError(), 500);
-      return;
-    }
+
 
     echo "<div class=\"results\" style=\"width: 100%;\">\n";
     echo "<table>\n";
@@ -549,9 +495,7 @@ class Nvrtbl
     $this->db->UpdateSet($my, true);
     $this->db->Where("type", get_type_by_name("freestyle"));
     $res = $this->db->Query();
-    if(!$res)
-      gui_button_error($this->db->GetError(), 500);
-
+ 
     /* get best time records value */
     echo "<h2>best time </h2>";
     $best = $this->db->helper->GetBestRecord(get_type_by_name("best time"));
@@ -562,9 +506,7 @@ class Nvrtbl
     //$this->db->Where("folder", get_folder_by_name("contest"));
     $this->db->AppendCustom("AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
     $res = $this->db->Query();
-    if(!$res)
-      gui_button_error($this->db->GetError(), 500);
-
+ 
     $i=0;
     while ($val = $this->db->FetchArray($res))
     {
@@ -633,8 +575,6 @@ class Nvrtbl
     //$this->db->Where("folder", get_folder_by_name("contest"));
     $this->db->AppendCustom("AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
     $res = $this->db->Query();
-    if(!$res)
-      gui_button_error($this->db->GetError(), 500);
 
     $i=0;
     while ($val = $this->db->FetchArray($res))
@@ -697,8 +637,6 @@ class Nvrtbl
     /* Parcours tous pour les stats */
     $this->db->NewQuery("SELECT", "rec");
     $res = $this->db->Query();
-    if(!$res)
-      gui_button_error($this->db->GetError(), 500);
 
     $i=0;
     while ($val = $this->db->FetchArray($res))
@@ -715,12 +653,7 @@ class Nvrtbl
     
     $this->db->NewQuery("SELECT", "users");
     $res = $this->db->Query();
-    if(!$res)
-    {
-      gui_button_error($db->GetError(), 500);
-      return;
-    }
-
+ 
     $u = new User($this->db);
 
     while ($val = $this->db->FetchArray($res))

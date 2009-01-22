@@ -21,6 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "../");
+define('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
@@ -28,25 +29,18 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl("DialogStandard");
+$table = new Nvrtbl();
+
+try {
+	
+
+if (!Auth::Check(get_userlevel_by_name("admin")))
+  throw new Exception($lang['NOT_ADMIN']);
 
 if (!isset($args['dlcontest']) && !isset($args['dloldones'])  && !isset($args['list']))
 {
-?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php
-  $table->dialog->Head("Nevertable - Neverball Hall of Fame");
-?>
-
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<?php
-$table->dialog->Prelude();
+ob_start();
 
   echo '<center><h1>Download all replay files</h1></center>' ;
   echo '<center><p><a href="?dlcontest">contest.lst</a></center>';
@@ -55,63 +49,62 @@ $table->dialog->Prelude();
   echo '<center><p><a href="?list&amp;folder='.get_folder_by_name("contest").'">contest.txt</a></center>';
   echo '<center><p><a href="?list&amp;folder='.get_folder_by_name("oldones").'">oldones.txt</a></center>';
 
-gui_button_main_page_admin();
+$log = ob_get_contents();
+ob_end_clean();
 
-?>
-</div><!-- fin "main" -->
+$log = $log . gui_button_back();
+$table->template->Show('generic', array('content' => $log));
 
-<?php
-/* Close avant le footer, car db inutile et pour les statistiques de temps */
 $table->Close();
-$table->dialog->Footer();
-?>
-
-</div><!-- fin "page" -->
-</body>
-</html>
-
-<?php
 }
 else
 {
-header("Content-Type: text/plain");
-if(isset($args['dlcontest']))
-{
- $lst = "";
+	header("Content-Type: text/plain");
 	
- $table->db->Select(array("rec"), array("*"));
- $table->db->requestGenericFilter("folder", get_folder_by_name("contest"));
- $table->db->Query();
- while ($val = $table->db->FetchArray())
- {
-	if (!empty($val['replay']))
-	  $lst .= replay_link($val['folder'], $val['replay']) . "\n";
- }
-
- echo $lst;
- exit;
-}
-
-if(isset($args['dloldones']))
-{
- $lst = "";
+	if(isset($args['dlcontest']))
+	{
+	 $lst = "";
+		
+	 $table->db->Select(array("rec"), array("*"));
+	 $table->db->requestGenericFilter("folder", get_folder_by_name("contest"));
+	 $table->db->Query();
+	 while ($val = $table->db->FetchArray())
+	 {
+		if (!empty($val['replay']))
+		  $lst .= replay_link($val['folder'], $val['replay']) . "\n";
+	 }
 	
- $table->db->Select(array("rec"), array("*"));
- $table->db->requestGenericFilter("folder", get_folder_by_name("oldones"));
- $table->db->Query();
- while ($val = $table->db->FetchArray())
- {
-	if (!empty($val['replay']))
-	  $lst .= replay_link($val['folder'], $val['replay']) . "\n";
- }
-
- echo $lst;
- exit;
+	 echo $lst;
+	 exit;
+	}
+	
+	if(isset($args['dloldones']))
+	{
+	 $lst = "";
+		
+	 $table->db->Select(array("rec"), array("*"));
+	 $table->db->requestGenericFilter("folder", get_folder_by_name("oldones"));
+	 $table->db->Query();
+	 while ($val = $table->db->FetchArray())
+	 {
+		if (!empty($val['replay']))
+		  $lst .= replay_link($val['folder'], $val['replay']) . "\n";
+	 }
+	
+	 echo $lst;
+	 exit;
+	}
+	
+	if(isset($args['list']))
+	{
+	 echo $table->GetStatsDump($args['folder']);
+	 exit;
+	}
 }
 
-if(isset($args['list']))
+} catch (Exception $ex)
 {
- echo $table->GetStatsDump($args['folder']);
- exit;
+	$table->template->Show('error', array("exception" => $ex)); 
+	$table->Close();
 }
-}
+

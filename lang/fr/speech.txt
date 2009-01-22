@@ -4,3 +4,4 @@ C'est la version beta de Nevertable 3.0. C'est juste pour jouer un peu, tout peu
 <p>
 Seuls les records de Neverball 1.5 sont supportés pour l'instant, pour les 4 sets principaux.
 </p>
+<p> <a href="conditions.php">Les conditions</a></p>

@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 define('TPL_DIR','templates/');
 	
 class Template
@@ -50,11 +52,7 @@ class Template
       return false;
     $file->SetFileName($this->tpm_dir . $this->name);
     $this->tpl_content = $file->ReadString();
-    if (!$tpl->content)
-    {
-       $this->SetError($file->GetError());
-       return false;
-    }
+
     return true;
   }
 
@@ -73,6 +71,7 @@ class Template
   function SetError($error)
   {
     $this->error = $error;
+    throw new Exception($this->error);
   }
     
   function GetError()

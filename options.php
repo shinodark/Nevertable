@@ -21,6 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
+define('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
@@ -28,31 +29,19 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new nvrtbl();
-?>
+try {
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
+$table = new Nvrtbl();
 
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<?php
+if (!Auth::Check(get_userlevel_by_name("member")))
+  throw new Exception($lang['NOT_MEMBER']);
+  
+$tpl_params = array();
+$tpl_params['message_array'] = array();
 
-function closepage()
-{  
-    global $table;
-    gui_button_back();
-    gui_button_return("Options", "options.php");
-    echo "</div><!-- fin \"main\" -->\n";
-    $table->Close();
-    $table->dialog->Footer();
-    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
-    exit;
-}
+  
+$user = new User($table->db);
+$user->LoadFromId($_SESSION['user_id']);
 
 function CheckLimitsOptions($args)
 {
@@ -84,89 +73,33 @@ function CheckLimitsOptions($args)
   else return $val;
 }
 
-if (!Auth::Check(get_userlevel_by_name("member")))
-{          
-  gui_button_error($lang['NOT_MEMBER'], 400);
-  closepage();
-}
-  
-$user = new User($table->db);
-if(!$user->LoadFromId($_SESSION['user_id']))
-{
-  gui_button_error($user->GetError(), 400);
-  closepage();
-}
-
-/*
-   TRAITEMENT DES EVENEMENTS 
-*/
 if(isset($args['upoptions']))
 {
    $val = CheckLimitsOptions($args);
    if ($val == false)
-   {
-      closepage();
-   }
+     throw new Exception("A parmameter is outbounds");
 
    $user->SetFields($val);
-   if (! $user->Update())
-   {
-     gui_button_error($user->GetError(), 300);
-     closepage();
-   }
+   $user->Update();
    
    $_SESSION['options_saved'] = false;
-   gui_button($lang['GUI_UPDATE_OK'], 300);
-   gui_button_return("Options", "options.php");
-   echo "</div><!-- fin \"main\" -->\n";
-   $table->Close();
-   $table->dialog->Footer();
-   echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
-   exit;
 
-   /* rafraichit le cache des options */
+   array_push($tpl_params['message_array'], $lang['GUI_UPDATE_OK']);
+   $tpl_params['delay'] = 2;
+   $tpl_params['redirect'] = "options.php";
+   $table->template->Show('redirect', $tpl_params);
 }
 
-/*
-   AFFICHAGE DE LA PAGE
-*/
+else
+{
+	$tpl_params['user'] = $user;
+	$table->template->Show('options', $tpl_params);
+}
 
-  /* Options */
-  $form = new Form("post", "options.php?upoptions", "options_form", 600);
-  $form->AddTitle($lang['OPTIONS_FORM_TITLE']);
-
-  $form->Br();
-  $form->AddSelect("sort", "sort", $sort_type, $lang['OPTIONS_FORM_SORT']  );
-  $form->Br();
-  $form->AddSelect("theme", "theme", $themes, $lang['OPTIONS_FORM_THEME']  );
-  $form->Br();
-  $form->AddSelect("lang", "lang", $langs, $lang['OPTIONS_FORM_LANG']  );
-  $form->Br();
-  $form->AddInputText("limit", "limit", $lang['OPTIONS_FORM_LIMIT'], 5, $user->GetLimit());
-  $form->Br();
-  $form->AddInputText("comments_limit", "comments_limit", $lang['OPTIONS_FORM_COMMENTS_LIMIT'], 5, $user->GetCommentsLimit());
-  $form->Br();
-  $form->AddInputText("sidebar_comments", "sidebar_comments", $lang['OPTIONS_FORM_SIDEBAR_COMMENTS'], 5, $user->GetSidebarComments());
-  $form->Br();
-  $form->AddInputText("sidebar_comlength", "sidebar_comlength", $lang['OPTIONS_FORM_SIDEBAR_COMLENGTH'], 5, $user->GetSidebarComLength());
-  $form->Br();
-  $form->AddInputSubmit();
-  echo $form->End();
-
-  echo '<script>';
-    echo "change_form_select('sort',  '".$user->GetSort()."');";
-    echo "change_form_select('theme',  '".$user->GetTheme()."');";
-    echo "change_form_select('lang',  '".get_lang_by_name($user->GetLang())."');";
-  echo '</script>';
-
-gui_button_main_page();
-?>
-</div><!-- fin "main" -->
-<?php    
 $table->Close();
-$table->dialog->Footer();
-?>
 
-</div><!-- fin "page" -->
-</body>
-</html>
+}
+catch (Exception $ex)
+{
+  $table->template->Show('error', array("exception" => $ex));
+}

@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 class Auth
 {
   var $db;
@@ -109,17 +111,20 @@ class Auth
     setcookie($config["cookie_name"], serialize($cookiedata), time()+$config["cookie_expire"], $config["cookie_path"], $config["cookie_domain"], false);
   }
 
-  function Check($level)
+  static function Check($level)
   {
-    return (isset($level) && $_SESSION['user_logged'] && $_SESSION['user_level']<=$level);
+    return (isset($level) && isset($_SESSION['user_logged']) && $_SESSION['user_logged']
+    	 && isset($_SESSION['user_level']) && $_SESSION['user_level']<=$level);
   }
   
-  function CheckUser($user_id)
+  static function CheckUser($user_id)
   {
-    return ($_SESSION['user_logged'] && ($_SESSION['user_level']<=get_userlevel_by_name("member")) && ($_SESSION['user_id'] === $user_id));
+    return (isset($_SESSION['user_logged']) && $_SESSION['user_logged']
+    		  && ($_SESSION['user_level']<=get_userlevel_by_name("member"))
+    		  && ($_SESSION['user_id'] === $user_id));
   }
 
-  function _SaveUserOptions()
+  static function _SaveUserOptions()
   {
     global $config;
     $_SESSION['opt_limit'] = $config['limit'];
@@ -132,7 +137,7 @@ class Auth
     $_SESSION['options_saved'] = true;
   }
 
-  function _LoadUserOptions()
+  static function _LoadUserOptions()
   {
     global $config;
     $config['limit'] = $_SESSION['opt_limit'];
@@ -147,6 +152,7 @@ class Auth
   function SetError($error)
   {
     $this->error = $error;
+    throw new Exception($this->error);
   }
     
   function GetError()

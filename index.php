@@ -21,6 +21,8 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
+define('NVRTBL', '1');
+	
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
@@ -34,7 +36,7 @@ $args['sort'] = (integer)$args['sort'];
 if (isset($args['folder']))
    $args['type'] = (integer)$args['type'];
 
-// default value for known args
+// default values
 if(!isset($args['filter']))
    $args['filter']='none';
 if(isset($args['filter']) && !isset($args['filterval']))
@@ -54,273 +56,236 @@ if(!isset($args['level_f']))
 if(!isset($args['folder']))
    $args['folder'] = get_folder_by_name("contest");
 
-if($args['to'] == 'showlinklist')
-{
- header("Content-Type: text/plain");
- echo $_SESSION['download_list'];
- exit;
-}
+try {
+   
+ 
+  $table = new Nvrtbl();
 
-$table = new Nvrtbl("DialogStandard");
-
-if(isset($args['link']))
-  $special="<meta http-equiv=\"refresh\" content=\"0;URL=record.php?id=".$args['link']."\" />\n";
-else
-  $special="";
-?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame", $special); ?>
-
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<?php
-$table->dialog->Prelude();
-
-/***************************************************/
-/* ----------- AFFICHAGE   ------------------------*/
-/***************************************************/
-if (isset($args['link']))
-{
-  gui_button("Redirecting...", 100);
-}
-
-else 
-{
-  $nextargs = "index.php?";
-  if (isset($args['type'])) $nextargs .= "&amp;type=".$args['type'];
-  if (isset($args['sort'])) $nextargs .= "&amp;sort=".$args['sort'];
-  if (isset($args['diffview'])) $nextargs .= "&amp;diffview=".$args['diffview'];
-  if (isset($args['newonly'])) $nextargs .= "&amp;newonly=".$args['newonly'];
-  if (isset($args['filter'])) $nextargs .= "&amp;filter=".$args['filter'];
-  if (isset($args['filterval'])) $nextargs .= "&amp;filterval=".$args['filterval'];
-  if (isset($args['levelset_f'])) $nextargs .= "&amp;levelset_f=".$args['levelset_f'];
-  if (isset($args['level_f'])) $nextargs .= "&amp;level_f=".$args['level_f'];
-  if (isset($args['folder'])) $nextargs .= "&amp;folder=".$args['folder'];
-
-  /* Affichage supplÃ©mentaire dans le cas de l'affichage d'un seul niveau */
-  if (isset($args['level_f']) && isset($args['levelset_f'])
-     && ($args['level_f'] > 0) && ($args['levelset_f'] > 0)
-     && ($args['diffview'] == "off") && $table->mode == "DialogStandard")
+  if(isset($args['link']))
   {
-    $mode_level = true;
+  	 $tpl_params['redirect'] = "record.php?id=". $args['link'];
+     $tpl_params['delay'] = 1;
+     $table->template->Show('redirect', $tpl_params);
+     $table->Close();
+     exit;
   }
-
-  /* RÃ©cupÃ©ration de l'option utilisateur de l'ordre de tri par dÃ©faut */
-  if (empty($args['sort']) && !Auth::Check(get_userlevel_by_name("member")))
-    $sort = get_sort_by_name("old");
-  else if (empty($args['sort']) && Auth::Check(get_userlevel_by_name("member")))
-    $sort = $config['opt_user_sort'];
-  else
-    $sort = $args['sort'];
-
-  /* Affichage normal */
-  /* ---------------- */
-  if (!$mode_level)
-  {
-      /* COMPTAGE */
-      /* gestion du numÃ©ro de page et de l'offset */
-      $off = ($args['page']-1) * $config['limit'];
-
-      /* hack pour faire un count en utilisant tous les filtres de base */
-      $table->db->NewQuery("SELECT", "rec", "COUNT(id)");
-      $table->db->Where($args['filter'], $args['filterval']);
-      $table->db->helper->LevelsFilter($args['levelset_f'], $args['level_f']);
-      $table->db->helper->TypeFilter($args['type']);
-      $table->db->helper->NewFilter($args['newonly']);
-      $table->db->helper->FolderFilter($args['folder']);
-      $result0 =   $table->db->Query();
-      if(!$result0)
-          gui_button_error(  $table->db->GetError(), 500);
-
-      $res = $table->db->FetchArray();
-      $total = $res['COUNT(id)'];
-      /* FIN COMPTAGE */
-      
-      /* requÃªte avec tous les champs mais limitÃ©e Ã  "limit" */
-      $p = $config['bdd_prefix'];
-      $table->db->Select(
-          array("rec", "users", "sets", "maps"),
-          array(
-            $p."rec.id AS id",
-            $p."rec.levelset AS levelset",
-            $p."rec.level AS level",
-            $p."rec.time AS time",
-            $p."rec.coins AS coins",
-            $p."rec.replay AS replay",
-            $p."rec.type AS type",
-            $p."rec.folder AS folder",
-            $p."rec.timestamp AS timestamp",
-            $p."rec.isbest AS isbest",
-            $p."rec.comments_count AS comments_count",
-            $p."rec.user_id AS user_id",
-            $p."users.pseudo AS pseudo",
-            $p."sets.set_name AS set_name",
-            $p."sets.set_path AS set_path",
-            $p."maps.map_solfile AS map_solfile",
-          )
-          );
-      $table->db->Where(
-          array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
-          array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
-          "AND", false
-      );
-      
-      $table->db->Where($args['filter'], $args['filterval']);
-      $table->db->helper->LevelsFilter($args['levelset_f'], $args['level_f']);
-      $table->db->helper->TypeFilter($args['type']);
-      $table->db->helper->NewFilter($args['newonly']);
-      $table->db->helper->FolderFilter($args['folder']);
-      
-      if($args['bestonly'] == "on")
-        $table->db->Where("isbest", 1);
-      
-      /* dans le cas du diffview, on trie par pieces, ou par temps */
-      if($args['diffview'] == "on")
-      {
-        /* diff impossible pour type "tous" et "freestyle" */
-        if ($args['type'] == get_type_by_name("all") || $args['type'] == get_type_by_name("freestyle"))
-        {
-          gui_button_error("can't select diff view with type : \"".get_type_by_number($args['type'])."\"", 400);
-          $args['diffview'] = "off";
-        }
-        /* choix automatique de l'ordre de tri */
-        if ($args['type'] == get_type_by_name("best time") )
-          $sort=get_sort_by_name("time");
-        else if ($args['type'] == get_type_by_name("most coins") )
-          $sort=get_sort_by_name("coins");
-
-        /* petit hack pas joli joli pour faire sauter la limite du nombre de record, dans le cas du diff */
-        $config['limit'] = 255;
-      }
-
-      $table->db->helper->SortFilter($sort);
-      $table->db->Limit($config['limit'], $off);
-      $result1 =   $table->db->Query();
-      if(!$result1)
-        gui_button_error(  $table->db->GetError(), 500);
-  }
-
-  /* Mode fiche de niveau */
-  /* -------------------- */
-  else 
-  {
-      /* requÃªte pour les records du contest */
-      $p = $config['bdd_prefix'];
-      $table->db->Select(
-          array("rec", "users", "sets", "maps"),
-          array(
-            $p."rec.id AS id",
-            $p."rec.levelset AS levelset",
-            $p."rec.level AS level",
-            $p."rec.time AS time",
-            $p."rec.coins AS coins",
-            $p."rec.replay AS replay",
-            $p."rec.type AS type",
-            $p."rec.folder AS folder",
-            $p."rec.timestamp AS timestamp",
-            $p."rec.isbest AS isbest",
-            $p."rec.comments_count AS comments_count",
-            $p."rec.user_id AS user_id",
-            $p."users.pseudo AS pseudo",
-            $p."sets.set_name AS set_name",
-            $p."sets.set_path AS set_path",
-            $p."maps.map_solfile AS map_solfile",
-          )
-          );
-      $table->db->Where(
-          array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
-          array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
-          "AND", false
-      );
-      
-      $table->db->Where($args['filter'], $args['filterval']);
-      $table->db->Where("folder", get_folder_by_name("contest"));
-      $table->db->helper->LevelsFilter($args['levelset_f'], $args['level_f']);
-      $table->db->helper->TypeFilter($args['type']);
-      $table->db->helper->SortFilter($sort);
-      $result1 = $table->db->Query();
-      if(!$result1)
-        gui_button_error(  $table->db->GetError(), 500);
-      $total1 = $table->db->NumRows();
-        
-      /* requÃªte pour les records anciens */
-      $table->db->Select(
-          array("rec", "users", "sets", "maps"),
-          array(
-            $p."rec.id AS id",
-            $p."rec.levelset AS levelset",
-            $p."rec.level AS level",
-            $p."rec.time AS time",
-            $p."rec.coins AS coins",
-            $p."rec.replay AS replay",
-            $p."rec.type AS type",
-            $p."rec.folder AS folder",
-            $p."rec.timestamp AS timestamp",
-            $p."rec.isbest AS isbest",
-            $p."rec.comments_count AS comments_count",
-            $p."rec.user_id AS user_id",
-            $p."users.pseudo AS pseudo",
-            $p."sets.set_name AS set_name",
-            $p."sets.set_path AS set_path",
-            $p."maps.map_solfile AS map_solfile",
-          )
-          );
-      $table->db->Where(
-          array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
-          array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
-          "AND", false
-      );
-      
-      $table->db->Where($args['filter'], $args['filterval']);
-      $table->db->Where("folder", get_folder_by_name("oldones"));
-      $table->db->helper->LevelsFilter($args['levelset_f'], $args['level_f']);
-      $table->db->helper->TypeFilter($args['type']);
-      $table->db->helper->SortFilter($sort);
-      $result2 = $table->db->Query();
-      if(!$result2)
-        gui_button_error(  $table->db->GetError(), 500);
-      $total2 = $table->db->NumRows();
-  }
-
-  $table->dialog->Speech();
-  $table->dialog->TypeForm($args);
-  if (!$mode_level)
-  {
-    $table->dialog->NavBar($total, $config['limit'], 'index.php', $nextargs);
-    $diff = $args['diffview']=="on" ? true : false;
-    $table->dialog->Table($result1, $diff, $total);
-  }
-  else
-  {
-    $table->dialog->Level($result1, $result2, $args, $total1, $total2);
-  }
-
- /* $table->dialog->SideBar( array("registered" => $table->online_users_registered,
-                                "guests"     => $table->online_users_guest,
-                                "list"       => $table->online_users_list)
-                           );
- */
- $table->dialog->SideBar( );
   
- if (!$mode_level)
-    $table->dialog->NavBar($total, $config['limit'], 'index.php', $nextargs);
+  if($args['to'] == 'showlinklist')
+  {
+    header("Content-Type: text/plain");
+    echo $_SESSION['download_list'];
+    exit;
+  }
+  
+  /* Configuration of page title */
+  $tpl_params = array(
+	"title" => "Nevertable - Neverball Hall of Fame",
+	);
+  
+  /* Check permissions */
+  if (($args['folder'] == get_folder_by_name("incoming")) &&  !Auth::Check(get_userlevel_by_name("admin")))
+  	 throw new Exception($lang['NOT_ADMIN']);
+  
+  /* Manage events */
+  if (isset($args['rectocontest']))
+  {
+  	 if ( !Auth::Check(get_userlevel_by_name("admin")) )
+  	   throw new Exception($lang['NOT_ADMIN']);
+    
+  	 $id=$args['id'];
+    
+     if (empty($id))
+    	throw new Exception("URL error");
+    	
+     $tpl_params['message_array'] = array();
+    
+     $rec = new Record($table->db);
+     $rec->LoadFromId($id);
+
+    
+     /* Deplacement */
+     $ret = $rec->Move(get_folder_by_name("contest"));
+  
+     /* gestion des records, qqsoit le resultat, des erreurs de $rec->Move etant */
+     /* non critiques, il peut y avoir modification quand même */
+     if($rec->GetType()!=get_type_by_name("freestyle"))
+     {
+        /* Gestion */
+        $ret = $table->ManageBestRecords($rec->GetFields(), $rec->GetType());
+        if ($ret['isbest'])
+        {
+          array_push( $tpl_params['message_array'], "This is a new best record !");
+          array_push( $tpl_params['message_array'], $ret['nb']."&nbsp;record(s) are best records for this level/levelset/type now.");
+          array_push( $tpl_params['message_array'], $ret['beaten']."&nbsp;record(s) are obsolete.");
+        }
+        else
+        {
+          array_push( $tpl_params['message_array'], "This record is not the best one ! moved in \"oldones\" !");
+        }
+     }
+     else
+     {
+     	array_push( $tpl_params['message_array'], "Record moved to contest.");
+     }
+     $tpl_params['redirect'] = "index.php?folder=". get_folder_by_name("incoming");
+     $tpl_params['delay'] = 5;
+     $table->template->Show('redirect', $tpl_params);
+  }
+  
+  else if (isset($args['rectotrash']))
+  {
+  	 if ( !Auth::Check(get_userlevel_by_name("admin")) )
+  	   throw new Exception($lang['NOT_ADMIN']);
+    
+  	 $id=$args['id'];
+  	 $tpl_params['message_array'] = array();
+    
+     if (empty($id))
+    	throw new Exception("URL error");
+
+     $rec = new Record($table->db);
+     $rec->LoadFromId($id);
+
+
+     /* garde en mémoire l'état du record avant déplacement */
+     $wasbest = $rec->IsBest();
+     !$rec->Move(get_folder_by_name("trash"));
+  
+     /* gestion des records, qqsoit le résultat, des erreurs de $rec->Move étant */
+     /* non critiques, il peut y avoir modification quand même */
+     if($rec->GetType()!=get_type_by_name("freestyle"))
+     {
+        /* Gestion */
+        $ret = $table->ManageBestRecords($rec->GetFields(), $rec->GetType());
+        if ($wasbest)
+        {
+           array_push( $tpl_params['message_array'], "This was a best record...");
+           array_push( $tpl_params['message_array'], $ret['nb']."&nbsp;record(s) are best records for this level/levelset/type now.");
+           array_push( $tpl_params['message_array'], $ret['imports']."&nbsp;record(s) imported from \"oldones\".");
+        }
+     }
+     
+     array_push( $tpl_params['message_array'], "Record trashed.");
+     
+     $tpl_params['redirect'] = "index.php?folder=". $args['folder'];
+     $tpl_params['delay'] = 5;
+     $table->template->Show('redirect', $tpl_params);
+  }
+  
+  else if (isset($args['recdelete']))
+  {
+  	 if ( !Auth::Check(get_userlevel_by_name("admin")) )
+  	   throw new Exception($lang['NOT_ADMIN']);
+    
+  	 $id=$args['id'];
+  	 $tpl_params['message_array'] = array();
+    
+     if (empty($id))
+    	throw new Exception("URL error");
+
+     $rec = new Record($table->db);
+     $rec->LoadFromId($id);
+     
+     /* effacement de l'enregistrement de la bdd, plus le fichier */
+     $rec->Purge(true);
+
+     array_push( $tpl_params['message_array'], "Record deleted");
+     $tpl_params['redirect'] = "index.php?folder=". get_folder_by_name("trash");
+     $tpl_params['delay'] = 5;
+     $table->template->Show('redirect', $tpl_params);
+  }
+  
+  else
+  {		
+  	
+	  /* Level mode */
+	  if (isset($args['level_f']) && isset($args['levelset_f'])
+	     && ($args['level_f'] > 0) && ($args['levelset_f'] > 0))
+	  {
+	    $mode_level = true;
+	  }
+	  
+  	  /* Check selection */
+	  if (!($mode_level && ($args['type'] > 0)))
+	  {
+	  	 $args['diffview'] = "off";
+	  }
+	  else
+	  {
+	  	 if ( $args['diffview'] == "on")
+	  	 {
+	  	 	
+	  	 }
+	  }
+  
+	  /* Keep filters */
+	  $nextargs = "index.php?";
+	  if (isset($args['type'])) $nextargs .= "&amp;type=".$args['type'];
+	  if (isset($args['sort'])) $nextargs .= "&amp;sort=".$args['sort'];
+	  if (isset($args['diffview'])) $nextargs .= "&amp;diffview=".$args['diffview'];
+	  if (isset($args['newonly'])) $nextargs .= "&amp;newonly=".$args['newonly'];
+	  if (isset($args['filter'])) $nextargs .= "&amp;filter=".$args['filter'];
+	  if (isset($args['filterval'])) $nextargs .= "&amp;filterval=".$args['filterval'];
+	  if (isset($args['levelset_f'])) $nextargs .= "&amp;levelset_f=".$args['levelset_f'];
+	  if (isset($args['level_f'])) $nextargs .= "&amp;level_f=".$args['level_f'];
+	  if (isset($args['folder'])) $nextargs .= "&amp;folder=".$args['folder'];
+
+	
+	  /* RÃ©cupÃ©ration de l'option utilisateur de l'ordre de tri par dÃ©faut */
+	  if (empty($args['sort']) && !Auth::Check(get_userlevel_by_name("member")))
+	    $sort = get_sort_by_name("old");
+	  else if (empty($args['sort']) && Auth::Check(get_userlevel_by_name("member")))
+	    $sort = $config['opt_user_sort'];
+	  else
+	    $sort = $args['sort'];
+	    
+	  /* Keep list of links */
+	  $_SESSION['download_list'] = "";
+	
+	  
+	  $tpl_params['last_comments'] = $table->db->helper->GetLastComments();
+	  
+	  /* Affichage normal */
+	  /* ---------------- */
+	  if (!$mode_level)
+	  {
+	  	 $total = $table->db->helper->CountFilteredRecords($args);
+	     $tpl_params['records']  = $table->db->helper->GetFilteredRecords($args);
+	     $tpl_params['total']    = $total;
+	       
+	     /* Configuration of navigation bar */
+	     $tpl_params['page'] = empty($args['page']) ? 1 : $args['page'];
+	     if ($config['limit'] > 0)
+	     	$tpl_params['nb_pages']  = ceil($total / $config['limit']);
+	     else
+	     	$tpl_params['nb_pages']=1; 
+	    
+	     $table->template->Show("index", $tpl_params);
+	  }
+	
+	  /* Mode fiche de niveau */
+	  /* -------------------- */
+	  else 
+	  {
+	     $results = $table->db->helper->GetFilteredRecordsLevel($args);
+	     $tpl_params['rec_contest']  = $results['rec_contest'];
+	     $tpl_params['rec_oldones']  = $results['rec_oldones'];
+	     $tpl_params['diffview'] = $args['diffview']=="on" ? true : false;
+	     $tpl_params['level_shot']   = $table->db->helper->GetLevelShot($args['level_f'],  $args['levelset_f']);
+	     $table->template->Show("level", $tpl_params);
+	  }
+
+  }
+	  
+	   //$_SESSION['download_list'] .= replay_link($fields['folder'], $fields['replay'])
 }
-?>
+catch (DBException $ex) {
+	$table->template->Show('error', array("exception" => $ex)); 
+}
+catch (Exception $ex) {
+	$table->template->Show('error', array("exception" => $ex)); 
+}
 
-</div><!-- fin "main" -->
 
-<?php
-$table->dialog->Stats($table->GetStats());
-/* Close avant le footer, car db inutile et pour les statistiques de temps */
 $table->Close();
-$table->dialog->Footer();
 ?>
-
-</div><!-- fin "page" -->
-</body>
-</html>

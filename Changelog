@@ -1,3 +1,7 @@
+22/01/09
+ - Grosse refonte su site
+ - version uploadable pour beta test
+
 25/02/06:  version 2.1.2 mise en ligne
  - Ajout d'un système de cache (utilisé que pour la liste user_id <-> pseudo
  pour l'instant ).

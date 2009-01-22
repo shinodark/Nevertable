@@ -21,6 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
+define('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
@@ -28,51 +29,21 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl("DialogStandard");
-?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
-
-<body>
-<div id="page">
-<?php 
-  $table->dialog->Top();
-  $table->dialog->Prelude();
-?>
-<div id="main">
-<?php
-
-function closepage()
-{  global $table;
-    gui_button_back();
-    gui_button_return("Upload", "upload.php");
-    echo "</div><!-- fin \"main\" -->\n";
-    $table->Close();
-    $table->dialog->Footer();
-    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
-    exit;
-}
-
+try {
+	
+	
+$table = new Nvrtbl();
 
 if(isset($args['autoadd']))
 {
   /* toujours off pour ce cas, puisqu'on va dans incoming d'abord */
   $overwrite == "off";
 
-  if (!Auth::Check(get_userlevel_by_name("member")))
-  {          
-    gui_button_error($lang['NOT_MEMBER'], 400);
-    closepage();
-  }
+  if (!Auth::Check(get_userlevel_by_name("member")))         
+  	throw new Exception($lang['NOT_MEMBER']);
   
   if (empty($_SESSION['user_id']))
-  {
-    gui_button_error($lang['GUI_INVALID_USER'], 300);
-    closepage();
-  }
+  	throw new Exception($lang['GUI_INVALID_USER']);
   
   $rec = new Record($table->db);
 
@@ -95,114 +66,83 @@ if(isset($args['autoadd']))
   	$u->GetPseudo(),
   	0 //Id non encore connu ˆ ce stade
   	);
-  $ret = $f->Upload($_FILES, 'replayfile', $up_dir, $replayName);
-
-  if(!$ret)
+  	
+  try
   {
-    gui_button_error($f->GetError(), 500);
-    closepage();
-  }
-
-  /* Analyse */
-  $rep = new Replay($table->db, $f->GetFileName(), $rec->GetType());
-  if(!$rep->Init())
-  { 
-    /* erreur lors de l'analyse */
-    gui_button_error($rep->GetError(), 500);
-    $ret = $f->Unlink();
-    if(!$ret)
-      gui_button_error($f->GetError(), 500);
-    closepage();
-  }
-
-  if(get_replay_mode_by_name("challenge") == $rep->GetMode())
-  {
-     gui_button_error("Challenge replays are not supported yet", 500);
-     closepage();
-  }
- 
-  /* Insertion du record */
-  $rec->SetFields($rep->GetFields());
-      
-  /* récupération de la case "goal not reached */
-  if (!$rep->IsGoalReached())
-  {
-     $rec->SetFields(array(
-	     "time" => 9999,
-	     "type" => get_type_by_name("freestyle"), /* force freestyle */
-     ));
-  }
-    
-  $rec->SetFields(array("replay" => $replayName));
-
-  $ret = $rec->Insert();
-  
-  if(!$ret)
-  {
-     gui_button_error($rec->GetError(), 500);
-     if ($f->Unlink())
-        gui_button_error($f->GetError(), 500);
-     closepage();
+	  $f->Upload($_FILES, 'replayfile', $up_dir, $replayName);
+	
+	  /* Analyse */
+	  $rep = new Replay($table->db, $f->GetFileName(), $rec->GetType());
+	  
+	  $rep->Init();
+	
+	  
+	  if(get_replay_mode_by_name("challenge") == $rep->GetMode())
+	     throw new Exception("Challenge replays are not supported yet");
+	
+	 
+	  /* Insertion du record */
+	  $rec->SetFields($rep->GetFields());
+	      
+	  /* récupération de la case "goal not reached */
+	  if (!$rep->IsGoalReached())
+	  {
+	     $rec->SetFields(array(
+		     "time" => 9999,
+		     "type" => get_type_by_name("freestyle"), /* force freestyle */
+	     ));
+	  }
+	    
+	  $rec->SetFields(array("replay" => $replayName));
+	
+	  $ret = $rec->Insert();
+	  
+	  /* Mise ˆ jour de l'ID */
+	  $replayName = sprintf("S%02dL%02d_%s_%05d.nbr",
+	  	$rec->GetSet(),
+	  	$rec->GetLevel(),
+	  	$u->GetPseudo(),
+	  	$rec->GetId()
+	  );
+	  
+	
+	  
+	  $rec->SetFields(array("replay" => $replayName));
+	  $rec->Update(true);
+	  
+	  $f->Move($up_dir, $replayName);
   }
   
-  /* Mise ˆ jour de l'ID */
-  $replayName = sprintf("S%02dL%02d_%s_%05d.nbr",
-  	$rec->GetSet(),
-  	$rec->GetLevel(),
-  	$u->GetPseudo(),
-  	$rec->GetId()
-  );
-  
-  $ret = $f->Move($up_dir, $replayName);
-  
-  $rec->SetFields(array("replay" => $replayName));
-  $rec->Update(true);
-      
-  if(!$ret)
+  catch (Exception $ex)
   {
-     gui_button_error($rec->GetError(), 500);
-     if ($f->Unlink())
-        gui_button_error($f->GetError(), 500);
-     closepage();
+  	$ret = $f->Unlink();
+  	throw $ex;
   }
-    
-  gui_button($lang['UPLOAD_REGISTERED'], 600);
-  /* Aucune gestion à faire, puisque le record est dans "incoming" */
-  $table->dialog->Replay($rep->GetStruct());
-  $table->dialog->Record($rec->GetFields());
 
-  gui_button_main_page();
+  $tpl_params = array("redirect" => "index.php");
+  $tpl_params['delay'] = 0;
+  $tpl_params['message_array'] = array($lang['UPLOAD_REGISTERED']);
+  $record_fields =  $rec->GetFields();
+  $record_fields['pseudo'] = $u->GetPseudo();
+  $s = new Set($table->db);
+  $s->LoadFromId($rec->GetSet());
+  $record_fields['set_name'] = $s->GetName();
+  $tpl_params['subtemplates_array'] = array('_replay', '_record');
+  $tpl_params['subparams_array'] = array(array("fields" => $record_fields), array("replay_struct" => $rep->GetStruct()));
+  $tpl_params['subdivclass_array'] = array("oneresult", "oneresult" );
+  
+  $table->template->Show('redirect', $tpl_params);
 }
 
 else
 {
-  $form = new Form("post", "upload.php?autoadd", "avatar_form", 600, "multipart/form-data");
-  $form->AddTitle($lang['UPLOAD_FORM_TITLE']);
-  $form->Br();
-  $form->AddLine(sprintf($lang['UPLOAD_FORM_SIZEMAX'], floor($config['upload_size_max']/1024) ));
-  $form->Br();
-  $form->AddInputText("pseudo", "pseudo", $lang['UPLOAD_FORM_PSEUDO'], 10, $_SESSION['user_pseudo'], "readonly");
-  $form->Br();
-  $form->AddSelect("type", "type",array(1=>"best time", 2=>"most coins", 3=>"freestyle"), $lang['UPLOAD_FORM_TYPE']  );
-  $form->Br();
-  $form->AddInputFile("replayfile", "replayfile", $lang['UPLOAD_FORM_REPLAYFILE'], 40);
-  $form->AddInputHidden("user_id", "user_id", "", 0, $_SESSION['user_id']);
-  $form->AddInputHidden("size_max", "MAX_FILE_SIZE", "", 0, $config['upload_size_max']);
-  $form->Br();
-  $form->AddInputSubmit();
-  echo $form->End();
-
-  gui_button_main_page();
+  $table->template->Show('upload');
 }
 
+} catch (Exception $ex)
+{
+  $table->template->Show('error', array("exception" => $ex));
+}
 
-?>
-</div> <!-- fin main-->
-<?php
 $table->Close();
-$table->dialog->Footer();
-?>
 
-</div><!-- fin "page" -->
-</body>
-</html>

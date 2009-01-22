@@ -38,7 +38,9 @@ LASTMOD
 @author	Leo West - lwest@free.fr
 
 */
-
+if (!defined('NVRTBL'))
+	exit;
+	
 
 class Mail
 {

@@ -20,60 +20,68 @@
 #
 # ***** END LICENSE BLOCK *****
 #
-include_once ROOT_PATH ."classes/class.tag.dialog.php";
-
+if (!defined('NVRTBL'))
+	exit;
+	
 class Tagboard
 {
   var $db;
-  var $dialog;
   var $cache;
+  var $template;
+  var $table;
   var $out;
     
-  function Tagboard(&$db, &$bbcode, &$smilies, &$style)
+  function Tagboard(&$parent)
   {
     $this->out = "";
-    $this->db = &$db;
+    $this->db = &$parent->db;
     $this->cache  = new Cache("text");
-    $this->dialog = new Tag_Dialog($this->db, $this->cache, &$bbcode, &$smilies, &$style, $this->out);
+    $this->template = new Template(&$parent);
   }
 
-  function Show($args)
+  function Show($args, $moder=false)
   {
     global $lang;
 
-    if (isset($args['tag']))
+    $err = array();
+    if (isset($args['tag'])) // add a tag
     {
       if(empty($args['tag_pseudo']))
-      {
-         $this->out .= "<span class=\"tag_error\">".$lang['TAG_EMPTY_PSEUDO']."</span>\n";
-      }
+        array_push ($err, $lang['TAG_EMPTY_PSEUDO']);
+
       else if (empty($args['content']))
-      {
-         $this->out .= "<span class=\"tag_error\">".$lang['TAG_EMPTY_CONTET']."</span>\n";
-      }
+      	array_push ($err, $lang['TAG_EMPTY_CONTENT']);
+
+      else if ($args['tag_pseudo'] != $_SESSION['user_pseudo'])
+      	array_push ($err, "don't cheat...");
+      	
       else
-      {
-         $this->Insert($args['content'], $args['tag_pseudo'], $args['tag_link']);
-      }
+        $this->Insert($args['content'], $args['tag_pseudo'], $args['tag_link'], $err);
     }
-    $this->dialog->Tags();
-    $this->dialog->TagForm();
-    return $this->out;
+       
+    $res = $this->db->helper->SelectTags();
+    if($res)
+    {
+    	if (!$moder)
+    		$tpl = '_tags';
+        else
+        	$tpl = 'admin/_tags';
+
+        $cache_id = empty($err) ? 'tags' : ""; // Invalid cache if errors have to be displayed  
+        $this->template->Show( $tpl, array("tags" => $res, "errors" => $err), $cache_id);
+    
+    }
   }
 
-  function PrintOut()
-  {
-    echo $this->out;
-  }
 
-  function Insert($content, $pseudo, $link)
+  function Insert($content, $pseudo, $link, &$err)
   {
     global $config, $lang;
 
     $tag = GetContentFromPost($content);
     if(strlen($tag) > $config['tag_maxsize'])
     {
-      $this->out .= "<span class=\"tag_error\">".$lang['TAG_TOO_LONG']."</span>\n";
+      array_push ($err, $lang['TAG_TOO_LONG']);
       return false;
     }
     else
@@ -87,31 +95,29 @@ class Tagboard
         "content"     => $tag,
         //"link"        => $link,
         "link"        => "",
-	"ip_log"      => $_SERVER['REMOTE_ADDR'],
+	    "ip_log"      => $_SERVER['REMOTE_ADDR'],
         );
       $this->db->NewQuery("INSERT", "tags");
       $this->db->Insert($fields);
-      if(!$this->db->Query())
-      {
-        $this->out .= "<span class=\"tag_error\">".$lang['TAG_TOO_LONG']."</span>\n";
-      return false;
-      }
+      $this->db->Query();
     }
     /* Purge du cache */
     $this->cache->Dirty("tags");
     return true;
   }
 
-  function Update($id, $content, $pseudo, $link)
+  function Update($id, $content)
   {
     global $config, $lang;
+    
+    if (empty($id))
+    	return false;
 
     $tag = GetContentFromPost($content);
+
     if(strlen($tag) > $config['tag_maxsize'])
     {
-        $this->out .= "<span class=\"tag_error\">".$lang['TAG_TOO_LONG']."</span>\n";
         $this->SetError($lang['TAG_TOO_LONG']);
-        return false;
     }
     else
     {
@@ -120,18 +126,13 @@ class Tagboard
 		$link = "http://" . $link;
 	  }
       $fields = array (
-        "pseudo"      => $pseudo,
         "content"     => $tag,
-        "link"        => $link,
         );
       $this->db->NewQuery("UPDATE", "tags");
       $this->db->UpdateSet($fields, true);
       $this->db->Where("id", $id);
-      if(!$this->db->Query())
-      {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+      $this->db->Limit(1);
+      $this->db->Query();
     }
     /* Purge du cache */
     $this->cache->Dirty("tags");
@@ -147,11 +148,8 @@ class Tagboard
     }
     $this->db->NewQuery("DELETE", "tags");
     $this->db->Where("id", $id);
-    if (!$this->db->Query())
-    {
-       $this->SetError($this->db->GetError());
-       return false;
-    }
+    $this->db->Query();
+    
     /* Purge du cache */
     $this->cache->Dirty("tags");
     return true;
@@ -160,6 +158,7 @@ class Tagboard
   function SetError($error)
   {
     $this->error = $error;
+    throw Exception($this->error);
   }
     
   function GetError()

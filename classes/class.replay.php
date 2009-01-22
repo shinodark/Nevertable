@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 define('PATHMAX',64);
 define('MAXNAM',9);
 define('DATELEN',20);
@@ -63,9 +65,9 @@ class Replay
 	        if ($this->struct_replay['magic'] != MAGIC_1_5)
 		{
 		    if ($this->struct_replay['magic'] == MAGIC_1_4)
-	               $this->error = "File is replay file from Neverball 1.4. Please convert it to 1.5 before uploading.";
+	               $this->SetError("File is replay file from Neverball 1.4. Please convert it to 1.5 before uploading.");
 		    else
-	               $this->error = "File is probably not a replay file";
+	               $this->SetError("File is probably not a replay file");
 	            return false;
 	        }
 	
@@ -114,16 +116,11 @@ class Replay
            array($set_path, $map_solfile)
        );
        $this->db->Limit(1);
-       if (!$this->db->Query())
-       {
-          $this->error = "Can't query database for validation";
-          return false;
-       }
+       $this->db->Query();
+
        if ($this->db->NumRows() < 1)
-       {
-          $this->error = "Can't get valid level or set from replay file!";
-          return false;
-       }
+          $this->SetError("Can't get valid level or set from replay file!");
+       
        $val = $this->db->FetchArray();
        $this->level = $val['level_num'];
        $this->set   = $val['set_id'];
@@ -195,6 +192,12 @@ class Replay
        }
     }
 
+    function SetError($error)
+    {
+      $this->error = $error;
+      throw Exception($this->error);
+    }
+    
     function GetError()
     {
         return $this->error;

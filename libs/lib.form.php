@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 class Form
 {
 
@@ -32,11 +34,11 @@ class Form
     {
        $inline1 = ' class="'.$class.'"';
        if (!empty($width))
-	 $inline2 = ' style="width: '.$width.'px;"';
+	     $inline2 = ' style="width: '.$width.'px;"';
        if (!empty($enctype))
-	 $inline3 = ' enctype="'.$enctype.'"';
+	     $inline3 = ' enctype="'.$enctype.'"';
        $this->output  = "<div ".$inline1.$inline2.">\n"; 
-       $this->output .= '<form method="'.$method.'" action="'.$action.'" name="'.$name.'" '.$inline3.'>'."\n"; 
+       $this->output .= '<form method="'.$method.'" action="'.$action.'" name="'.$name.'" id="'.$name.'" '.$inline3.'>'."\n"; 
        $this->output .= '<table><tr>'; 
        $this->output .= "\n"; 
     }

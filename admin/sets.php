@@ -21,47 +21,25 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "../");
+define('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
-include_once ROOT_PATH ."classes/class.dialog_admin.php";
 
 //args process
 $args = get_arguments($_POST, $_GET);
-$table = new Nvrtbl("DialogAdmin");
 
-$replay_path = ROOT_PATH.$config['replay_dir'];
-?>
+try {
+	
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php
-
-$table->dialog->Head("Nevertable - Neverball Hall of Fame");
-?>
-
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<?php
-
-function closepage()
-{   global $table;
-    gui_button_back();
-    echo "</div><!-- fin \"main\" -->\n";
-    $table->Close();
-    $table->dialog->Footer();
-    echo "</div><!-- fin \"page\" -->\n</body>\n</html>\n";
-    exit;
-}
+$table = new Nvrtbl();
 
 if (!Auth::Check(get_userlevel_by_name("admin")))
-{
-  gui_button_error($lang['NOT_ADMIN'], 400);
-  closepage();
-}
+  throw new Exception($lang['NOT_ADMIN']);
+  
+$replay_path = ROOT_PATH.$config['replay_dir'];
+  
+$tpl_params['message_array'] = array();
 
 /*
  * TRAITEMENT DES EVENEMENTS
@@ -71,199 +49,99 @@ if (isset($args['setadd']))
   $tmp_dir = ROOT_PATH. $config['tmp_dir'];
   $tmp_file = tempnam($tmp_dir, 'set_');
   if (!$tmp_file)
-  {
-    gui_button_error("Error on creating temp file.", 300);
-    closepage();
-  }
+    throw new Exception("Error on creating temp file.");
 
   $f = new FileManager();
-  $ret = $f->Upload($_FILES, 'setfile', $tmp_dir, basename($tmp_file), true);
-
-  if(!$ret)
+  $f->Upload($_FILES, 'setfile', $tmp_dir, basename($tmp_file), true);
+  $f->Open();
+	  
+  try
   {
-    gui_button_error($f->GetError(), 500);
-    closepage();
-  }
+	  $set_name = trim($f->ReadLine());
+	  $f->ReadLine(); /* Difficulty */
+	  $set_path = "map-".trim($f->ReadLine()); /* path */
+	  $f->ReadLine(); /* shot */
+	  $f->ReadLine(); /* empty */
+	
+	  $s = new Set($table->db);
+	
+	  $s->SetFields(array(
+		  "set_name" => $set_name,
+		  "set_path" => $set_path,
+	  ));
+  
+      $s->Insert();
+  	  $num = 1;
 
-  if (!$f->Open())
+	  while (!$f->IsEof())
+	  {
+	    $map_solfile =  basename(trim($f->ReadLine()));
+	    if (!empty($map_solfile))
+	    {
+	      $s->AddMap($num, $map_solfile);
+	    }
+	    $num++;
+	  }
+  }
+  catch (Exception  $ex)
   {
-    gui_button_error($f->GetError(), 500);
-    $f->Unlink();
-    closepage();
+  	   $f->Unlink();
+  	   throw $ex;
   }
-
-  $set_name = trim($f->ReadLine());
-  $f->ReadLine(); /* Difficulty */
-  $set_path = "map-".trim($f->ReadLine()); /* path */
-  $f->ReadLine(); /* shot */
-  $f->ReadLine(); /* empty */
-
-  $s = new Set($table->db);
-
-  $s->SetFields(array(
-	  "set_name" => $set_name,
-	  "set_path" => $set_path,
-  ));
-
-  if (!$s->Insert())
-  {
-    $f->Unlink();
-    gui_button_error($s->GetError(), 500);
-    closepage();
-  }
-
-  $num = 1;
-
-  while (!$f->IsEof())
-  {
-    $map_solfile =  basename(trim($f->ReadLine()));
-    if (!empty($map_solfile))
-    {
-      if(!$s->AddMap($num, $map_solfile))
-      {
-        $f->Unlink();
-        gui_button_error($s->GetError(), 500);
-        closepage();
-      }
-    }
-    $num++;
-  }
-
+  
   $f->Close();
   $f->Unlink();
 
-  gui_button($lang['GUI_UPDATE_OK'], 300);
+  array_push( $tpl_params['message_array'], $lang['GUI_UPDATE_OK']);
+  $tpl_params['redirect'] = "sets.php";
+  $tpl_params['delay'] = 2;
+  $table->template->Show('redirect', $tpl_params);
 }
 
-if (isset($args['setaction']) && isset($args['delete']))
-{
-  gui_button_error("This will delete ALL maps and ALL records of this set...", 500);
-  gui_button("Are you sure ?", 200);
-  gui_button('<a href="?delete2&amp;set_id='.$args['set_id'].'"><b>Yes</b></a>', 100);
-
-  closepage();
+else if (isset($args['setaction']) && isset($args['delete']))
+{ 
+  array_push( $tpl_params['message_array'], "This will delete ALL maps and ALL records of this set...");
+  array_push( $tpl_params['message_array'], "This will delete ALL maps and ALL records of this set...");
+  array_push( $tpl_params['message_array'], '<a href="?delete2&amp;set_id='.$args['set_id'].'"><b>Yes</b></a>');
+  $tpl_params['redirect'] = "sets.php";
+  $tpl_params['delay'] = 0;
+  $table->template->Show('redirect', $tpl_params);
 }
 
-if (isset($args['delete2']))
+else if (isset($args['delete2']))
 {
   $s = new Set($table->db);
-  if (!$s->LoadFromId($args['set_id']))
-  {
-     gui_button_error($s->GetError(), 500);
-     closepage();
-  }
-  if (!$s->Purge())
-  {
-     gui_button_error($s->GetError(), 500);
-     closepage();
-  }
+  $s->LoadFromId($args['set_id']);
+  $s->Purge();
   
-  gui_button($lang['GUI_UPDATE_OK'], 300);
+  array_push( $tpl_params['message_array'], $lang['GUI_UPDATE_OK']);
+  $tpl_params['redirect'] = "sets.php";
+  $tpl_params['delay'] = 2;
+  $table->template->Show('redirect', $tpl_params);
 }
 
-if (isset($args['setaction']) && isset($args['rename']))
+else if (isset($args['setaction']) && isset($args['rename']))
 {
   $s = new Set($table->db);
-  if (!$s->LoadFromId($args['set_id']))
-  {
-     gui_button_error($s->GetError(), 500);
-     closepage();
-  }
-
+  $s->LoadFromId($args['set_id']);
+  
   $fields = array("set_name" => trim(GetContentFromPost($args['newname'])));
   $s->SetFields($fields);
-  if (!$s->Update())
-  {
-     gui_button_error($s->GetError(), 500);
-     closepage();
-  }
+  $s->Update();
 
-  gui_button($lang['GUI_UPDATE_OK'], 300);
+  array_push( $tpl_params['message_array'], $lang['GUI_UPDATE_OK']);
+  $tpl_params['redirect'] = "sets.php";
+  $tpl_params['delay'] = 2;
+  $table->template->Show('redirect', $tpl_params);
 }
-
-
-/** main **/
-echo "<br/>";
-
-/* __SETS__ */
-echo '<div style="margin-left: auto; margin-right: auto; width: 450px;">'."\n";
-echo "<table>\n";
-echo "<caption>Sets</caption>\n";
-
-$res = $table->db->helper->SelectSetsRes();
-
-$i = 0;
-while ($val = $table->db->FetchArray($res))
+else
 {
-   $rowclass=($i%2)?"row1":"row2"; $i++;
-
-   echo "<tr class=\"".$rowclass."\">\n";
-   echo "<td>#".$val['id']."</td>\n";
-   echo "<td>".$val['set_path']."</td>\n";
-   echo "<td style=\"text-align: right;\">\n";
-      echo "<form name=\"setform_".$i."\" id=\"setform_".$i."\" action=\"?setaction\" method=\"post\">\n";
-      echo "<input type=\"text\" name=\"newname\" value=\"".$val['set_name']."\" size=\"30\" />\n";
-      echo "<input type=\"hidden\" name=\"set_id\" value=\"".$val['id']."\" /\n>";
-      echo "<input type=\"submit\" value=\"rename\" name=\"rename\"  />\n";
-      echo "<input type=\"submit\" value=\"delete\" name=\"delete\" />\n";
-      echo "</form>\n";
-   echo "</td>\n";
-   echo "</tr>\n";
+  $table->template->Show('admin/sets', $tpl_params);
 }
-echo "</table>\n";
-echo "</div>\n";
-
-$form = new Form("post", "?setadd", "setadd_form", 400, "multipart/form-data");
-$form->AddTitle("Add a new set from set file");
-$form->Br();
-$form->AddInputFile("setfile", "setfile", "set file : ", 25);
-$form->AddInputHidden("size_max", "MAX_FILE_SIZE", "", 0, 50000);
-$form->Br();
-$form->AddInputSubmit();
-echo $form->End();
 
 
-/* __MAPS */
-
-$sets = $table->db->helper->SelectSets();
-
-echo '<div style="margin-left: auto; margin-right: auto; width: 300px;">'."\n";
-echo "<table>\n";
-echo "<caption>Maps</caption>\n";
-
-$i = 0;
-foreach ($sets as $id => $name)
+} catch (Exception $ex)
 {
-    echo "<tr style=\"background: white;\"><td colspan=\"4\"><br/><b><a name=\"".$name."\"></a>".$name."</b><br/><hr/></td></tr>\n";
-    echo "<tr><td colspan=\"4\" style=\"background: #fff; height: 2px;\"></td></tr>\n";
-
-    $set = new Set($table->db);
-    $set->LoadFromId($id);
-    $res = $set->GetMapsRes();
-    while ($val = $table->db->FetchArray($res))
-    {
-       $rowclass=($i%2)?"row1":"row2"; $i++;
-
-       echo "<tr class=\"".$rowclass."\">\n";
-       echo "<td>#".$val['level_num']."</td>\n";
-       echo "<td>".$val['map_solfile']."</td>\n";
-       echo "</tr>\n";
-    }
+	$table->template->Show('error', array("exception" => $ex)); 
 }
-
-echo "</table>\n";
-echo "</div>\n";
-
-
-gui_button_main_page_admin();
-
-?>
-</div> <!-- fin main-->
-<?php
 $table->Close();
-$table->dialog->Footer();
-?>
-
-</div><!-- fin "page" -->
-</body>
-</html>

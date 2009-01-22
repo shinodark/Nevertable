@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 class Record
 {
     var $db;
@@ -41,24 +43,18 @@ class Record
     function LoadFromId($id)
     {
       if (empty($id))
-        return false;
+        throw new Exception("Missing record");
       unset($this->fields);
       $this->db->NewQuery("SELECT", "rec");
       $this->db->Where("id", $id);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
-      else {
-        if ($this->db->NumRows()<1)
-        {
-          $this->error = "No record match this id!";
-          return false;
-        }
-        $this->SetFields($this->db->FetchArray());
-        $this->isload=true;
-        return true;
-      }
+      $this->db->Query();
+      
+      if ($this->db->NumRows()<1)
+         $this->SetError("No record match this id!");
+      
+      $this->SetFields($this->db->FetchArray());
+      $this->isload=true;
+      return true;
     }
 
     /* Chargement des champs d'un record ˆ partir de l'id */
@@ -74,22 +70,19 @@ class Record
       $this->db->Where("level", (integer)$level);
       $this->db->Where("type", (integer)$type);
       $this->db->Where("folder", (integer)$folder);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
-      else {
-        $ret['nb'] = $this->db->NumRows();
-        if ($ret['nb'] < 1)
-          $this->isload=false;
-        else
-          $this->isload=true;
-        $this->SetFields($this->db->FetchArray());
-        $ret['id'] = array();
-        while ($val = $this->db->FetchArray())
-            $ret['id']  = array_push ($ret['id'], $val['id']);
-        return $ret;
-      }
+      $this->db->Query();
+
+
+      $ret['nb'] = $this->db->NumRows();
+      if ($ret['nb'] < 1)
+         $this->isload=false;
+      else
+         $this->isload=true;
+      $this->SetFields($this->db->FetchArray());
+      $ret['id'] = array();
+      while ($val = $this->db->FetchArray())
+          $ret['id']  = array_push ($ret['id'], $val['id']);
+      return $ret;
     }
 
     /* Mise à jour du record dans la bdd avec les champs actuellement chargŽ */
@@ -97,52 +90,40 @@ class Record
     {
       if(!$this->isload)
       {
-        $this->error = "Record is not loaded!";
-	return false;
+        $this->SetError("Trying to update a record which is not loaded!");
       }
       if(empty($this->fields['id']))
       {
-        $this->error = "Trying to update with no id specified!";
-        return false;
+        $this->SetError("Trying to update a record with no id specified!");
       }
-
+      
       $this->db->NewQuery("UPDATE", "rec");
       $this->db->UpdateSet($this->fields, $conservative);
       $this->db->Where("id", $this->fields['id']);
       $this->db->Limit(1);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
-      else {
-        $this->_UpdateUserStats();
-        return true;
-      }
+      $this->db->Query();
+
+      $this->_UpdateUserStats();
+      return true;
+      
     }
 
     /* Insertion d'un nouveau record dans la bdd */
     function Insert()
     {
       if (!$this->isload)
-        return false;
+        $this->SetError("Trying to add a record which is not loaded!");
       $this->db->NewQuery("INSERT",  "rec");
       $this->db->Insert($this->fields);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+      $this->db->Query();
+      
       /* le but ici est de rŽcupŽrer le nouveau record pour mise ˆ jour des infos */
       /* cela permet d'avoir le bon id surtout, pour un affichage correct */
       $this->db->NewQuery("SELECT", "rec");
       $this->db->Sort(array("id"), "DESC");
       $this->db->Limit(1);
-      if($this->db->Query()) 
-        $this->SetFields($this->db->FetchArray());
-      else
-      {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+      $this->db->Query(); 
+      $this->SetFields($this->db->FetchArray());
       $this->_UpdateUserStats();
 
       return true;
@@ -154,7 +135,7 @@ class Record
       global $config;
 
       if (!$this->isload)
-	      return false;
+	      $this->SetError("Trying to move a record which is not loaded!");
 	  
       /* DŽjˆ dans le bon dossier */
       if ($this->fields['folder'] == $folder)
@@ -179,6 +160,9 @@ class Record
     function Merge($target_id)
     {
       global $config;
+      
+      if (!$this->isload)
+	      $this->SetError("Trying to merge a record which is not loaded!");
 
       $target = new Record($this->db);
       $ret_target = $target->LoadFromId($target_id);
@@ -210,10 +194,9 @@ class Record
            $this->SetFields($target->GetFields());
         }
 
-        if (!$ret_file)
+        else
         {
           $this->SetError($f->GetError());
-          return false;
         }
         
         /* ecrasement en modifiant le timestamp */
@@ -221,10 +204,9 @@ class Record
         $target->_UpdateUserStats();
       }
       
-      if (!$ret_target)
+      else
       {
         $this->SetError($target->GetError());
-        return false;
       }
       
       return true;
@@ -233,47 +215,28 @@ class Record
     /* Effacement dŽfinitif d'un record + fichier attachŽ si parametre est true */
     function Purge($filedelete=false)
     {
-      if(!$this->isload)
-      {
-        $this->error = "Record is not loaded!";
-	return false;
-      }
+     if (!$this->isload)
+	      $this->SetError("Trying to purge a record which is not loaded!");
+    	
       if(empty($this->fields['id']))
-      {
-        $this->error = "Trying to purge with no id specified!";
-        return false;
-      }
+        $this->SetError("Trying to purge with no id specified!");
 
       $this->db->NewQuery("DELETE", "com");
       $this->db->Where("replay_id", $this->fields['id']);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+      $this->db->Query();
       
       $this->db->NewQuery("DELETE", "rec");
       $this->db->Where("id", $this->fields['id']);
       $this->db->Limit(1);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+      $this->db->Query();
+
       if($filedelete)
       {
         /* purge fichier */
-        if ($this->GetReplayRelativePath())
-        {
-          $f = new FileManager($this->GetReplayRelativePath());
-          if(!$f->Unlink())
-             gui_button_error($this->SetError($f->GetError()), 400);
-          else
-             gui_button("replay file : ".$f->GetBaseName()." deleted from server", 500);
-        }
-        else
-        {	
-            gui_button_error("Error in GetReplayRelativePath(), replay:".$this->fields['replay']. " folder: ".$this->fields['folder'], 500);
-        }
+        $f = new FileManager($this->GetReplayRelativePath());
+        $f->Unlink();         
       }
+      
       $this->_UpdateUserStats();
       $this->isload = false;
       return true;
@@ -385,6 +348,7 @@ class Record
     function SetError($error)
     {
       $this->error = $error;
+      throw Exception($this->error);
     }
     
     function GetError()

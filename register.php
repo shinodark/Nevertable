@@ -21,6 +21,7 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
+define ('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
@@ -30,83 +31,43 @@ $args = get_arguments($_POST, $_GET);
 
 $args['pseudo']  = trim($args['pseudo']);
 
-$table = new Nvrtbl("DialogStandard");
-?>
+$table = new Nvrtbl();
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<?php $table->dialog->Head("Nevertable - Neverball Hall of Fame"); ?>
 
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<?php
-function closepage()
-{  global $table;
-    echo "</div><!-- fin \"main\" -->\n";
-    $table->Close();
-    $table->dialog->Footer();
-    echo "</div><!-- fin \"page\" -->\n";
-    echo "</body>\n";
-    echo "</html>\n";
-    exit;
-}
-    
+try {
+	
+
 if(isset($args['valid']))
 {
   if (empty($args['pseudo']) || empty($args['passwd1']) || empty($args['passwd2']) )
-  {
-    gui_button_error($lang['REGISTER_EMPTY_FIELDS'], 400);
-    gui_button_back();
-    closepage();
-  }
+    throw new Exception ($lang['REGISTER_EMPTY_FIELDS']);
+
 
   $table->db->helper->SelectUserByName($args['pseudo']);
-  if ($table->db->NumRows() > 0) // dejà existant
-  {
-    gui_button_error($lang['REGISTER_PSEUDO_EXISTS'], 400);
-    gui_button_back();
-    closepage();
-  }
+  if ($table->db->NumRows() > 0) // already registered
+    throw new Exception ($lang['REGISTER_PSEUDO_EXISTS']);
   
   $table->db->helper->SelectUserByMail($args['email']);
-  if ($table->db->NumRows() > 0) // dejà existant
-  {
-    gui_button_error($lang['REGISTER_MAIL_EXISTS'], 500);
-    gui_button_back();
-    closepage();
-  }
+  if ($table->db->NumRows() > 0) // already registered
+    throw new Exception ($lang['REGISTER_MAIL_EXISTS']);
   
   if (!CheckMail($args['email']))
-  {
-    gui_button_error($lang['REGISTER_MAIL_NOTVALID'], 400);
-    gui_button_back();
-    closepage();
-  }
+    throw new Exception ($lang['REGISTER_MAIL_NOTVALID']);
+
   if ($args['passwd1'] != $args['passwd2'])
-  {
-    gui_button_error($lang['REGISTER_PASSWD_CHECK'], 400);
-    gui_button_back();
-    closepage();
-  }
+    throw new Exception ($lang['REGISTER_PASSWD_CHECK']);
 
   if (strlen($args['passwd1']) <= 4)
-  {
-    gui_button_error($lang['REGISTER_PASSWD_LENGTH'], 500);
-    gui_button_back();
-    closepage();
-  }
+  	throw new Exception ($lang['REGISTER_PASSWD_LENGTH']);
 
   if (   (addslashes($args['pseudo']) != $args['pseudo'])
       || (addslashes($args['email'])   != $args['email']) )
   {
-    gui_button_error($lang['REGISTER_SPECIAL_CHARS'], 400);
-    gui_button_back();
-    closepage();
+  	throw new Exception ($lang['REGISTER_SPECIAL_CHARS']);
   }
-
+  
+  $tpl_params['message_array'] = array();
+  
   //envoie du mail de bienvenue
   $m= new Mail; // create the mail
   $m->From( $config['admin_mail']);
@@ -128,7 +89,7 @@ if(isset($args['valid']))
     $level=get_userlevel_by_name("member");
   
   if ($level == get_userlevel_by_name("root"))
-    gui_button($lang['REGISTER_FIRST_REGISTER'], 400);
+    array_push($tpl_params['message_array'], $lang['REGISTER_FIRST_REGISTER']);
     
   //protection
   $fields = array(
@@ -143,43 +104,22 @@ if(isset($args['valid']))
 
   $user = new User($table->db);
   $user->SetFields($fields);
-  if (!$user->Insert())
-  {
-    gui_button_error($user->GetError(),500);
-    gui_button_back();
-    closepage();
-  }
+  $user->Insert();
 
-  gui_button($lang['REGISTER_SUCCESSFUL'], 400);
-  gui_button("<a href=\"./\">".$lang['GUI_BUTTON_MAINPAGE']."</a>", 200);
+  array_push($tpl_params['message_array'], $lang['REGISTER_SUCCESSFUL']);
+  $tpl_params['delay'] = 0;
+  $tpl_params['redirect'] = "index.php";
   
-  closepage();
+  $table->template->Show('redirect', $tpl_params);
 }
 else
 {
-      $form = new Form("post", "register.php?valid", "resgister", 400);
-      $form->AddTitle($lang['REGISTER_FORM_TITLE']);
-      $form->AddInputText("pseudo", "pseudo", $lang['REGISTER_FORM_PSEUDO']);
-      $form->Br();
-      $form->AddInputText("email", "email", $lang['REGISTER_FORM_EMAIL']);
-      $form->Br();
-      $form->AddInputPassword("passwd1", "passwd1", $lang['REGISTER_FORM_PASSWD1']);
-      $form->Br();
-      $form->AddInputPassword("passwd2", "passwd2", $lang['REGISTER_FORM_PASSWD2']);
-      $form->Br();
-      $form->AddInputSubmit();
-      echo $form->End();
+  $table->template->Show('register');
 }
 
-gui_button_main_page();
-?>
+} catch (Exception $ex)
+{
+  $table->template->Show('error', array("exception" => $ex));
+}
 
-</div> <!-- fin main-->
-<?php
 $table->Close();
-$table->dialog->Footer();
-?>
-
-</div><!-- fin "page" -->
-</body>
-</html>

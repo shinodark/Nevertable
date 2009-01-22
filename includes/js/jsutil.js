@@ -20,20 +20,28 @@
 # ***** END LICENSE BLOCK *****/
 
 function change_form_input( idP, P) {
-	document.getElementById(idP).value  = P;
+	if (document.getElementById(idP) != null) {
+		document.getElementById(idP).value  = P;
+	}
 }
 
 function change_form_select(idP, P) {
-	document.getElementById(idP).selectedIndex  = P;
+	if (document.getElementById(idP) != null) {
+		document.getElementById(idP).selectedIndex  = P;
+	}
 }
 
 function change_form_textarea(idP, P) {
-	document.getElementById(idP).value  = P;
+	if (document.getElementById(idP) != null) {
+		document.getElementById(idP).value  = P;
+	}
 }
 
 function change_form_checkbox(idP, P) {
-	if (P == "on")
-  	   document.getElementById(idP).checked  = true;
-	else
-  	   document.getElementById(idP).checked  = false;
+	if (document.getElementById(idP) != null) {
+		if (P == "on")
+	  	   document.getElementById(idP).checked  = true;
+		else
+	  	   document.getElementById(idP).checked  = false;
+  	}
 }

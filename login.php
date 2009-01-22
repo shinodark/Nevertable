@@ -21,26 +21,42 @@
 # ***** END LICENSE BLOCK *****
 
 define('ROOT_PATH', "./");
+define('NVRTBL', '1');
+
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
 
+
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$table = new Nvrtbl("DialogStandard");
+try {
+	
+$table = new Nvrtbl();
+
 
 if (isset($args['out']))
 {
   if ($_SESSION['user_logged'])
     $was_logged=true;
 
+    
   Auth::CloseSession();
   $table->RemoveOnlineUser();
-  $special="<meta http-equiv=\"refresh\" content=\"1;URL=./\" />\n";
-  $table->dialog->Head("Nevertable - Neverball Hall of Fame", $special);
+  if ($was_logged)
+  {
+    $tpl_params = array("redirect" => "index.php");
+    $tpl_params['message_array'] = array($lang['LOGIN_LOGOUT']);
+    $table->template->Show('redirect', $tpl_params);
+  }
+  else
+  {
+  	throw new Exception($lang['LOGIN_NOTLOGIN']);
+  }
 }
-else
+
+else if (isset($args['in']))
 {
   $auth = new Auth($table->db);
   $success=$auth->Perform($args['pseudo'], $args['passwd'], false, true);
@@ -49,67 +65,33 @@ else
   {
     $table->AddOnlineUser();
     
+    $tpl_params = array("message_array" => array($lang['LOGIN_LOGIN']));
+    
     if (!empty($_SESSION['redirect']))
     {
-      $special="<meta http-equiv=\"refresh\" content=\"1;URL=".$_SESSION['redirect']."\" />\n";
+      $tpl_params['redirect'] = $_SESSION['redirect'];
       $_SESSION['redirect'] = "";
     }
     else
-     $special="<meta http-equiv=\"refresh\" content=\"1;URL=./\" />\n";
+      $tpl_params['redirect'] = "index.php";
+      
+    $table->template->Show('redirect', $tpl_params);
   }
-  $table->dialog->Head("Nevertable - Neverball Hall of Fame", $special);
-}
-?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-
-<body>
-<div id="page">
-<?php   $table->dialog->Top();  ?>
-<div id="main">
-<?php
-
-if(isset($args['out']))
-{
-  if (!$was_logged)
-    gui_button_error($lang['LOGIN_NOTLOGIN'], 400);
   else
-    gui_button($lang['LOGIN_LOGOUT'], 400);
+  {
+  	 throw new Exception($lang['LOGIN_AUTH_FAILED']);
+  }
 }
-else if($success)
-{
-  gui_button($lang['LOGIN_LOGIN'], 400);
-}
-else if(isset($args['ready']))
-{
-  $form = new Form("post", "login.php", "resgister", 300);
-  $form->AddTitle($lang['LOGIN_FORM_TITLE']);
-  $option = 'onfocus="if (this.value==\''.$lang['LOGIN_FORM_PSEUDO'].'\') this.value=\'\'" ';
-  $form->AddInputText("pseudo", "pseudo", $lang['LOGIN_FORM_PSEUDO'], 10, $lang['LOGIN_FORM_PSEUDO'], $option);
-  $form->Br();
-  $option = 'onfocus=" this.value=\'\'" ';
-  $form->AddInputPassword("passwd", "passwd", $lang['LOGIN_FORM_PASSWD'], 10, $lang['LOGIN_FORM_PASSWD'], $option);
-  $form->Br();
-  $form->AddInputSubmit("Login");
-  echo $form->End();
 
-  gui_button("<a href=\"index.php\">Return to main page</a>", 300);
-}
-else 
+
+else
 {
-  gui_button_error("Auth failed. Try again...", 200);
-  gui_button_error($auth->GetError(), 200);
-  gui_button_back();
+  $table->template->Show('login');
 }
-?>
-</div><!-- fin "main" -->
-<?php    
+
+} catch (Exception $ex)
+{
+  $table->template->Show('error', array("exception" => $ex));
+}
+
 $table->Close();
-$table->dialog->Footer();
-?>
-
-</div><!-- fin "page" -->
-</body>
-</html>

@@ -19,7 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # ***** END LICENSE BLOCK *****
-
+if (!defined('NVRTBL'))
+	exit;
+	
 class Comment
 {
     var $db;
@@ -41,41 +43,27 @@ class Comment
       unset($this->fields);
       $this->db->NewQuery("SELECT", "com");
       $this->db->Where("id", $id);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
-      else {
-        if ($this->db->NumRows()<1)
-        {
-          $this->error = "No comment match this id!";
-          return false;
-        }
-        $this->SetFields($this->db->FetchArray());
-        $this->isload=true;
-        return true;
-      }
+      $this->db->Query();
+
+      if ($this->db->NumRows()<1)
+         $this->SetError("No comment match this id!");
+
+      $this->SetFields($this->db->FetchArray());
+      $this->isload=true;
+      return true;
     }
 
     function Insert()
     {
       if(!$this->isload)
-      {
-        $this->error = "Comment is empty !";
-        return false;
-      }
+        $this->SetError = "Comment is not loaded !";
+
       if (empty($this->fields['user_id']))
-      {
-        $this->error = "Error user unknown, bad id.";
-        return false;
-      }
+        $this->SetError = "Error user unknown, bad id.";
 
       $content = $this->fields['content'];
 
-      $content = str_replace("&lt;","<", $content);
-      $content = str_replace("&gt;",">", $content);
-      $content = strip_tags($content);
-      $content = str_replace("\n", "<br />", $content);
+      $content = GetContentFromPost($content);
 
       $f = array (
         "content"     => $content,
@@ -84,10 +72,8 @@ class Comment
     
       $this->db->NewQuery("INSERT", "com");
       $this->db->Insert($this->fields);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+      $this->db->Query();
+
       $this->_RecordRecountComments();
       return true;
     }
@@ -95,22 +81,14 @@ class Comment
     function Update($conservative=true)
     {
       if(!$this->isload)
-      {
-        $this->error = "Comment is empty !";
-        return false;
-      }
+        $this->SetError("Comment is empty !");
+
       if(empty($this->fields['id']))
-      {
-        $this->error = "Trying to update with no id specified!";
-        return false;
-      }
+        $this->SetError("Trying to update with no id specified!");
 
       $content = $this->fields['content'];
 
-      $content = str_replace("&lt;","<", $content);
-      $content = str_replace("&gt;",">", $content);
-      $content = strip_tags($content);
-      $content = str_replace("\n", "<br />", $content);
+      $content = CleanContentHtml($content);
 
       $f = array (
         "content"     => $content,
@@ -121,33 +99,22 @@ class Comment
       $this->db->UpdateSet($this->fields, $conservative);
       $this->db->Where("id", $this->fields['id']);
       $this->db->Limit(1);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
-      else {
-        return true;
-      }
+      $this->db->Query();
+
+      return true;
     }
     
     function Purge()
     {
       if(!$this->isload)
-      {
-        $this->error = "Comment is empty !";
-        return false;
-      }
+        $this->SetError("Comment is empty !");
+
       if(empty($this->fields['id']))
-      {
-        $this->error = "Trying to purge with no id specified!";
-        return false;
-      }
+        $this->SetError("Trying to purge with no id specified!");
+
       $this->db->NewQuery("DELETE", "com");
       $this->db->Where("id", $this->fields['id']);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
+      $this->db->Query();
       $this->_RecordRecountComments();
       $this->isload = false;
       return true;
@@ -211,6 +178,7 @@ class Comment
     function SetError($error)
     {
       $this->error = $error;
+      throw Exception($this->error);
     }
     
     function GetError()
