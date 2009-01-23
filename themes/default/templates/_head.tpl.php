@@ -33,4 +33,7 @@ if (!defined('NVRTBL'))
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" href="<?php echo $this->table->style->GetCss() ?>" type="text/css" />
 <link rel="alternate" type="application/rss+xml" title="Nevertable rss feed" href="http://www.nevercorner.net/table/rss.php" />
+<meta name="Description" content="Neverball Hall of Fame - Contest between hardcore Neverballers" />
+<meta name="Keywords" content="neverball, contest, nevercorner, game, ball, super monkey ball" />
+
 <script type="text/javascript" src="<?php echo ROOT_PATH ?>/includes/js/jsutil.js"></script>
