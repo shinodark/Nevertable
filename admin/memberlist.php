@@ -25,7 +25,6 @@ define('NVRTBL', 1);
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
-include_once ROOT_PATH ."classes/class.dialog_admin.php";
 
 //args process
 $args = get_arguments($_POST, $_GET);
