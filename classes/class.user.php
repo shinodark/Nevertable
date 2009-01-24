@@ -434,12 +434,12 @@ class User
 
     function _CleanFields()
     {
-      $this->fields['user_speech'] = CleanContentHtml($this->fields['user_speech']);
-      $this->fields['user_web'] = CleanContentHtml($this->fields['user_web']);
-      $this->fields['user_localisation'] = CleanContentHtml($this->fields['user_localisation']);
-      $this->fields['user_sort'] = CleanContentHtml($this->fields['user_sort']);
-      $this->fields['user_theme'] = CleanContentHtml($this->fields['user_theme']);
-      $this->fields['user_avatar'] = CleanContentHtml($this->fields['user_avatar']);
+      $this->fields['user_speech'] = CleanContent($this->fields['user_speech']);
+      $this->fields['user_web'] = CleanContent($this->fields['user_web']);
+      $this->fields['user_localisation'] = CleanContent($this->fields['user_localisation']);
+      $this->fields['user_sort'] = CleanContent($this->fields['user_sort']);
+      $this->fields['user_theme'] = CleanContent($this->fields['user_theme']);
+      $this->fields['user_avatar'] = CleanContent($this->fields['user_avatar']);
     }
 
     function SetError($error)

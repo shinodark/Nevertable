@@ -27,7 +27,7 @@ exit;
  * @param: last_comments Last comments posted
  * */
 
-global $config, $lang, $args;
+global $config, $lang, $args, $nextargs;
 
 $count_incoming = $this->table->db->helper->CountRecords(get_folder_by_name("incoming"), get_type_by_name("all"));
 
@@ -156,7 +156,7 @@ else // Guest menu
 $tagboard = new TagBoard($this->table);
 echo $tagboard->Show($args) ?>
 </div>
-<form method="post" action="index.php?&amp;type=0&amp;sort=0&amp;diffview=off&amp;newonly=0&amp;filter=none&amp;levelset_f=0&amp;level_f=0&amp;folder=1&amp;tag" name="tagpostform" id="tagpostform">
+<form method="post" action="<?php echo $nextargs ?>&amp;tag" name="tagpostform" id="tagpostform">
 <table><tr>
 <td><label for="tag_pseudo">Pseudo</label></td></tr>
 <tr><td><input type="text" id="tag_pseudo" name="tag_pseudo" maxlength="14" value="<?php echo $_SESSION['user_pseudo'] ?>" readonly /></td></tr>

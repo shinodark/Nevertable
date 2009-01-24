@@ -429,22 +429,21 @@ class DB
      }
      
      // Stripslashes
-     if (get_magic_quotes_gpc()) {
+ /*    if (get_magic_quotes_gpc()) {
        $ret = stripslashes($string);
      }
      else
      {
-     	$ret = $string;
+       $ret = $string;
      }
-     // Protection si ce n'est pas un entier
-     if (!is_numeric($string)) {
-       $ret = mysql_real_escape_string($string, $this->con_id);
-     }
+ */  
+     $ret = $string;
+     $ret = mysql_real_escape_string($ret, $this->con_id);
+     
      if ($ret === FALSE)
      {
-       echo "Error in escape_string, abort now !!<br/>\n";
        $this->Disconnect();
-       exit();
+       $this->SetError("Error in escape_string, abort now !!<br/>\n");
      }
      return $ret;
     }

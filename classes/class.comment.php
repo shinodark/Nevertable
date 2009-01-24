@@ -63,7 +63,7 @@ class Comment
 
       $content = $this->fields['content'];
 
-      $content = GetContentFromPost($content);
+      $content = CleanContent($content);
 
       $f = array (
         "content"     => $content,
@@ -88,7 +88,7 @@ class Comment
 
       $content = $this->fields['content'];
 
-      $content = CleanContentHtml($content);
+      $content = CleanContent($content);
 
       $f = array (
         "content"     => $content,

@@ -82,7 +82,7 @@ class Nvrtbl
         {
           Auth::_LoadUserOptions();
         }
-	$this->style->Select($config['opt_user_theme']);
+        $this->style->Select($config['opt_user_theme']);
     }
     else
     {
@@ -108,8 +108,6 @@ class Nvrtbl
     $this->UpdateOnlineUsers();
       
     $this->template = new Template($this);
-
-    $this->mode = $mode;
   }
 
   function Close()

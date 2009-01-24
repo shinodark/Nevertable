@@ -41,6 +41,7 @@ if (empty($_POST['value']))
 
 $content = rawurldecode($_POST['value']);
 $content = str_replace( "&#038;", "&", $content );
+$content = GetContentFromPost($content);
 
 $tagboard = new Tagboard($table);
 $tagboard->Update($_POST['id'], $content);

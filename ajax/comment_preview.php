@@ -34,8 +34,9 @@ $tpl_params = array();
 
 $content = rawurldecode($_GET['content']);
 $content = str_replace( "&#038;", "&", $content );
+$content = GetContentFromPost($content);
 
-$tpl_params['content'] =   CleanContentHtml($content);
+$tpl_params['content'] =   $content;
 
 $table->template->Show("_comment.preview", $tpl_params);
 

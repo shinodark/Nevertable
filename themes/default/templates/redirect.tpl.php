@@ -59,13 +59,13 @@ if (!isset($delay))
 <?php $this->SubTemplate('_menu');?>
 </div>
 
-<?php while ( ($mes = array_shift($message_array)) != null) { ?>
+<?php while ( (count($message_array) > 0) && ($mes = array_shift($message_array)) != null) { ?>
 <div class="button" style="width:300px;">
 <?php echo $mes ?>
 </div>
 <?php } ?>
 
-<?php while ( ($stpl = array_shift($subtemplates_array)) != null)
+<?php while ( (count($subtemplates_array) > 0) && ($stpl = array_shift($subtemplates_array)) != null)
 	 { 
 		?>
 <div class="<?php echo array_pop($subdivclass_array) ?>">

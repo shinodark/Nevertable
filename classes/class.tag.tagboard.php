@@ -36,7 +36,7 @@ class Tagboard
     $this->out = "";
     $this->db = &$parent->db;
     $this->cache  = new Cache("text");
-    $this->template = new Template(&$parent);
+    $this->template = new Template($parent);
   }
 
   function Show($args, $moder=false)
@@ -56,7 +56,16 @@ class Tagboard
       	array_push ($err, "don't cheat...");
       	
       else
-        $this->Insert($args['content'], $args['tag_pseudo'], $args['tag_link'], $err);
+        $this->Insert(GetContentFromPost($args['content']), $args['tag_pseudo'], $args['tag_link'], $err);
+    }
+    
+    if (isset($args['tagdel']))
+    {
+    	if (Auth::Check(get_userlevel_by_name("member")))
+    	{
+    		if (isset($args['tagid']) && !empty($args['tagid']))
+    			$this->Purge($args['tagid']);
+    	}
     }
        
     $res = $this->db->helper->SelectTags();
@@ -78,7 +87,7 @@ class Tagboard
   {
     global $config, $lang;
 
-    $tag = GetContentFromPost($content);
+    $tag = CleanContent($content);
     if(strlen($tag) > $config['tag_maxsize'])
     {
       array_push ($err, $lang['TAG_TOO_LONG']);
@@ -113,7 +122,7 @@ class Tagboard
     if (empty($id))
     	return false;
 
-    $tag = GetContentFromPost($content);
+    $tag = CleanContent($content);
 
     if(strlen($tag) > $config['tag_maxsize'])
     {

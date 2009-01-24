@@ -287,7 +287,7 @@ function TimestampDiffSecs($u_t1,$u_t2)
 
 
 /* pour mettre dans un javascript ou une URL, la total */
-function CleanContent($content, $slashes = true, $cslashes = false)
+function CleanContent($content, $slashes = false, $cslashes = false)
 { 
   $content = str_replace("&lt;","<", $content);
   $content = str_replace("&gt;",">", $content);
@@ -300,22 +300,12 @@ function CleanContent($content, $slashes = true, $cslashes = false)
   return $content;
 }
 
-/* pour mettre dans un javascript, mais quand cela vient d'un formulaire (les slahs dont déjà mis) */
-function CleanContentPost($content)
-{
-  $content = stripslashes($content);
-  $content = str_replace("&lt;","<", $content);
-  $content = str_replace("&gt;",">", $content);
-  $content = strip_tags($content);
-  $content = addslashes($content);
-
-  return $content;
-}
+/* pour mettre dans un javascript, mais quand cela vient d'un formulaire */
 
 function GetContentFromPost($content)
 {
-  if (get_magic_quotes_gpc())
-    $content = stripslashes($content);
+  if(get_magic_quotes_gpc())
+     $content = stripslashes($content);
   $content = str_replace("&lt;","<", $content);
   $content = str_replace("&gt;",">", $content);
   $content = strip_tags($content);
@@ -324,11 +314,10 @@ function GetContentFromPost($content)
 }
 
 function CleanContentHtml($content)
-{ 
+{
   $content = str_replace("&lt;","<", $content);
   $content = str_replace("&gt;",">", $content);
-  if (get_magic_quotes_gpc())
-    $content = strip_tags($content);
+  $content = strip_tags($content);
   $content = LineFeed2Html($content);
 
   return $content;

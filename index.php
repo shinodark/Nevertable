@@ -32,7 +32,8 @@ $args = get_arguments($_POST, $_GET);
 
 if (isset($args['folder']))
    $args['folder'] = (integer)$args['folder'];
-$args['sort'] = (integer)$args['sort'];
+if (isset($args['sort']))
+   $args['sort'] = (integer)$args['sort'];
 if (isset($args['folder']))
    $args['type'] = (integer)$args['type'];
 
@@ -70,7 +71,7 @@ try {
      exit;
   }
   
-  if($args['to'] == 'showlinklist')
+  if(isset($args['to']) && $args['to'] == 'showlinklist')
   {
     header("Content-Type: text/plain");
     echo $_SESSION['download_list'];
@@ -197,6 +198,7 @@ try {
   
   else
   {		
+  	  $mode_level = false;
   	
 	  /* Level mode */
 	  if (isset($args['level_f']) && isset($args['levelset_f'])

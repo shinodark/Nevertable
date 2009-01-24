@@ -29,7 +29,9 @@ if (!defined('NVRTBL'))
 	 * @param: moder_enable Enable moderation mode
 	 */
 		
-global $lang;
+global $lang, $nextargs;
+
+$enable_moder = Auth::Check(get_userlevel_by_name("moderator"));
 
 ?>
 
@@ -51,7 +53,14 @@ while ($fields = $this->table->db->FetchArray($tags))
   <tr class="tagheader">
   <td>
   <span class="tag_pseudo"><?php echo $fields['pseudo'] ?></span>
-  <span class="tag_date"><?php echo GetDateLang_mini(GetDateFromTimestamp($fields['timestamp'])) ?></span>
+  <span class="tag_date"><?php echo GetDateLang_mini(GetDateFromTimestamp($fields['timestamp'])) ?>
+   <?php if ($enable_moder) { ?>
+    <a href="<?php echo $nextargs ?>&amp;tagid=<?php echo $fields['id']?>&amp;tagdel">
+	  <?php echo $this->table->style->GetImage('del', 'del')?>
+	</a>
+  <?php } ?> 
+  </span>
+
   </td>
   </tr>
   <tr class="<?php echo $class ?>">

@@ -201,7 +201,8 @@ class DBHelper
    {
    	  $ret = -1;
    	  $this->db->NewQuery("SELECT", "rec", "COUNT(id)");
-      $this->db->Where($args['filter'], $args['filterval']);
+   	  if (isset($args['filter']) && isset($args['filterval']))
+   	  	$this->db->Where($args['filter'], $args['filterval']);
       $this->db->helper->LevelsFilter($args['levelset_f'], $args['level_f']);
       $this->db->helper->TypeFilter($args['type']);
       $this->db->helper->NewFilter($args['newonly']);
@@ -253,7 +254,10 @@ class DBHelper
    	  global $config;
    	  
       /* gestion du numéro de page et de l'offset */
-      $off = ($args['page']-1) * $config['limit'];
+      if (isset($args['page']))
+   	  	$off = ($args['page']-1) * $config['limit'];
+   	  else
+   	    $off=0;
       
       /* requête avec tous les champs mais limitée à "limit" */
       $p = $config['bdd_prefix'];
