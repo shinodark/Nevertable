@@ -56,12 +56,12 @@ if(!isset($args['level_f']))
    $args['level_f'] = 0;        // all by default
 if(!isset($args['folder']))
    $args['folder'] = get_folder_by_name("contest");
+ 
+ 
+$table = new Nvrtbl();
 
 try {
-   
- 
-  $table = new Nvrtbl();
-
+	
   if(isset($args['link']))
   {
   	 $tpl_params['redirect'] = "record.php?id=". $args['link'];

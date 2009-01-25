@@ -26,11 +26,10 @@ include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
 
-try {
-
-
 $table = new Nvrtbl();
 
+try {
+	
 $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 $conditions  = $langpath . "conditions.txt";
 $f = new FileManager($conditions);

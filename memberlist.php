@@ -29,11 +29,10 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-try {
-	
-
 $table = new Nvrtbl();
 
+try {
+	
 $table->db->NewQuery("SELECT", "users");
 /* Contre le problème du osrt=0 si aucun get n'est passé */
 if (!isset($_GET['sort']))

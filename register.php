@@ -33,7 +33,6 @@ $args['pseudo']  = trim($args['pseudo']);
 
 $table = new Nvrtbl();
 
-
 try {
 	
 

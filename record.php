@@ -29,10 +29,10 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-try {
-
 $table = new Nvrtbl();
 
+try {
+	
 /* Configuration of page title */
 $tpl_params = array(
 	"title" => "Record",

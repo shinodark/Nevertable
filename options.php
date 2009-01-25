@@ -29,10 +29,10 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-try {
-
 $table = new Nvrtbl();
 
+try {
+	
 if (!Auth::Check(get_userlevel_by_name("member")))
   throw new Exception($lang['NOT_MEMBER']);
   
