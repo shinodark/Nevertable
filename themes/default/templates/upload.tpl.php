@@ -32,7 +32,7 @@ global $lang, $config;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $lang['code'] ?>" lang="<?php echo $lang['code'] ?>">
 <head>
 <?php $this->SubTemplate('_head'); ?>
 </head>
@@ -55,7 +55,7 @@ global $lang, $config;
 <td colspan="2"><center><?php echo sprintf($lang['UPLOAD_FORM_SIZEMAX'], floor($config['upload_size_max']/1024)) ?></center></td></tr><tr>
 </tr><tr>
 <td><label for="pseudo"><?php echo$lang['UPLOAD_FORM_PSEUDO'] ?></label></td>
-<td colspan="1"><input type="text" id="pseudo" name="pseudo"  size="10" value="<?php echo $_SESSION['user_pseudo'] ?>" readonly  /></td>
+<td colspan="1"><input type="text" id="pseudo" name="pseudo"  size="10" value="<?php echo $_SESSION['user_pseudo'] ?>" readonly="readonly"  /></td>
 </tr><tr>
 <td><label for="type"><?php echo $lang['UPLOAD_FORM_TYPE'] ?></label></td>
 <td>

@@ -77,7 +77,7 @@ while ($val = $this->table->db->FetchArray($comments_res))
 <table>
 <tr>
 <td class="com_avatar"><center><?php echo $avatar_html ?></center></td>
-<td class="com_content comedit" id="<?php echo $val['id'] ?>">
+<td class="com_content comedit" id=com_"<?php echo $val['id'] ?>">
 <?php echo $this->RenderText($val['content']) ?>
 </td>
 </tr>

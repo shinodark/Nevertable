@@ -119,7 +119,7 @@ class Form
        }
        if (!empty($content))
 	  $inline1 = $content;
-       $this->output .= '<td colspan="'.$colspan.'"><textarea id="'.$id.'" name="'.$name.'" rows="'.$rows.'" style="width:100%;">'.$inline1.'</textarea></td>'."\n";
+       $this->output .= '<td colspan="'.$colspan.'"><textarea id="'.$id.'" name="'.$name.'" rows="'.$rows.'" cols="" style="width:100%;">'.$inline1.'</textarea></td>'."\n";
     }
 
     function AddSelect($id, $name, $select_array, $label="")

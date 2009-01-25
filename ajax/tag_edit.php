@@ -34,7 +34,10 @@ $table = new Nvrtbl();
 if (!Auth::Check(get_userlevel_by_name("moderator")))
   throw new Exception($lang['NOT_MODERATOR']);
   
-if (empty($_POST['id']))
+/* Id is tag_<id> */
+$id = substr($_POST['id'], 4);
+  
+if (empty($id))
   throw new Exception("id error.");
 if (empty($_POST['value']))
   throw new Exception("empty value not allowed.");
@@ -44,7 +47,7 @@ $content = str_replace( "&#038;", "&", $content );
 $content = GetContentFromPost($content);
 
 $tagboard = new Tagboard($table);
-$tagboard->Update($_POST['id'], $content);
+$tagboard->Update($id, $content);
 
 echo $table->template->RenderText($content);
 

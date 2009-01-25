@@ -37,11 +37,11 @@ $pseudo = isset($fields['pseudo']) ?  $fields['pseudo'] :  $_SESSION['user_pseud
 <form method="post" action="record.php?id=<?php echo $args['id']?>&amp;post" name="commentform" id="commentform">
 <table><tr>
 <td colspan="2"><label for="pseudo"><?php echo $lang['COMMENTS_FORM_PSEUDO']?></label>
-<input type="text" id="pseudo" name="pseudo" size="20" value="<?php echo $pseudo ?>" readonly /></td>
+<input type="text" id="pseudo" name="pseudo" size="20" value="<?php echo $pseudo ?>" readonly="readonly" /></td>
 </tr><tr>
 <td colspan="2">
 <center>
-<textarea id="content" name="content" rows="12">
+<textarea id="content" name="content" rows="12" cols="">
 </textarea>
 </center>
 </td>

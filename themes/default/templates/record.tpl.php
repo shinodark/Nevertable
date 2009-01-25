@@ -35,7 +35,7 @@ $enable_post = Auth::Check(get_userlevel_by_name("member"));
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $lang['code'] ?>" lang="<?php echo $lang['code'] ?>">
 <head>
 <?php $this->SubTemplate('_head'); ?>
 <script type="text/javascript" src="includes/js/jquery-1.3.min.js" charset="utf-8"></script>
@@ -62,7 +62,7 @@ $enable_post = Auth::Check(get_userlevel_by_name("member"));
      "[/url]";
 ?>
 <center>
-<input type="text" size="<?php echo strlen($bbcode) ?>" value="<?php echo $bbcode ?>" readonly />
+<input type="text" size="<?php echo strlen($bbcode) ?>" value="<?php echo $bbcode ?>" readonly="readonly" />
 </center>
 <br/>
 </div>

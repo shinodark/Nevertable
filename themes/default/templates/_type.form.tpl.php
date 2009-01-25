@@ -45,7 +45,7 @@ global $types, $levels, $folders, $folders_user, $newonly, $lang, $args;
 </tr>
 <tr>
 <td>
-<label for="table"><?php echo $lang['TYPE_FORM_TABLE_SELECT'] ?></label>
+<label for="type"><?php echo $lang['TYPE_FORM_TABLE_SELECT'] ?></label>
 <select name="type" id="type">
 <?php foreach($types as $nb => $value) { ?>
 	<option value="<?php echo $nb ?>"><?php echo $lang[$types[$nb]] ?></option>

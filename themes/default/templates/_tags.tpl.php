@@ -65,7 +65,7 @@ while ($fields = $this->table->db->FetchArray($tags))
   </tr>
   <tr class="<?php echo $class ?>">
   <td>
-  <div class="tagedit" id="<?php echo $fields['id'] ?>">
+  <div class="tagedit" id="tag_<?php echo $fields['id'] ?>">
   <?php echo $tag ?>
   </div>
   </td>

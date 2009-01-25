@@ -159,9 +159,9 @@ echo $tagboard->Show($args) ?>
 <form method="post" action="<?php echo $nextargs ?>&amp;tag" name="tagpostform" id="tagpostform">
 <table><tr>
 <td><label for="tag_pseudo">Pseudo</label></td></tr>
-<tr><td><input type="text" id="tag_pseudo" name="tag_pseudo" maxlength="14" value="<?php echo $_SESSION['user_pseudo'] ?>" readonly /></td></tr>
+<tr><td><input type="text" id="tag_pseudo" name="tag_pseudo" maxlength="14" value="<?php echo $_SESSION['user_pseudo'] ?>" readonly="readonly" /></td></tr>
 <tr><td><label for="content">Your tag&nbsp;<a href="javascript:child=window.open('./popup_tagtools.php?referer_form=tagpostform', 'Smiles', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=300,left='+(Math.floor(screen.width/2)-140));child.focus();">(extras)</a></label></td></tr>
-<tr><td><textarea id="content" name="content" rows="5"></textarea>
+<tr><td><textarea id="content" name="content" rows="5" cols=""></textarea>
 </td></tr>
 <tr><td><center><input type="submit" value="Tag!" /></center></td></tr>
 </table>

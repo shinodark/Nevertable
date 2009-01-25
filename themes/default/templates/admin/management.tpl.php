@@ -82,7 +82,7 @@ global $lang, $config;
 </tr>
 <tr>
 <td colspan="2">
-<textarea id="announce" name="announce" rows="5" style="width:100%;">
+<textarea id="announce" name="announce" rows="5" cols="" style="width:100%;">
 <?php echo $announce ?>
 </textarea>
 </td>

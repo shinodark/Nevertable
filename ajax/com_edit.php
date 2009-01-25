@@ -34,8 +34,10 @@ $table = new Nvrtbl();
 if (!Auth::Check(get_userlevel_by_name("moderator")))
   throw new Exception($lang['NOT_MODERATOR']);
   
+/* Id is com_<id> */
+$id = substr($_POST['id'], 4);
 
-if (empty($_POST['id']))
+if (empty($id))
   throw new Exception("id error.");
 if (empty($_POST['value']))
   throw new Exception("empty value not allowed.");
@@ -49,7 +51,7 @@ $fields = array (
         );
 $table->db->NewQuery("UPDATE", "com");
 $table->db->UpdateSet($fields, true);
-$table->db->Where("id", $_POST['id']);
+$table->db->Where("id", $id);
 $table->db->Limit(1);
 $table->db->Query();
 

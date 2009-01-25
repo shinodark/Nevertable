@@ -141,7 +141,7 @@ $super_op_enable = Auth::Check(get_userlevel_by_name("admin"));
     if ($i == 0) // No records displayed
     {
         ?>
-        <td colspan="12">No results</td>
+        <tr><td colspan="12">No results</td></tr>
         <?php
     }
 ?>

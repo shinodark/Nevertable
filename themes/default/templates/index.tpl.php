@@ -37,7 +37,7 @@ $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $lang['code'] ?>" lang="<?php echo $lang['code'] ?>">
 <head>
 <?php $this->SubTemplate('_head'); ?>
 <script type="text/javascript" src="includes/js/jquery-1.3.min.js" charset="utf-8"></script>
@@ -125,6 +125,7 @@ change_form_select('newonly','<?php echo $args['newonly']?>');
 <?php $this->SubTemplate('_footer');?>
 </div> 
 <script src="./includes/js/wz_tooltip.js" type="text/javascript"></script>
+
 </div><!-- page end -->
 </body>
 </html>

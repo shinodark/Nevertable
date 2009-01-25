@@ -31,6 +31,9 @@ try {
 
 $table = new Nvrtbl();
 
+/* Id is com_<id> */
+$id = substr($_GET['id'], 4);
+
 $table->db->NewQuery("SELECT", "com");
 $p = $config['bdd_prefix'];
 $table->db->Select(
@@ -39,7 +42,7 @@ $table->db->Select(
         );
 $table->db->Where(
         array($p."com.id"),
-        array($_GET['id'])
+        array($id)
         );
 $table->db->Limit(1);
 $table->db->Query();

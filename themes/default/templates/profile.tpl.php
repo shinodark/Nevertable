@@ -37,7 +37,7 @@ if (!isset($edit_enable))
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $lang['code'] ?>" lang="<?php echo $lang['code'] ?>">
 <head>
 <?php $this->SubTemplate('_head'); ?>
 </head>
@@ -162,7 +162,7 @@ if (!isset($edit_enable))
 <table><tr>
 <th colspan="2" align="center"><?php echo $lang['PROFILE_FORM_IDENT_TITLE'] ?></th></tr><tr>
 <td><label for="pseudo"><?php echo $lang['PROFILE_FORM_IDENT_PSEUDO'] ?></label></td>
-<td colspan="1"><input type="text" id="pseudo" name="pseudo"  size="20" value="<?php echo $user->GetPseudo()?>" readonly  /></td>
+<td colspan="1"><input type="text" id="pseudo" name="pseudo"  size="20" value="<?php echo $user->GetPseudo()?>" readonly="readonly"  /></td>
 </tr><tr>
 <td><label for="email"><?php echo $lang['PROFILE_FORM_IDENT_MAIL'] ?></label></td>
 <td colspan="1"><input type="text" id="email" name="email"  size="20" value="<?php echo $user->GetMail() ?>" /></td>
@@ -194,7 +194,7 @@ if (!isset($edit_enable))
 </tr><tr>
 <td><label for="user_speech"><?php echo $lang['PROFILE_FORM_INFO_SPEECH'] ?></label></td>
 <td colspan="1">
-<textarea id="user_speech" name="user_speech" rows="4" style="width:100%;">
+<textarea id="user_speech" name="user_speech" rows="4" cols="" style="width:100%;">
 <?php echo $user->GetSpeech() ?>
 </textarea>
 </td>
