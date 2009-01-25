@@ -47,22 +47,34 @@ class Nvrtbl
     $time = microtime();
     $time = explode(' ', $time);
     $this->start_time = $time[1] + $time[0];
-    $this->db = new DB($config['bdd_server'],
-                 $config['bdd_name'],
-                 $config['bdd_prefix'],
-                 $config['bdd_user'],
-                 $config['bdd_passwd']);
-    $this->db->Connect();
-
-    /* Chargement de la configuration dans la variable globale */
-    $this->db->NewQuery("SELECT", "conf");
-    $this->db->Query();
-
-    while ($val = $this->db->FetchArray())
-	    $config[$val['conf_name']] = $val['conf_value'];
     
-    /* Chargement des objets */
-    $this->style = new Style();
+    try {
+    	
+	    $this->db = new DB($config['bdd_server'],
+	                 $config['bdd_name'],
+	                 $config['bdd_prefix'],
+	                 $config['bdd_user'],
+	                 $config['bdd_passwd']);
+	                 
+	    $this->db->Connect();
+	
+	    /* Chargement de la configuration dans la variable globale */
+	    $this->db->NewQuery("SELECT", "conf");
+	    $this->db->Query();
+	
+	    while ($val = $this->db->FetchArray())
+		    $config[$val['conf_name']] = $val['conf_value'];
+	    
+	    /* Chargement des objets */
+	    $this->style = new Style();
+	    $this->template = new Template($this);
+    
+    }
+    catch (Exception $ex) {
+    	echo $ex->getMessage();
+    	exit;
+    }
+    
     $auth = new Auth($this->db);
     
     /* Initialisation de la session */
@@ -106,8 +118,6 @@ class Nvrtbl
 
     /* Compte et gère les utilisateur en ligne */
     $this->UpdateOnlineUsers();
-      
-    $this->template = new Template($this);
   }
 
   function Close()

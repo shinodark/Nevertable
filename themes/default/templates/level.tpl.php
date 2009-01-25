@@ -43,6 +43,8 @@ $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $lang['code'] ?>" lang="<?php echo $lang['code'] ?>">
 <head>
 <?php $this->SubTemplate('_head'); ?>
+<script type="text/javascript" src="includes/js/jquery-1.3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="includes/js/jquery.jeditable.mini.js" charset="utf-8"></script>
 </head>
 <body>
 <div id="page">
