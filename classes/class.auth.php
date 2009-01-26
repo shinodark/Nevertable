@@ -43,11 +43,11 @@ class Auth
 	{
       $cookiedata = unserialize(stripslashes($_COOKIE[$config["cookie_name"]]));
       if ($cookiedata["auto"] && !isset($_SESSION['user_logged']))
-        $this->Perform($cookiedata["user"], $cookiedata["md5"], true, false);
+        $this->Perform($cookiedata["user"], $cookiedata["sha1"], true, false);
 	}
   }
 
-  function Perform($login, $passwd, $md5_passwd=false, $cookie=false)
+  function Perform($login, $passwd, $sha1_passwd=false, $cookie=false)
   {
       global $config;
 
@@ -67,8 +67,8 @@ class Auth
       }
       $val = $this->db->FetchArray($res);
       
-      if (!$md5_passwd)
-        $passwd = md5($passwd);  
+      if (!$sha1_passwd)
+        $passwd = Auth::Hash($passwd);  
        
       if($passwd == $val['passwd'])
       { 
@@ -84,7 +84,7 @@ class Auth
           /* create cookie */
           $cookiedata["auto"] = true;
           $cookiedata["user"] = $_SESSION['user_pseudo'];
-          $cookiedata["md5"]  = $val['passwd'];
+          $cookiedata["sha1"]  = $val['passwd'];
        	  setcookie($config["cookie_name"], serialize($cookiedata), time()+$config["cookie_expire"], $config["cookie_path"], $config["cookie_domain"], false);
         }
         return true;
@@ -111,6 +111,10 @@ class Auth
     setcookie($config["cookie_name"], serialize($cookiedata), time()+$config["cookie_expire"], $config["cookie_path"], $config["cookie_domain"], false);
   }
 
+  static function Hash($v)
+  {
+  	return sha1($v);
+  }
   static function Check($level)
   {
     return (isset($level) && isset($_SESSION['user_logged']) && $_SESSION['user_logged']

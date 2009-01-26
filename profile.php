@@ -136,7 +136,7 @@ if (isset($args['upident']))
     else
     {
       //mise à jour du nouveau mot de passe
-      $user->SetFields(array('passwd' => md5($args['passwd1'])));
+      $user->SetFields(array('passwd' => Auth::Hash($args['passwd1'])));
       $user->Update();
     }
   }

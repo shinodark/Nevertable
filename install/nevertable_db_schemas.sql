@@ -33,7 +33,7 @@ CREATE TABLE `nvrtbl_com` (
 -- 
 
 CREATE TABLE `nvrtbl_conf` (
-  `conf_name` varchar(255) character set utf8 collate utf8_bin NOT NULL default '',
+  `conf_name` varchar(255) NOT NULL default '',
   `conf_value` text,
   `conf_desc` text,
   PRIMARY KEY  (`conf_name`)
@@ -129,19 +129,19 @@ CREATE TABLE `nvrtbl_users` (
   `id` int(11) NOT NULL auto_increment,
   `level` tinyint(4) NOT NULL default '0',
   `pseudo` varchar(32) NOT NULL default '',
-  `passwd` varchar(32) NOT NULL default '',
+  `passwd` varchar(40) NOT NULL default '',
   `email` varchar(255) NOT NULL default '',
   `user_limit` smallint(6) NOT NULL default '0',
   `user_comments_limit` smallint(6) NOT NULL,
   `user_sidebar_comments` smallint(6) NOT NULL default '0',
   `user_sidebar_comlength` smallint(6) NOT NULL default '0',
   `user_sort` tinyint(4) NOT NULL default '0',
-  `user_theme` varchar(40) character set utf8 collate utf8_bin NOT NULL default '',
+  `user_theme` varchar(40) NOT NULL default '',
   `user_lang` varchar(2) NOT NULL default 'en',
-  `user_avatar` varchar(40) character set utf8 collate utf8_bin NOT NULL default '',
+  `user_avatar` varchar(40) NOT NULL default '',
   `user_speech` text NOT NULL,
-  `user_localisation` varchar(40) character set utf8 collate utf8_bin NOT NULL default '',
-  `user_web` varchar(80) character set utf8 collate utf8_bin NOT NULL default '',
+  `user_localisation` varchar(40) NOT NULL default '',
+  `user_web` varchar(80) NOT NULL default '',
   `stat_total_records` int(11) NOT NULL default '0',
   `stat_best_records` int(11) NOT NULL default '0',
   `stat_comments` int(11) NOT NULL default '0',

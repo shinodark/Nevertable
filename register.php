@@ -93,7 +93,7 @@ if(isset($args['valid']))
   //protection
   $fields = array(
       'pseudo' => addslashes($args['pseudo']),
-      'passwd' => md5($args['passwd1']),
+      'passwd' => Auth::Hash($args['passwd1']),
       'email' => addslashes($args['email']),
       'level' => $level,
       'user_theme' => 'default',

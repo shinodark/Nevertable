@@ -146,7 +146,7 @@ class Map
     function SetError($error)
     {
       $this->error = $error;
-      throw Exception($this->error);
+      throw new Exception($this->error);
     }
     
     function GetError()
