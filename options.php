@@ -56,7 +56,7 @@ function CheckLimitsOptions($args)
   $val['user_lang'] = get_lang_by_number(GetContentFromPost($args['lang']));
   $err = in_array($val['user_lang'], $langs);
   if ($err == false)
-	  gui_button_error("Bad lang", 200);
+	  throw new Exception("Bad lang");
   $val['user_sort'] = GetContentFromPost($args['sort']);
   $err = $err & CheckLimitInterval($val['user_sort'], 0, 6, $lang['OPTIONS_FORM_SORT']);
   $val['user_limit'] = GetContentFromPost($args['limit']);

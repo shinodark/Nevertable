@@ -54,7 +54,8 @@ function CheckConfig($conf_arr)
     || $conf_arr['cookie_path'][strlen($conf_arr['cookie_path'])-1] !== '/'
      )
   {
-    gui_button_error("Directories name have to finish by a /", 300); return false;
+    throw new Exception("Directories name have to finish by a");
+    return false;
   }
 
   $err = $err & CheckLimitInterval($conf_arr['limit'], 0, 100, 'limit' );

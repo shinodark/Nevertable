@@ -303,8 +303,7 @@ class DBHelper
         /* diff impossible pour type "tous" et "freestyle" */
         if ($args['type'] == get_type_by_name("all") || $args['type'] == get_type_by_name("freestyle"))
         {
-          gui_button_error("can't select diff view with type : \"".get_type_by_number($args['type'])."\"", 400);
-          $args['diffview'] = "off";
+           $args['diffview'] = "off";
         }
         /* choix automatique de l'ordre de tri */
         if ($args['type'] == get_type_by_name("best time") )
@@ -439,11 +438,6 @@ class DBHelper
      
      $this->db->AppendCustom("GROUP BY levelset,level");
      $res = $this->db->Query();
-     if (!$res)
-     {
-	     gui_button_error($this->db->GetError(), 300);
-	     return false;
-     }
      
      $ret = array();
      
@@ -633,6 +627,7 @@ class DBHelper
      {
        case get_type_by_name("best time") : $critera = "time"; break;
        case get_type_by_name("most coins"): $critera = "coins"; break;
+       case get_type_by_name("fast unlock"): $critera = "time"; break;
        default: $critera = "none"; break;
      }
    
