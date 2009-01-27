@@ -36,6 +36,7 @@ $lang['all']			= "all";
 $lang['best time']		= "best time";
 $lang['most coins']		= "most coins";
 $lang['freestyle']		= "freestyle";
+$lang['fast unlock']	= "fast unlock";
 
 //folders
 $lang['contest']		= "contest";

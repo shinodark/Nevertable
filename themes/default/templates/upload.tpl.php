@@ -26,7 +26,7 @@ if (!defined('NVRTBL'))
  *
  */
 
-global $lang, $config;
+global $lang, $config, $types;
 
 
 ?>
@@ -60,9 +60,11 @@ global $lang, $config;
 <td><label for="type"><?php echo $lang['UPLOAD_FORM_TYPE'] ?></label></td>
 <td>
 <select id="type" name="type">
-<option value="1">best time</option>
-<option value="2">most coins</option>
-<option value="3">freestyle</option>
+<?php foreach($types as $nb => $value) { ?>
+	<?php if ($nb > 0) { ?>
+		<option value="<?php echo $nb ?>"><?php echo $lang[$types[$nb]] ?></option>
+	<?php } ?>
+<?php } ?>
 </select>
 </td>
 </tr><tr>

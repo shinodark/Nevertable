@@ -39,7 +39,7 @@ textarea {
     width: 820px;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
     text-align: left;
 }
 
@@ -47,16 +47,16 @@ textarea {
     position: relative;
     float: left;
     width: 820px;
-    margin-left: 11px;
+    margin-left: 10px;
     margin-right: 10px;
-    margin-bottom: 40px;
+    margin-bottom: 5px;
     text-align: left;
 }
 
 #announce {
     clear: both;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     text-align: center;
 }
 

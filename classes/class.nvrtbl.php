@@ -274,6 +274,7 @@ class Nvrtbl
     {
      case get_type_by_name("best time") : $critera = "time"; $check=true; break;
      case get_type_by_name("most coins"): $critera = "coins";$check=true; break;
+     case get_type_by_name("fast unlock"): $critera = "time";$check=true; break;
      default : $check=false; $ret['isbest']=false; break;
     }
     if($check)
@@ -527,6 +528,75 @@ class Nvrtbl
           $rec->SetIsBest(1);
           $rec->Update(true);
           echo "record id " . $val['id'] ." is a best time. Set.<br />";
+          $i++;
+        }
+        else if(!is_a_best_record($val, $best, "time") && $val['isbest']==1)
+        {
+          $rec->SetIsBest(0);
+          $rec->Update(true);
+          $rec->Move(get_folder_by_name("oldones"));
+          echo "record id " . $val['id'] ." is NOT the \"best time\". Moved to \"oldones\"<br />";
+          $i++;
+        }
+        else if(!is_a_best_record($val, $best, "time") &&  $val['isbest']==0)
+        {
+          $rec->Move(get_folder_by_name("oldones"));
+          echo "record id " . $val['id'] ." shouldn't be in contest. Moved to \"oldones\".<br />";
+          $i++;
+        }
+      }
+      else // gere les oldones
+      {
+        if(is_a_best_record($val, $best, "time") && $val['isbest']==0)
+        {
+          $rec->SetIsBest(1);
+          $rec->Update(true);
+          $rec->Move(get_folder_by_name("contest"));
+          echo "record id " . $val['id'] ." is a best time. Moved to contest and set.<br />";
+          $i++;
+        }
+        else if(is_a_best_record($val, $best, "time") && $val['isbest']==1)
+        {
+          $rec->SetIsBest(1);
+          $rec->Update(true);
+          $rec->Move(get_folder_by_name("contest"));
+          echo "record id " . $val['id'] ." shouldn't be in oldones. Moved to contest.<br />";
+          $i++;
+        }
+        else if(!is_a_best_record($val, $best, "time") && $val['isbest']==1)
+        {
+          $rec->SetIsBest(0);
+          $rec->Update(true);
+          echo "record id " . $val['id'] ." is NOT the \"best time\". Unset.<br />";
+          $i++;
+        }
+      }
+    }
+    echo $i ." records modified.";
+    
+    /* fast unlock records value */
+    echo "<h2>fast unlock</h2>";
+    $best = $this->db->helper->GetBestRecord(get_type_by_name("fast unlock"));
+
+    /* browse all best time */
+    $this->db->NewQuery("SELECT", "rec");
+    $this->db->Where("type", get_type_by_name("fast unlock"));
+    //$this->db->Where("folder", get_folder_by_name("contest"));
+    $this->db->AppendCustom("AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
+    $res = $this->db->Query();
+ 
+    $i=0;
+    while ($val = $this->db->FetchArray($res))
+    {
+      $rec->LoadFromId($val['id']);
+      /* set 'isbest' field */
+      if($val['folder'] == get_folder_by_name("contest"))
+      {
+        if(is_a_best_record($val, $best, "time") && $val['isbest']==0)
+        {
+          $rec->SetIsBest(1);
+          $rec->Update(true);
+          echo "record id " . $val['id'] ." is a best time (fast unlock). Set.<br />";
           $i++;
         }
         else if(!is_a_best_record($val, $best, "time") && $val['isbest']==1)

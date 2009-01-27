@@ -108,7 +108,7 @@ $super_op_enable = Auth::Check(get_userlevel_by_name("admin"));
       <td><?php echo sec_to_friendly_display($time, $sign_display) ?></td>
       <td><?php echo $coins ?></td>
       <td>
-      <a href="<?php echo replay_link($fields['replay']) ?>" type="application/octet-stream"><?php echo $replay ?></a>
+      <a href="<?php echo replay_link($fields['replay']) ?>" type="application/x-neverball-replay"><?php echo $replay ?></a>
       <a href="record.php?id=<?php echo $fields['id']?>"><?php echo $comments ?></a>
       <a href="index.php?levelset_f=<?php echo  $fields['levelset']."&amp;level_f=".$fields['level']?>&amp;folder=0&amp;type=<?php echo $fields['type']?>" title="<?php echo $lang['TABLE_ATTACH'] ?>">
         <?php echo $this->table->style->GetImage('attach', $lang['TABLE_ATTACH']) ?>

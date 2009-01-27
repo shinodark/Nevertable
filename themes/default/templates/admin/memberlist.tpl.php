@@ -74,7 +74,7 @@ global $lang, $config, $userlevel, $lang;
 </td>
 </tr>
 <tr class="<?php echo $rowclass?>">
-<form name="memberform_<?php echo $fields['id']?>" id="memberform_<?php echo $fields['id']?>" method="post" action="memberlist.php?upmember&amp;id=<?php echo $fields['id']?>">'
+<form name="memberform_<?php echo $fields['id']?>" id="memberform_<?php echo $fields['id']?>" method="post" action="memberlist.php?upmember&amp;id=<?php echo $fields['id']?>">
 <td>
 <a href="editprofile.php?id=<?php echo $fields['id']?>"><?php echo $fields['id']?></a>
 </td>

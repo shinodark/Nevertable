@@ -27,7 +27,7 @@ if (!defined('NVRTBL'))
 /* TABLE STRUCTS */
 /*****************/
 
-$types     = array ("all", "best time", "most coins", "freestyle");
+$types     = array ("all", "best time", "most coins", "fast unlock", "freestyle");
 
 $folders   = array (0 => "all", 1 => "contest",  2 => "oldones", 3 => "incoming", 4 => "trash");
 $folders_user = array(0 => "all", 1 => "contest", 2 => "oldones");
