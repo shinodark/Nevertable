@@ -74,7 +74,7 @@ $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
      <?php echo $fields['pseudo'] ?>
 </a>
  <?php } else { ?>
-<a href="viewprofile.php?id=<?php echo $fields['id'] ?>"
+<a href="profile.php?id=<?php echo $fields['id'] ?>"
      onmouseover="return_escape('<?php echo Javascriptize("<center><i>".$lang['MEMBER_NO_AVATAR']."</i></center>") ?>')">
      <?php echo $fields['pseudo'] ?>
  </a>
