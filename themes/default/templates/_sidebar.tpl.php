@@ -207,6 +207,9 @@ echo $tagboard->Show($args) ?>
 <td><?php echo $this->table->style->GetImage('most coins') ?></td>
 <td><?php echo $lang['SIDEBAR_LEGEND_MOST_COINS'] ?></td>
 </tr><tr>
+<td><?php echo $this->table->style->GetImage('fast unlock') ?></td>
+<td><?php echo $lang['SIDEBAR_LEGEND_FAST_UNLOCK'] ?></td>
+</tr><tr>
 <td><?php echo $this->table->style->GetImage('freestyle') ?></td>
 <td><?php echo $lang['SIDEBAR_LEGEND_FREESTYLE'] ?></td>
 </tr>

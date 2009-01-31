@@ -67,7 +67,7 @@ $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
    
 
 <tr class="<?php echo $rowclass ?>">
-<td height="20px">
+<td height="20">
  <?php if (!empty($fields['user_avatar']))  {  ?>
 <a href="profile.php?id=<?php echo $fields['id'] ?>"
      onmouseover="return_escape('<?php echo Javascriptize("<center><img src=\"".ROOT_PATH.$config['avatar_dir']."/".$fields['user_avatar']."\" alt=\"\" /></center>") ?>')">

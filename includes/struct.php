@@ -254,6 +254,7 @@ $icons = array (
     "best time"   => "besttime.png",
     "most coins"  => "mostcoins.png",
     "freestyle"   => "freestyle.png",
+	"fast unlock" => "fastunlock.png",
     "new"         => "new.png",
     "attach"      => "attach.png",
     "edit"        => "script_edit.png",

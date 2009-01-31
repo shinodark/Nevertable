@@ -93,14 +93,14 @@ else if (isset($args['comdel']))
 else
 {
 
-  $total = $table->db->helper->CountRecordComments($args['id']);
+  $total = $table->db->helper->CountRecordComments($replay_id);
   $tpl_params['page'] = empty($args['page']) ? 1 : $args['page'];
   if ($config['comments_limit'] > 0)
   	$tpl_params['nb_pages']  = ceil($total / $config['comments_limit']);
   else
   	$tpl_params['nb_pages']=1; 
   $tpl_params['comments_res'] = $table->db->helper->GetComments($args);
-  $tpl_params['record_fields'] = $table->db->helper->GetRecordFields($args['id']);
+  $tpl_params['record_fields'] = $table->db->helper->GetRecordFields($replay_id);
   $tpl_params['total'] = $total;
 
   $table->template->Show("record", $tpl_params);

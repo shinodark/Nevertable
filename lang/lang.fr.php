@@ -197,6 +197,7 @@ $lang['SIDEBAR_LEGEND_BEST']	    = "Meilleur record pour ce niveau.";
 $lang['SIDEBAR_LEGEND_BEST_TIME']   = "Meilleur temps.";
 $lang['SIDEBAR_LEGEND_MOST_COINS']  = "Meilleur pièces.";
 $lang['SIDEBAR_LEGEND_FREESTYLE']   = "Freestyle.";
+$lang['SIDEBAR_LEGEND_FAST_UNLOCK']   = "Fast Unlock.";
 
 $lang['MENU_ROOT']		    = "Menu Root";
 $lang['MENU_ADMIN']		    = "Menu d'administration";

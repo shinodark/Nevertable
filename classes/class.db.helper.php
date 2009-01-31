@@ -518,7 +518,7 @@ class DBHelper
         array($p."users.id", $p."sets.id", $p."maps.level_num"),
         "AND", false
       );
-	  $this->db->Where($p."rec.replay_id", $replay_id);
+	  $this->db->Where($p."rec.id", $record_id);
 	  $this->db->Limit(1);
 	  $this->db->Query();
 	  return $this->db->FetchArray();

@@ -125,7 +125,6 @@ change_form_select('newonly','<?php echo $args['newonly']?>');
 <?php $this->SubTemplate('_footer');?>
 </div> 
 <script src="./includes/js/wz_tooltip.js" type="text/javascript"></script>
-
 </div><!-- page end -->
 </body>
 </html>
