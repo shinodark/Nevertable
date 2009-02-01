@@ -177,7 +177,7 @@ INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('uplo
 INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('avatar_size_max', '30720', 'avatar max weight in bytes');
 INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('avatar_width_max', '128', NULL);
 INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('avatar_height_max', '128', NULL);
-INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('photo_quality', '90', 'Quality of resized pictures'));
+INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('photo_quality', '90', 'Quality of resized pictures');
 INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('profile_quote_max', '500', NULL);
 INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('cookie_name', 'nvrtbl_data', NULL);
 INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('cookie_expire', '31536000', NULL);
