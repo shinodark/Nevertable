@@ -129,6 +129,8 @@ if(isset($args['autoadd']))
   $s = new Set($table->db);
   $s->LoadFromId($rec->GetSet());
   $record_fields['set_name'] = $s->GetName();
+  $maps = $table->db->helper->SelectMapsName();
+  $record_fields['level_name'] = $maps[$s->GetId()][$rec->GetLevel()];
   $tpl_params['subtemplates_array'] = array('_replay', '_record');
   $tpl_params['subparams_array'] = array(array("fields" => $record_fields), array("replay_struct" => $rep->GetStruct()));
   $tpl_params['subdivclass_array'] = array("oneresult", "oneresult" );
