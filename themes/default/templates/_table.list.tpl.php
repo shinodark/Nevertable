@@ -104,7 +104,7 @@ $super_op_enable = Auth::Check(get_userlevel_by_name("admin"));
       <td><?php echo $this->table->style->GetImage(get_type_by_number($fields['type']))?></td>
       <td><a href="profile.php?id=<?php echo $fields['user_id'] ?>"><?php echo $fields['pseudo']?></a></td>
       <td><?php echo $fields['set_name'] ?></td>
-      <td><a href="index.php?levelset_f=<?php echo $fields['levelset']."&amp;level_f=".$fields['level']?>&amp;folder=0&amp;type=<?php echo $fields['type'] ?>"><?php echo $fields['level'] ?></a></td>
+      <td><a href="index.php?levelset_f=<?php echo $fields['levelset']."&amp;level_f=".$fields['level']?>&amp;folder=0&amp;type=<?php echo $fields['type'] ?>"><?php echo $fields['level_name'] ?></a></td>
       <td><?php echo sec_to_friendly_display($time, $sign_display) ?></td>
       <td><?php echo $coins ?></td>
       <td>

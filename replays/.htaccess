@@ -1,4 +1,4 @@
-DefaultType application/octet-stream
+DefaultType application/x-neverball-replay
 <Files .htaccess>
 order allow,deny
 deny from all

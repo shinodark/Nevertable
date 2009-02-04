@@ -31,6 +31,7 @@ global $lang, $config;
 
 $res = $this->table->db->helper->SelectSetsRes();
 $sets = $this->table->db->helper->SelectSets();
+$maps = $this->table->db->helper->SelectMapsName();
 
 
 ?>
@@ -39,6 +40,8 @@ $sets = $this->table->db->helper->SelectSets();
 <html>
 <head>
 <?php $this->SubTemplate('_head'); ?>
+<script type="text/javascript" src="../includes/js/jquery-1.3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../includes/js/jquery.jeditable.mini.js" charset="utf-8"></script>
 </head>
 <body>
 <div id="page">
@@ -131,6 +134,7 @@ foreach ($sets as $id => $name)
        <tr class="<?php echo $rowclass?>">
        <td>#<?php echo $val['level_num']?></td>
        <td><?php echo $val['map_solfile']?></td>
+       <td class="map_name_edit" id="map_<?php echo $val['id'] ?>"><?php echo $maps[$id][$val['level_num']] ?></td>
        </tr>
 <?php
     }
@@ -138,6 +142,18 @@ foreach ($sets as $id => $name)
 ?>
 </table>
 </div>
+
+<script type="text/javascript">
+ $(document).ready(function() {
+  $(".map_name_edit").editable("../ajax/map_name_edit.php", { 
+      tooltip   : "Double click to edit...",
+      type      : "textarea",
+      style  	: "inherit",
+      event     : "dblclick",
+      submit    : "Edit!"
+  });
+ });
+</script>
 
 <div class="button" style="width:200px;">
 <a href="../index.php"><?php echo $lang['GUI_BUTTON_MAINPAGE'] ?></a>

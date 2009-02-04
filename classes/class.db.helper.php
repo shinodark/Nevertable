@@ -26,6 +26,7 @@ if (!defined('NVRTBL'))
 class DBHelper
 {
    var $db;
+   var $cache_struct;
    
    /******************************************************/
    /*------------ CONSTRUCTOR AND MAIN FUNCTIONS---------*/
@@ -34,6 +35,7 @@ class DBHelper
    function DBHelper(&$db)
    {
      $this->db = &$db;
+     $this->cache_struct = array();
    }
    
    function LevelsFilter($levelset, $level)
@@ -280,6 +282,7 @@ class DBHelper
             $p."sets.set_name AS set_name",
             $p."sets.set_path AS set_path",
             $p."maps.map_solfile AS map_solfile",
+            $p."maps.level_name AS level_name",
           )
           );
       $this->db->Where(
@@ -351,6 +354,7 @@ class DBHelper
             $p."sets.set_name AS set_name",
             $p."sets.set_path AS set_path",
             $p."maps.map_solfile AS map_solfile",
+            $p."maps.level_name AS level_name",
           )
           );
       $this->db->Where(
@@ -509,6 +513,7 @@ class DBHelper
 	                $p."sets.set_name AS set_name",
 	                $p."sets.set_path AS set_path",
 	                $p."maps.map_solfile AS map_solfile",
+	                $p."maps.level_name AS level_name",
 	                $p."users.pseudo AS pseudo",
 	                ),
 	            "SELECT", "com");
@@ -697,12 +702,30 @@ class DBHelper
 
    function SelectSets()
    {
+   	 if (!empty($this->cache_struct['sets']))
+   		return $this->cache_struct['sets'];
+   		
      $this->db->NewQuery("SELECT", "sets");
      $this->db->Query();
      $sets = array();
      while ($val = $this->db->FetchArray())
        $sets[$val['id']] = $val['set_name'];
+     $this->cache_struct['sets'] = $sets;
      return $sets;
+   }
+   
+   function SelectMapsName()
+   {
+   	 if (!empty($this->cache_struct['maps_name']))
+   		return $this->cache_struct['maps_name'];
+   		
+     $this->db->NewQuery("SELECT", "maps");
+     $this->db->Query();
+     $maps_name = array();
+     while ($val = $this->db->FetchArray())
+       $maps_name[$val['set_id']][$val['level_num']] = $val['level_name'];
+     $this->cache_struct['maps_name'] = $maps_name;
+     return $maps_name;
    }
 
    function SelectSetsRes()

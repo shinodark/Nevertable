@@ -33,6 +33,7 @@ class Template
   var $tpl_cur_dir;
   var $tpl_def_dir;
   var $tpl_params;
+  var $tpl_open;
 
   /*__CONSTRUCTEUR__*/
   function Template(&$parent)
@@ -47,6 +48,8 @@ class Template
     $this->tpm_args = array();
     $this->tpl_cur_dir = ROOT_PATH . $config['theme_dir'] . $this->table->style->GetStyle() . '/templates/';
     $this->tpl_def_dir = ROOT_PATH . $config['theme_dir'] . $config['theme_default'] . '/templates/';
+    
+    $this->tpl_open = false;
   }
 
 
@@ -73,28 +76,37 @@ class Template
 
   	if($this->_CheckTplFile($tpl, $tplfile))
   	{
-  		if (!empty($cache_id) && $this->cache->Hit($cache_id))
+  		if (!$this->tpl_open)
   		{
-  			echo $this->cache->Read($cache_id);
+	  		$this->tpl_open = true;
+	  		if (!empty($cache_id) && $this->cache->Hit($cache_id))
+	  		{
+	  			echo $this->cache->Read($cache_id);
+	  		}
+	  		else
+	  		{
+				/* Buffering output to store data */
+	  			if (!empty($cache_id))
+	  			{
+	  		       ob_start();
+				}
+	  		
+	        	/* Load template */
+				include $tplfile;
+	  		
+	  		    /* Create cache */
+				if (!empty($cache_id))
+				{
+					$this->cache->Create($cache_id, ob_get_contents());
+					ob_flush();
+					ob_end_clean();
+				}
+	  		}
+	  		$this->tpl_open = false;
   		}
   		else
   		{
-			/* Buffering output to store data */
-  			if (!empty($cache_id))
-  			{
-  		       ob_start();
-			}
-  		
-        	/* Load template */
-			include $tplfile;
-  		
-  		    /* Create cache */
-			if (!empty($cache_id))
-			{
-				$this->cache->Create($cache_id, ob_get_contents());
-				ob_flush();
-				ob_end_clean();
-			}
+  			echo "Multiple template inclusions error";
   		}
   	}
   	

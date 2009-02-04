@@ -103,7 +103,7 @@ class Set
       /* efface les records */
       $this->db->NewQuery("SELECT", "rec");
       $this->db->Where("levelset", $this->fields['id']);
-      $this->db->Query();
+      $res = $this->db->Query();
       
       $rec = new Record($this->db);
 
@@ -148,6 +148,7 @@ class Set
     {
       $this->db->NewQuery("SELECT", "maps");
       $this->db->Where("set_id", $this->fields['id']);
+      $this->db->Sort(array("level_num"), "ASC");
       $res = $this->db->Query();
 
       return $res;
@@ -155,10 +156,40 @@ class Set
     
     function AddMap($level_num, $map_solfile)
     {
+    	/* Names by default */
+    	$levels = array (
+		    1 => "01",
+		    2 => "02",
+		    3 => "03",
+		    4 => "04",
+		    5 => "I",
+		    6 => "05",
+		    7 => "06",
+		    8 => "07",
+		    9 => "08",
+		    10 => "II",
+		    11 => "09",
+		    12 => "10",
+		    13 => "11",
+		    14 => "12",
+		    15 => "III",
+		    16 => "13",
+		    17 => "14",
+		    18 => "15",
+		    19 => "16",
+		    20 => "IV",
+		    21 => "17",
+		    22 => "18",
+		    23 => "19",
+		    24 => "20",
+		    25 => "V",
+		);
+      $nb_name = 
       $this->db->NewQuery("INSERT",  "maps");
       $map_fields = array(
 	      "set_id"      => $this->fields['id'],
 	      "level_num"   => $level_num,
+          "level_name"  => $levels[$level_num],
 	      "map_solfile" => $map_solfile,
       );
       $this->db->Insert($map_fields);

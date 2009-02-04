@@ -56,12 +56,14 @@ if(isset($args['autoadd']))
   $up_dir = ROOT_PATH. $config['replay_dir'];
     
   /* Upload du fichier */
+  $maps = $table->db->helper->SelectMapsName();
+  $sets = $table->db->helper->SelectSets();
   $f = new FileManager();
   $u = new User($table->db);
   $u->LoadFromId($rec->GetUserId());
-  $replayName = sprintf("S%02dL%02d_%s_%05d.nbr",
-  	$rec->GetSet(),
-  	$rec->GetLevel(),
+  $replayName = sprintf("%s_%s_%s_%05d.nbr",
+	str_replace(" ", "_", $sets[$rec->GetSet()]),
+  	$maps[$rec->GetSet()][$rec->GetLevel()],
   	$u->GetPseudo(),
   	0 //Id non encore connu ˆ ce stade
   	);
@@ -97,9 +99,10 @@ if(isset($args['autoadd']))
 	  $ret = $rec->Insert();
 	  
 	  /* Mise ˆ jour de l'ID */
-	  $replayName = sprintf("S%02dL%02d_%s_%05d.nbr",
-	  	$rec->GetSet(),
-	  	$rec->GetLevel(),
+	  $replayName = sprintf("%s_%s_%s_%05d.nbr",
+	    // get rid of spaces in file names 
+	  	str_replace(" ", "_", $sets[$rec->GetSet()]),
+	  	$maps[$rec->GetSet()][$rec->GetLevel()],
 	  	$u->GetPseudo(),
 	  	$rec->GetId()
 	  );

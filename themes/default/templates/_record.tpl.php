@@ -51,7 +51,7 @@ $replay = empty($fields['replay']) ? $this->table->style->Getimage("no_replay", 
 <td><?php echo $this->table->style->GetImage(get_type_by_number($fields['type']))?></td>
 <td><a href="profile.php?id=<?php echo $fields['user_id'] ?>"><?php echo $fields['pseudo']?></a></td>
 <td><?php echo $fields['set_name'] ?></td>
-<td><a href="index.php?levelset_f=<?php echo $fields['levelset']."&amp;level_f=".$fields['level']?>"><?php echo $fields['level'] ?></a></td>
+<td><a href="index.php?levelset_f=<?php echo $fields['levelset']."&amp;level_f=".$fields['level']?>"><?php echo $fields['level_name'] ?></a></td>
 <td><?php echo sec_to_friendly_display($fields['coins'], $sign_display) ?></td>
 <td><?php echo $fields['coins'] ?></td>
 <td>

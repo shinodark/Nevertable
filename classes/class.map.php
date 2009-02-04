@@ -48,32 +48,27 @@ class Map
         return false;
       $this->db->NewQuery("SELECT", "maps");
       $this->db->Where("id", $id);
-      if(!$this->db->Query()) {
-        $this->SetError($this->db->GetError());
-        return false;
-      }
-      else {
-        if ($this->db->NumRows()<1)
-        {
-          $this->error = "No map match this id!";
+      $this->db->Query();
+
+      if ($this->db->NumRows()<1)
+      {
+          $this->SetError("No map match this id!");
           return false;
-        }
-        $this->SetFields($this->db->FetchArray());
-        $this->isload=true;
-        return true;
       }
+      $this->SetFields($this->db->FetchArray());
+      $this->isload=true;
+      return true;
     }
 
-    function Update($conservative=false,$id="")
+    function Update()
     {
       if (!$this->isload)
         return false;
       if(empty($id))
         $id = $this->fields['id'];
 
-      $this->_CleanFields();
       $this->db->NewQuery("UPDATE", "maps");
-      $this->db->UpdateSet($this->fields, $conservative);
+      $this->db->UpdateSet($this->fields);
       $this->db->Where("id", $id);
       $this->db->Limit(1);
       if(!$this->db->Query()) {

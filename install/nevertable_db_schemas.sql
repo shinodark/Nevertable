@@ -49,6 +49,7 @@ CREATE TABLE `nvrtbl_maps` (
   `id` int(11) NOT NULL auto_increment,
   `set_id` tinyint(4) NOT NULL default '0',
   `level_num` tinyint(4) NOT NULL default '0',
+  `level_name` varchar(5) NOT NULL default '--',
   `map_solfile` varchar(64) NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

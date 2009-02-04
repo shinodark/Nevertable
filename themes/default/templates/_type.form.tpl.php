@@ -22,7 +22,7 @@
 if (!defined('NVRTBL'))
 	exit;
 		
-global $types, $levels, $folders, $folders_user, $newonly, $lang, $args;
+global $types, $folders, $folders_user, $newonly, $lang, $args;
 
   	
 /* Diffview allowed ? */
@@ -80,10 +80,16 @@ global $types, $levels, $folders, $folders_user, $newonly, $lang, $args;
 <label for="level_f"><?php echo $lang['TYPE_FORM_LEVEL'] ?></label>
 <select name="level_f" id="level_f">
 <option value="0"><?php echo $lang['all'] ?></option>
-<?php  foreach ($levels as $name => $value)
+<?php
+    if ($args['levelset_f'] > 0) {
+    $maps_name = $this->table->db->helper->SelectMapsName();
+    foreach ($maps_name[$args['levelset_f']] as $value => $name)
         { ?>
           <option value="<?php echo $value ?>"><?php echo $name ?></option>
-  <?php } ?>
+<?php
+        }
+    } 
+?>
 </select>
 </td>
 <td><label for="newonly"><?php echo $lang['TYPE_FORM_NEWONLY'] ?></label>
