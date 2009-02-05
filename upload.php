@@ -77,11 +77,7 @@ if(isset($args['autoadd']))
 	  
 	  $rep->Init();
 	
-	  
-	  if(get_replay_mode_by_name("challenge") == $rep->GetMode())
-	     throw new Exception("Challenge replays are not supported yet");
-	
-	 
+	  	 
 	  /* Insertion du record */
 	  $rec->SetFields($rep->GetFields());
 	      
