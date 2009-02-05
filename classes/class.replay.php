@@ -38,6 +38,7 @@ class Replay
     var $error;
     var $type;
     var $header_end_off;
+    var $is_init;
 
 	/*__Constructeur__
 	
@@ -50,6 +51,7 @@ class Replay
         $this->type = $type;
         
         $this->header_end_off = -1;
+        $this->is_init = false;
 	}
 
     function Init()
@@ -126,6 +128,8 @@ class Replay
        $val = $this->db->FetchArray();
        $this->level = $val['level_num'];
        $this->set   = $val['set_id'];
+       
+       $this->is_init = true;
         
        return true;
     }
@@ -133,7 +137,9 @@ class Replay
     /* This function create a new replay file with the name of the player from the table */
     /* It should ne transparent to upload.php */
     function ChangePLayerName($name)
-    {		
+    {	
+    	if (!$this->is_init)
+    		return false;
     	if ($this->header_end_off == -1)
     		return false;
     	if (strlen($name) > MAXNAM)
