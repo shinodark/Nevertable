@@ -47,8 +47,6 @@ $langs     = array("en", "fr");
 $replay_mode = array (
 	1 => "challenge",
 	2 => "normal",
-	3 => "practice",
-	4 => "single",
 );
 
 $replay_state = array (
