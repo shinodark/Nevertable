@@ -250,6 +250,19 @@ class FileManager
      return @feof($this->handle);
   }
 
+  function Tell()
+  {   
+  	if (!isset($this->handle))
+         return false;
+    return @ftell($this->handle);
+  }
+  
+  function Seek($off)
+  {
+  	if (!isset($this->handle))
+  		return false;
+  	return @fseek($this->handle, $off);
+  }
 
   function Read()
   {
@@ -321,6 +334,20 @@ class FileManager
     $UnpackedData = unpack("V", $BinaryData);
     return $UnpackedData[1];
   }
+  
+  function WriteInt($value)
+  {
+    if (!isset($this->handle))
+    {
+      $ret = $this->Open('a');
+      if (!$ret)
+        return false;
+    }
+    
+    $PackedData = pack("V", $value);
+    fwrite($this->handle, $PackedData, 4);
+    return true;
+  }
  
   function ReadShort()
   {
@@ -335,14 +362,26 @@ class FileManager
     $UnpackedData = unpack("S", $BinaryData);
     return $UnpackedData[1];
   }
+  
+  function WriteShort($value)
+  {
+    if (!isset($this->handle))
+    {
+      $ret = $this->Open('a');
+      if (!$ret)
+        return false;
+    }
+    
+    $PackedData = pack("S", $value);
+    fwrite($this->handle, $PackedData, 2);
+    return true;
+  }
 
   function ReadStringLength($length)
   {
     if (!isset($this->handle))
     {
-      $ret = $this->Open();
-      if (!$ret)
-        return false;
+      $this->Open();
     }
     
     $c = chr(0);
@@ -361,6 +400,30 @@ class FileManager
     	$str{$i-1} = chr(0);
 
     return  $str;
+  }
+  
+  function WriteStringLength($str, $length)
+  {
+    if (!isset($this->handle))
+    {
+      $this->Open('a+');
+    }
+    
+    if (empty($str) || !($length > 0))
+    	return false;
+    $c = $str{0};
+    $i=0;
+    $max = $length - 1; //-1 for chr(0) at the end
+    do
+    {
+    	fwrite($this->handle, $c, 1);
+    	$i++;
+    	$c = $str{$i};
+    }
+    while ((ord($c) != 0) && ($max-- > 0) );
+    fwrite($this->handle, chr(0), 1);
+    
+    return  true;
   }
 
 

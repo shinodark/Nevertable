@@ -37,6 +37,7 @@ class Replay
     var $struct_replay;
     var $error;
     var $type;
+    var $header_end_off;
 
 	/*__Constructeur__
 	
@@ -47,6 +48,8 @@ class Replay
         $this->db = &$db;
         $this->replayname = $filename;
         $this->type = $type;
+        
+        $this->header_end_off = -1;
 	}
 
     function Init()
@@ -55,12 +58,8 @@ class Replay
 
 		$f = new FileManager($this->replayname);
 	
-		if (!$f->Open())
-		{
-	            $this->error = "Error opening file";
-	            return false;
-		}
-	
+		$f->Open();
+            
 		$this->struct_replay['magic'] = $f->ReadInt();
 	        if ($this->struct_replay['magic'] != MAGIC_1_5)
 		{
@@ -77,8 +76,8 @@ class Replay
 	    $this->struct_replay['coins']   = $f->ReadInt() ;
 	    $this->struct_replay['state']   = $f->ReadInt();
 		$this->struct_replay['mode']    = $f->ReadInt() ;
-	
-	    $this->struct_replay['player']  = trim($f->ReadStringLength(MAXNAM));
+	    
+		$this->struct_replay['player']  = trim($f->ReadStringLength(MAXNAM));
 		$this->struct_replay['date']    = trim($f->ReadStringLength(DATELEN));
 	
 	    $this->struct_replay['shot']    = trim($f->ReadStringLength(PATHMAX));
@@ -89,6 +88,9 @@ class Replay
 	    $this->struct_replay['score']   = $f->ReadInt();
 		$this->struct_replay['balls']   = $f->ReadInt();
 		$this->struct_replay['times']   = $f->ReadInt();
+		
+		/* Keep header end position for ChangePlayerName() */
+		$this->header_end_off = $f->Tell();
 
         $f->Close();
 
@@ -126,6 +128,58 @@ class Replay
        $this->set   = $val['set_id'];
         
        return true;
+    }
+    
+    /* This function create a new replay file with the name of the player from the table */
+    /* It should ne transparent to upload.php */
+    function ChangePLayerName($name)
+    {		
+    	if ($this->header_end_off == -1)
+    		return false;
+    	if (strlen($name) > MAXNAM)
+    		$length = MAXNAM;
+    	else
+    		$length = strlen($name);
+    	
+    	$fr = new FileManager($this->replayname);
+    	/* open a swap file */
+    	$fw = new FileManager($this->replayname.".tmp");
+	
+    	$fr->Open('r');
+		$fw->Open('a');
+		
+		/* Copy header data */
+		$fw->WriteInt($this->struct_replay['magic']);
+		$fw->WriteInt($this->struct_replay['version']);
+		$fw->WriteInt($this->struct_replay['timer'] * 100.0);
+		$fw->WriteInt($this->struct_replay['coins']);
+		$fw->WriteInt($this->struct_replay['state']);
+		$fw->WriteInt($this->struct_replay['mode']);
+	    
+		$fw->WriteStringLength($name, $length);
+		$fw->WriteStringLength($this->struct_replay['date'], strlen($this->struct_replay['date']));
+		
+		$fw->WriteStringLength($this->struct_replay['shot'], strlen($this->struct_replay['shot']));
+		$fw->WriteStringLength($this->struct_replay['solfile'], strlen($this->struct_replay['solfile']));
+	
+		$fw->WriteInt($this->struct_replay['time']);
+		$fw->WriteInt($this->struct_replay['goal']);
+		$fw->WriteInt($this->struct_replay['score']);
+		$fw->WriteInt($this->struct_replay['balls']);
+		$fw->WriteInt($this->struct_replay['times']);
+		
+		/* Copy datas after header */
+		$fr->Seek($this->header_end_off);
+		$dataswap = $fr->Read();
+		$fw->Write($dataswap);
+	
+		/* Clode and delete first file */
+		$fr->Close();
+		$fr->Unlink();
+		
+		/* Replace with new one */
+		$fw->Rename(basename($fr->filename));
+		$fw->Close();
     }
     
     function GetTime()

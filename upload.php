@@ -112,6 +112,8 @@ if(isset($args['autoadd']))
 	  $rec->SetFields(array("replay" => $replayName));
 	  $rec->Update(true);
 	  
+	  $rep->ChangePLayerName($_SESSION['user_pseudo']);
+	  
 	  $f->Move($up_dir, $replayName);
   }
   
