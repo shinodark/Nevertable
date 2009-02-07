@@ -103,6 +103,7 @@ function sec_to_friendly_display($seconds, $sign_display_always=false)
     $sec = floor($seconds-$min*60);
     $cen = round(($seconds-$min*60 - $sec)*100);
 
+    $str = "";
     $str .= $min.":";
     $str .= sprintf("%02d",$sec) . "''";
     $str .= sprintf("%02d",$cen); //pourquoi sprintf fait -1 de tps en tps ????

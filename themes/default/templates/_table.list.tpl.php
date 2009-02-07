@@ -54,6 +54,7 @@ $super_op_enable = Auth::Check(get_userlevel_by_name("admin"));
 </tr>
 <?php
 
+   $diffview = empty($diffview) ? false : $diffview;
    $i = 0;
    $_SESSION['download_list'] = "";
    while ($fields = $this->table->db->FetchArray($records))

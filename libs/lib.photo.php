@@ -22,7 +22,8 @@
 if (!defined('NVRTBL'))
 	exit;
 	
-define('PATHMAX',64);
+if (!defined('PATHMAX'))
+	define('PATHMAX',64);
 	
 class Photo
 {
