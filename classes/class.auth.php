@@ -36,6 +36,7 @@ class Auth
   function SessionBegin()
   {
     global $config;
+    session_name("__table15");
     session_start();
     
     /* if cookie is present.. */
