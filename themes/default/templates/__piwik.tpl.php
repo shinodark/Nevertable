@@ -21,15 +21,19 @@
 # ***** END LICENSE BLOCK *****
 if (!defined('NVRTBL'))
 	exit;
-	
-/**
- * @param: stats: Statistics
- */
-global $config;
+
 ?>
     
-
-Nevertable <?php echo $config['version'] ?> powered by shino
-&nbsp;&nbsp;|&nbsp;&nbsp;icons: <a href="http://www.famfamfam.com/"><span style="color: #f15;">fam</span><span style="color: #1cf;">fam</span><span style="color: #bf3;">fam</span></a>
-
-<?php  if ($config['piwik_enable']) $this->SubTemplate("__piwik");?>
+<!-- Piwik -->
+<a href="http://piwik.org" title="Web analytics api" onclick="window.open(this.href);return(false);">
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://new.nevercorner.net/piwik/" : "http://new.nevercorner.net/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p>Web analytics api <img src="http://new.nevercorner.net/piwik/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript></object></a>
+<!-- End Piwik Tag --> 

@@ -32,5 +32,6 @@ $config = array (
     
     "bdd_debug" 		=> false,
 	"debug_mode"		=> true,
+	"piwik_enable"	    => false,
     );
 ?>
