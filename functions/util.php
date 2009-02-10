@@ -35,7 +35,7 @@ function is_a_best_record($record, $best, $critera)
   $coins     = 0 + $record['coins'];
   $levelset  = 0 + $record['levelset'];
   $level     = 0 + $record['level'];
-  $besttime  = isset($best[$levelset][$level]["time"]) ? $best[$levelset][$level]["time"] : 0;   // best time for this level
+  $besttime  = isset($best[$levelset][$level]["time"]) ? $best[$levelset][$level]["time"] : 9999;   // best time for this level
   $bestcoins = isset($best[$levelset][$level]["coins"]) ? $best[$levelset][$level]["coins"] : 0;  // best coins for this level
   // all record with same time/coins will be displayed
   if(empty($critera))
