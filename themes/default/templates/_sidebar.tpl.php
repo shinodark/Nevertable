@@ -187,7 +187,7 @@ echo $tagboard->Show($args) ?>
 	<?php echo date($config['date_format_mini'],GetDateFromTimestamp($fields['timestamp'])) ?>
 	</td></tr>
 	<tr><td class="comPreview">
-	<a href="record.php?id=<?php echo $fields['replay_id']."#".$fields['com_id'] ?>">
+	<a href="record.php?page=last&amp;id=<?php echo $fields['replay_id']."#".$fields['com_id'] ?>">
 	<?php echo $text ?>
 	</a>
 	</td></tr>

@@ -491,7 +491,7 @@ class DBHelper
 	            "SELECT", "com");
 	  $this->db->Where($p."com.user_id", $p."users.id", "AND", false);
 	  $this->db->Where($p."com.replay_id", $args['id']);
-	  $this->db->Sort(array($p."com.timestamp"), "DESC");
+	  $this->db->Sort(array($p."com.timestamp"), "ASC");
 	  $this->db->Limit($config['comments_limit'], $off);
 	  return $this->db->Query();
    }
