@@ -251,12 +251,13 @@ class DB
      $this->request .= "(" . $flist .") VALUES(" . $vlist . ")";
    }
    
-   function Where($filter, $filterval, $logic="AND", $val_quote=true)
+   function Where($filter, $filterval, $logic="AND", $val_quote=true, $neg = false)
    {
      if(!isset($filter) || !isset($filterval))
         return;
 
      $logic=trim($logic);
+     $equality = $neg ? '!=' : '=';
 
      /* version récursive */
      if (is_array($filter) && is_array($filterval))
@@ -285,9 +286,9 @@ class DB
          case 'none'   : break;
          default       : 
            if ($val_quote)
-             $this->request = $flag . $this->request . $command . $val . "='" . $this->Protect($filterval[$key]) . "'";
+             $this->request = $flag . $this->request . $command . $val . $equality . "'" . $this->Protect($filterval[$key]) . "'";
            else
-             $this->request = $flag . $this->request . $command . $val . "=" . $this->Protect($filterval[$key]);
+             $this->request = $flag . $this->request . $command . $val . $equality . $this->Protect($filterval[$key]);
            break;
          }
        }
@@ -313,9 +314,9 @@ class DB
          case 'none'   : break;
          default       :
            if ($val_quote)
-             $this->request = $flag . $this->request . $command . $filter . "='" . $this->Protect($filterval) . "'";
+             $this->request = $flag . $this->request . $command . $filter . $equality. "'" . $this->Protect($filterval) . "'";
            else
-             $this->request = $flag . $this->request . $command . $filter . "=" . $this->Protect($filterval);
+             $this->request = $flag . $this->request . $command . $filter . $equality . $this->Protect($filterval);
          break;
        }
      }

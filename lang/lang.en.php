@@ -33,9 +33,9 @@ $lang['code']			= "en";
 
 //types
 $lang['all']			= "all";
-$lang['best time']		= "best time";
-$lang['most coins']		= "most coins";
-$lang['freestyle']		= "freestyle";
+$lang['best time']		= "time";
+$lang['most coins']		= "coins";
+$lang['freestyle']		= "personal";
 $lang['fast unlock']	= "fast unlock";
 
 //folders
@@ -276,6 +276,7 @@ $lang['PROFILE_FREESTYLE']          = "Freestyle ";
 $lang['PROFILE_COMMENTS']           = "Comments ";
 $lang['PROFILE_VIEWALL']            = "View all records of %s ";
 $lang['PROFILE_VIEWALL_CONTEST']    = "View all records of %s (contest only)";
+$lang['PROFILE_VIEWALL_PERSONALS']  = "View all personal records of %s";
 
 /*
   UPLOAD

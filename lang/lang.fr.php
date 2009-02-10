@@ -33,9 +33,9 @@ $lang['code']			= "fr";
 
 //types
 $lang['all']			= "tous";
-$lang['best time']		= "meilleurs temps";
-$lang['most coins']		= "meilleurs pièces";
-$lang['freestyle']		= "freestyle";
+$lang['best time']		= "temps";
+$lang['most coins']		= "pièces";
+$lang['freestyle']		= "personnel";
 $lang['fast unlock']	= "fast unlock";
 
 //folders
@@ -124,7 +124,7 @@ $lang['LOGIN_NOTLOGIN'] 	    = "Vous n'êtes pas connecté(e)";
 $lang['LOGIN_ALREADYLOGIN'] 	    = "Vous êtes déjà connecté(e)";
 $lang['LOGIN_LOGIN'] 	            = "Vous êtes conneté(e)<br/>Redirection vers la page principale...";
 $lang['LOGIN_LOGOUT'] 	            = "Vous êtes déconneté(e)<br/>Redirection vers la page principale...";
-$lang['LOGIN_AUTH_FAILED']			= "Authentification erron�e. Essayez encore ... (ou pas)";
+$lang['LOGIN_AUTH_FAILED']			= "Authentification erron�e. Essayez encore ... (ou pas)";
 
 $lang['LOGIN_FORM_TITLE']           = "Connexion";
 $lang['LOGIN_FORM_PSEUDO']          = "login";
@@ -276,6 +276,7 @@ $lang['PROFILE_FREESTYLE']          = "Records Freestyle ";
 $lang['PROFILE_COMMENTS']           = "Commentaires ";
 $lang['PROFILE_VIEWALL']            = "Voir tous les records de %s ";
 $lang['PROFILE_VIEWALL_CONTEST']    = "Voir tous les records de %s (championnat seulement)";
+$lang['PROFILE_VIEWALL_PERSONALS']  = "Voir les records personnels de %s";
 
 /*
   UPLOAD
