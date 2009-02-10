@@ -57,7 +57,7 @@ if(isset($args['autoadd']))
     
   /* Upload du fichier */
   $maps = $table->db->helper->SelectMapsName();
-  $sets = $table->db->helper->SelectSets();
+  $sets = $table->db->helper->SelectShortSets();
   $f = new FileManager();
   $u = new User($table->db);
   $u->LoadFromId($rec->GetUserId());

@@ -68,6 +68,7 @@ while ($val = $this->table->db->FetchArray($res))
 ?>
    <tr class="<?php echo $rowclass ?>">
    <td>#<?php echo$val['id']?></td>
+   <td><?php echo $val['set_shortname']?></td>
    <td><?php echo $val['set_path']?></td>
    <td style="text-align: right;">
       <form name="setform_<?php echo $i?>" id="setform_<?php echo $i?>" action="sets.php?setaction" method="post">

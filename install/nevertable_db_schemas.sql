@@ -99,6 +99,7 @@ CREATE TABLE `nvrtbl_rec` (
 CREATE TABLE `nvrtbl_sets` (
   `id` int(11) NOT NULL auto_increment,
   `set_name` varchar(64) NOT NULL default '',
+  `set_shortname` varchar(8) NOT NULL,
   `set_path` varchar(64) NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

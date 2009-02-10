@@ -714,6 +714,20 @@ class DBHelper
      return $sets;
    }
    
+   function SelectShortSets()
+   {
+   	 if (!empty($this->cache_struct['shortsets']))
+   		return $this->cache_struct['shortsets'];
+   		
+     $this->db->NewQuery("SELECT", "sets");
+     $this->db->Query();
+     $sets = array();
+     while ($val = $this->db->FetchArray())
+       $sets[$val['id']] = $val['set_shortname'];
+     $this->cache_struct['shortsets'] = $sets;
+     return $sets;
+   }
+   
    function SelectMapsName()
    {
    	 if (!empty($this->cache_struct['maps_name']))

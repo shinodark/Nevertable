@@ -208,6 +208,10 @@ class Set
       return $this->fields['set_name'];
     }
     
+    function GetShortName()
+    {
+      return $this->fields['set_shortname'];
+    }    
     function GetPath()
     {
       return $this->fields['set_path'];
@@ -225,6 +229,7 @@ class Set
             if (!empty($name) && (
                 $name == "id" 
              || $name == "set_name"
+             || $name == "set_shortname"
              || $name == "set_path"
              || $name == "author"))
                    $this->fields[$name] = $value;

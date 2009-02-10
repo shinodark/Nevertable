@@ -59,7 +59,8 @@ if (isset($args['setadd']))
   {
 	  $set_name = trim($f->ReadLine());
 	  $f->ReadLine(); /* Difficulty */
-	  $set_path = "map-".trim($f->ReadLine()); /* path */
+	  $set_shortname = $f->ReadLine();
+	  $set_path = "map-".trim($set_shortname); /* path */
 	  $f->ReadLine(); /* shot */
 	  $f->ReadLine(); /* empty */
 	
@@ -67,6 +68,7 @@ if (isset($args['setadd']))
 	
 	  $s->SetFields(array(
 		  "set_name" => $set_name,
+		  "set_shortname" => $set_shortname,
 		  "set_path" => $set_path,
 	  ));
   
