@@ -277,7 +277,7 @@ $lang['PROFILE_FAST_UNLOCK']		= "Fast Unlock";
 $lang['PROFILE_COMMENTS']           = "Comments ";
 $lang['PROFILE_VIEWALL']            = "View all records of %s ";
 $lang['PROFILE_VIEWALL_CONTEST']    = "View all records of %s (contest only)";
-$lang['PROFILE_VIEWALL_PERSONALS']  = "View all personal records of %s";
+$lang['PROFILE_VIEWALL_PERSONALS']  = "View all personal replays of %s";
 
 /*
   UPLOAD
