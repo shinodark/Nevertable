@@ -272,7 +272,7 @@ $lang['PROFILE_TOTAL_RECORDS']      = "Total de records ";
 $lang['PROFILE_BEST_RECORDS']       = "Meilleurs records ";
 $lang['PROFILE_BEST_TIME']          = "Meilleurs temps ";
 $lang['PROFILE_BEST_COINS']         = "Meilleurs pièces ";
-$lang['PROFILE_FREESTYLE']          = "Records Freestyle ";
+$lang['PROFILE_FREESTYLE']          = "Records personnels ";
 $lang['PROFILE_FAST_UNLOCK']		= "Fast Unlock";
 $lang['PROFILE_COMMENTS']           = "Commentaires ";
 $lang['PROFILE_VIEWALL']            = "Voir tous les records de %s ";
@@ -376,11 +376,11 @@ $lang_months = array (
 
 global $lang_days;
 $lang_days = array (
-    "Mon" => "Lundi",
-    "Tue" => "Mardi",
-    "Wen" => "Mercredi",
-    "Thu" => "Jeudi",
-    "Fri" => "Vendredi",
-    "Sat" => "Samedi",
-    "Sun" => "Dimanche",
+    1 => "Lundi",
+    2 => "Mardi",
+    3 => "Mercredi",
+    4 => "Jeudi",
+    5 => "Vendredi",
+    6 => "Samedi",
+    0 => "Dimanche",
     );

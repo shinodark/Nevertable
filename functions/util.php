@@ -268,17 +268,17 @@ function GetDateLang($date)
 {
   global $lang_months, $lang_days;
 
-  list($day, $month, $year, $hour) =   sscanf(date('j m Y H:i', $date), "%s %d %s %s");
+  list($day, $dayn, $month, $year, $hour) =   sscanf(date('w j m Y H:i', $date), "%s %d %d %s %s");
 
-  return $day." ".$lang_months[$month]." ".$year.", ".$hour;
+  return $lang_days[$day]." ". $dayn." ".$lang_months[$month]." ".$year.", ".$hour;
 }
 
 function GetDateLang_mini($date)
 {
-  global $lang_months, $lang_days;
+  global $lang_months;
 
-  list($day, $month, $year, $hour) =   sscanf(date('j m Y H:i', $date), "%s %d %s %s");
-  return $day."/".$month."/".$year.", ".$hour;
+  list($day, $dayn, $month, $year, $hour) =   sscanf(date('w j m Y H:i', $date), "%s %d %d %s %s");
+  return $dayn."/".$month."/".$year.", ".$hour;
 }
 
 function GetDateLang_birthday($date)

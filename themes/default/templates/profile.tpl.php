@@ -121,7 +121,7 @@ if (!isset($edit_enable))
 <td class="row1">
 <?php
     for ($i=0; $i<$user->CountBestRecords_WithType(get_type_by_name("fast unlock")); $i++)
-      echo $this->table->style->GetImage('freestyle');
+      echo $this->table->style->GetImage('fast unlock');
 ?>
 </td>
 </tr>

@@ -184,7 +184,7 @@ echo $tagboard->Show($args) ?>
 	<a href="profile.php?id=<?php echo $fields['user_id']?>" title="View profile of <?php echo $fields['pseudo'] ?>"><?php echo $fields['pseudo'] ?></a>
 	<a href="?levelset_f=<?php echo $fields['levelset'] ?>&amp;level_f=<?php echo $fields['level'] ?>" title="Show this level">[<?php echo $fields['set_name']."&nbsp;".$fields['level'] ?>]</a>
 	<br/>
-	<?php echo date($config['date_format_mini'],GetDateFromTimestamp($fields['timestamp'])) ?>
+	<?php echo GetDateLang_mini(GetDateFromTimestamp($fields['timestamp'])) ?>
 	</td></tr>
 	<tr><td class="comPreview">
 	<a href="record.php?page=last&amp;id=<?php echo $fields['replay_id']."#".$fields['com_id'] ?>">
