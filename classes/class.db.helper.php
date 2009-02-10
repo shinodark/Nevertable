@@ -328,7 +328,7 @@ class DBHelper
         $config['limit'] = 255;
       }
 
-      $this->SortFilter($sort);
+      $this->SortFilter($args['sort']);
       $this->db->Limit($config['limit'], $off);
       return $this->db->Query();
    }
@@ -536,6 +536,8 @@ class DBHelper
 	  $this->db->Where($p."rec.id", $record_id);
 	  $this->db->Limit(1);
 	  $this->db->Query();
+	  if ($this->db->NumRows() < 1)
+	    throw new Exception("No record match this id.");
 	  return $this->db->FetchArray();
    }
    

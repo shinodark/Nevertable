@@ -76,6 +76,7 @@ function CheckLimitsOptions($args)
 if(isset($args['upoptions']))
 {
    $val = CheckLimitsOptions($args);
+
    if ($val == false)
      throw new Exception("A parmameter is outbounds");
 

@@ -86,7 +86,7 @@ foreach ( $langs as $key => $value) { ?>
 </tr>
 <tr>
 <td><label for="limit"><?php echo $lang['OPTIONS_FORM_LIMIT'] ?></label></td>
-<td colspan="1"><input type="text" id="limit" name="limit"  size="5" value="<?php echo $user->GetCommentsLimit() ?>" /></td>
+<td colspan="1"><input type="text" id="limit" name="limit"  size="5" value="<?php echo $user->GetLimit() ?>" /></td>
 </tr><tr>
 <td><label for="comments_limit"><?php echo $lang['OPTIONS_FORM_COMMENTS_LIMIT'] ?></label></td>
 <td colspan="1"><input type="text" id="comments_limit" name="comments_limit"  size="5" value="<?php echo $user->GetCommentsLimit() ?>" /></td>

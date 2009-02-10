@@ -241,6 +241,8 @@ try {
 	  else
 	    $sort = $args['sort'];
 	    
+	  $args['sort'] = $sort;
+	    
 	  /* Keep list of links */
 	  $_SESSION['download_list'] = "";
 	

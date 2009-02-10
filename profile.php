@@ -33,16 +33,20 @@ $args = get_arguments($_POST, $_GET);
 $table = new Nvrtbl();
 
 try {
-	
-if (!Auth::Check(get_userlevel_by_name("member")))
-  throw new Exception($lang['NOT_MEMBER']);
-  
+	 
 $edit_enable = false;
 $cur_user_id = -1;
 
 function CheckEditEnable()
 {
 	global $cur_user_id, $args;
+	
+	/* Guest viewer */
+	if (!Auth::Check(get_userlevel_by_name("member")))
+	{
+	    $cur_user_id = $args['id'];
+        return false;
+	}
 	
 	if (!isset($args['id']))
 	{

@@ -181,7 +181,7 @@ echo $tagboard->Show($args) ?>
  	$text = $this->RenderText($text);
  	?>
 	<tr><td class="comPreviewHeader">
-	<a href="profile.php?id="<?php echo $fields['user_id']?>" title="View profile of <?php echo $fields['pseudo'] ?>"><?php echo $fields['pseudo'] ?></a>
+	<a href="profile.php?id=<?php echo $fields['user_id']?>" title="View profile of <?php echo $fields['pseudo'] ?>"><?php echo $fields['pseudo'] ?></a>
 	<a href="?levelset_f=<?php echo $fields['levelset'] ?>&amp;level_f=<?php echo $fields['level'] ?>" title="Show this level">[<?php echo $fields['set_name']."&nbsp;".$fields['level'] ?>]</a>
 	<br/>
 	<?php echo date($config['date_format_mini'],GetDateFromTimestamp($fields['timestamp'])) ?>

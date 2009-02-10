@@ -273,6 +273,7 @@ $lang['PROFILE_BEST_RECORDS']       = "Meilleurs records ";
 $lang['PROFILE_BEST_TIME']          = "Meilleurs temps ";
 $lang['PROFILE_BEST_COINS']         = "Meilleurs pièces ";
 $lang['PROFILE_FREESTYLE']          = "Records Freestyle ";
+$lang['PROFILE_FAST_UNLOCK']		= "Fast Unlock";
 $lang['PROFILE_COMMENTS']           = "Commentaires ";
 $lang['PROFILE_VIEWALL']            = "Voir tous les records de %s ";
 $lang['PROFILE_VIEWALL_CONTEST']    = "Voir tous les records de %s (championnat seulement)";

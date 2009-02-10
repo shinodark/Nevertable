@@ -117,6 +117,15 @@ if (!isset($edit_enable))
 </td>
 </tr>
 <tr>
+<td class="row2"><?php echo $lang['PROFILE_FAST_UNLOCK'] ?></td>
+<td class="row1">
+<?php
+    for ($i=0; $i<$user->CountBestRecords_WithType(get_type_by_name("fast unlock")); $i++)
+      echo $this->table->style->GetImage('freestyle');
+?>
+</td>
+</tr>
+<tr>
 <td class="row2"><?php echo $lang['PROFILE_FREESTYLE'] ?></td>
 <td class="row1">
 <?php

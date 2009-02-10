@@ -98,7 +98,7 @@ $lang['REGISTER_PASSWD_LENGTH']     = "Password have to count at least 5 charact
 $lang['REGISTER_SPECIAL_CHARS']     = "Don't use specials characters.";
 $lang['REGISTER_FIRST_REGISTER']    = "You're the first registered member, welcome root ;)";
 $lang['REGISTER_WELCOME_SUBJECT']   = "Welcome on the Nevertable !";
-$lang['REGISTER_WELCOME_MESSAGE1']  = "You're registration is finished. \n Here are your account informations : \n !";
+$lang['REGISTER_WELCOME_MESSAGE1']  = "You're registration is finished. \n Here are your account information : \n !";
 $lang['REGISTER_WELCOME_MESSAGE1']  = "Thank you !";
 $lang['REGISTER_SUCCESSFUL']        = "You're registration is finished. You can log in ;)";
 
@@ -250,8 +250,8 @@ $lang['PROFILE_FORM_IDENT_PASSWD1']  = "New password : ";
 $lang['PROFILE_FORM_IDENT_PASSWD2']  = "New password, again : ";
 
 $lang['PROFILE_FORM_INFO_TITLE']    = "Personnal informations";
-$lang['PROFILE_FORM_INFO_INFO']     = "No fieds are required";
-$lang['PROFILE_FORM_INFO_LOCAL']    = "Localisation : ";
+$lang['PROFILE_FORM_INFO_INFO']     = "No fields are required";
+$lang['PROFILE_FORM_INFO_LOCAL']    = "Localization : ";
 $lang['PROFILE_FORM_INFO_WEB']      = "Personnal web site : ";
 $lang['PROFILE_FORM_INFO_SPEECH']   = "Personnal quote : ";
 
@@ -265,7 +265,7 @@ $lang['PROFILE_AVATAR_RESIZE_OK']   = "Picture too big, it was resized. ";
 
 $lang['PROFILE_TITLE']              = "%s profile";
 $lang['PROFILE_LOCALISATION']       = "Localization ";
-$lang['PROFILE_WEB']                = "Personal website ";
+$lang['PROFILE_WEB']                = "Personnal website ";
 $lang['PROFILE_SPEECH']             = "Personnal quote ";
 $lang['PROFILE_LEVEL']              = "Auth level ";
 $lang['PROFILE_TOTAL_RECORDS']      = "Total records ";
@@ -273,6 +273,7 @@ $lang['PROFILE_BEST_RECORDS']       = "Best records ";
 $lang['PROFILE_BEST_TIME']          = "Best time ";
 $lang['PROFILE_BEST_COINS']         = "Most coins ";
 $lang['PROFILE_FREESTYLE']          = "Freestyle ";
+$lang['PROFILE_FAST_UNLOCK']		= "Fast Unlock";
 $lang['PROFILE_COMMENTS']           = "Comments ";
 $lang['PROFILE_VIEWALL']            = "View all records of %s ";
 $lang['PROFILE_VIEWALL_CONTEST']    = "View all records of %s (contest only)";
@@ -295,7 +296,7 @@ $lang['UPLOAD_NOT_BEST_RECORD']      = "Your record is not a best record: added 
 */
 
 $lang['STATS_NUMBERS_LABEL']        = "Visitors : ";
-$lang['STATS_NUMBERS_TEXT']         = "%d registerd, %d guests.";
+$lang['STATS_NUMBERS_TEXT']         = "%d registered, %d guests.";
 $lang['STATS_LIST']                 = "Registered users : ";
 
 $lang['FOOTER_PERFS']               = "Page loads in %ss with %d queries.";
