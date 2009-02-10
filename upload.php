@@ -35,6 +35,9 @@ try {
 	
 if(isset($args['autoadd']))
 {
+  $tpl_params = array("redirect" => "index.php");
+  $tpl_params['message_array'] = array();
+	
   /* toujours off pour ce cas, puisqu'on va dans incoming d'abord */
   $overwrite == "off";
 
@@ -106,6 +109,23 @@ if(isset($args['autoadd']))
 	
 	  
 	  $rec->SetFields(array("replay" => $replayName));
+	  
+      /* See if it's a best record as it should be if != freestyle */
+	  if ($rec->GetType() != get_type_by_name("freestyle"))
+	  {
+	  	if(!is_best_record_by_type($rec->GetFields()))
+	  	{
+	  		/* If not force freestyle */
+	  		array_push( $tpl_params['message_array'], $lang['UPLOAD_NOT_BEST_RECORD']);
+	  		$rec->SetFields(array("type" => get_type_by_name("freestyle")));
+	  	}
+	  	else
+	  	{
+	  		/* We set isbest field here so admin can be sure it was verified */
+	  		$rec->SetFields(array("isbest" => true));
+	  	}
+	  }
+	  
 	  $rec->Update(true);
 	  
 	  $rep->ChangePLayerName($_SESSION['user_pseudo']);
@@ -119,9 +139,8 @@ if(isset($args['autoadd']))
   	throw $ex;
   }
 
-  $tpl_params = array("redirect" => "index.php");
   $tpl_params['delay'] = 0;
-  $tpl_params['message_array'] = array($lang['UPLOAD_REGISTERED']);
+  array_push( $tpl_params['message_array'], $lang['UPLOAD_REGISTERED']);
   $record_fields =  $rec->GetFields();
   $record_fields['pseudo'] = $u->GetPseudo();
   $s = new Set($table->db);

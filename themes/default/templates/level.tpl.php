@@ -109,7 +109,10 @@ change_form_select('newonly','<?php echo $args['newonly']?>');
 <?php $this->SubTemplate('_table.list', array("records" => $rec_contest, "total" => ""));?>
 </div>
 <div class="results">
-<?php $this->SubTemplate('_table.list', array("records" => $rec_oldones, "total" => ""));?>
+<?php
+//if ($this->table->db->NumRows($rec_oldones) > 0)
+//	$this->SubTemplate('_table.list', array("records" => $rec_oldones, "total" => ""));
+?>
 <center><?php echo $lang['TABLE_RESULTS_LIST']?><a href="?to=showlinklist" target="_blank">Link_List.lst</a></center>
 </div>
 <div id="sidebar">

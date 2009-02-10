@@ -269,9 +269,11 @@ try {
 	  /* -------------------- */
 	  else 
 	  {
-	     $results = $table->db->helper->GetFilteredRecordsLevel($args);
-	     $tpl_params['rec_contest']  = $results['rec_contest'];
-	     $tpl_params['rec_oldones']  = $results['rec_oldones'];
+	     //$results = $table->db->helper->GetFilteredRecordsLevel($args);
+	     $results = $table->db->helper->GetFilteredRecords($args);
+	     $tpl_params['rec_contest']  = $results;
+	     //$tpl_params['rec_contest']  = $results['rec_contest'];
+	     //$tpl_params['rec_oldones']  = $results['rec_oldones'];
 	     $tpl_params['diffview'] = $args['diffview']=="on" ? true : false;
 	     $tpl_params['level_shot']   = $table->db->helper->GetLevelShot($args['level_f'],  $args['levelset_f']);
 	     $table->template->Show("level", $tpl_params);

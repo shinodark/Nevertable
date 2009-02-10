@@ -59,9 +59,8 @@ class DBHelper
      	{
      	    $p = $config['bdd_prefix'];
      	    $this->db->Where($p."rec.type", get_type_by_name("freestyle"), "AND", true, true);
-     	    return;
      	}
-     	
+     	return;
      }
    
      $p = $config['bdd_prefix'];
@@ -214,6 +213,8 @@ class DBHelper
    	  if (isset($args['filter']) && isset($args['filterval']))
    	  	$this->db->Where($args['filter'], $args['filterval']);
       $this->db->helper->LevelsFilter($args['levelset_f'], $args['level_f']);
+      $personnal = ($args['folder'] == get_folder_by_name("contest")) ? false : true;
+      $this->TypeFilter($args['type'], $personnal);
       $this->db->helper->TypeFilter($args['type']);
       $this->db->helper->NewFilter($args['newonly']);
       $this->db->helper->FolderFilter($args['folder']);
@@ -301,7 +302,8 @@ class DBHelper
       
       $this->db->Where($args['filter'], $args['filterval']);
       $this->LevelsFilter($args['levelset_f'], $args['level_f']);
-      $this->TypeFilter($args['type']);
+      $personnal = ($args['folder'] == get_folder_by_name("contest")) ? false : true;
+      $this->TypeFilter($args['type'], $personnal);
       $this->NewFilter($args['newonly']);
       $this->FolderFilter($args['folder']);
       

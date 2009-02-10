@@ -287,6 +287,7 @@ $lang['UPLOAD_FORM_SIZEMAX']         = "Taille maximum du fichier replay: %dkB";
 $lang['UPLOAD_FORM_PSEUDO']          = "Votre pseudo : ";
 $lang['UPLOAD_FORM_REPLAYFILE']      = "Fichier replay : ";
 $lang['UPLOAD_FORM_TYPE']            = "Type : ";
+$lang['UPLOAD_NOT_BEST_RECORD']      = "Votre record n'est pas le meilleur, ajouté en tant que record personnel.";
 
 /*
   PAGE PRINCIPALE

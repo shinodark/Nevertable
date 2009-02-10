@@ -270,18 +270,7 @@ class Nvrtbl
   {
     $val = $updated_record_fields;
     $ret = $this->db->helper->SetBestRecordByFields($val['level'], $val['levelset'], $type);
-    switch ($val['type'])
-    {
-     case get_type_by_name("best time") : $critera = "time"; $check=true; break;
-     case get_type_by_name("most coins"): $critera = "coins";$check=true; break;
-     case get_type_by_name("fast unlock"): $critera = "time";$check=true; break;
-     default : $check=false; $ret['isbest']=false; break;
-    }
-    if($check)
-    {
-      $best= $this->db->helper->GetBestRecord($val['type'], get_folder_by_name("contest"));
-      $ret['isbest'] = is_a_best_record($val, $best, $critera);
-    }
+    $ret['isbest'] = is_best_record_by_type($val);
     return $ret;
   }
 

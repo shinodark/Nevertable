@@ -35,8 +35,8 @@ function is_a_best_record($record, $best, $critera)
   $coins     = 0 + $record['coins'];
   $levelset  = 0 + $record['levelset'];
   $level     = 0 + $record['level'];
-  $besttime  = $best[$levelset][$level]["time"];   // best time for this level
-  $bestcoins = $best[$levelset][$level]["coins"];  // best coins for this level
+  $besttime  = isset($best[$levelset][$level]["time"]) ? $best[$levelset][$level]["time"] : 0;   // best time for this level
+  $bestcoins = isset($best[$levelset][$level]["coins"]) ? $best[$levelset][$level]["coins"] : 0;  // best coins for this level
   // all record with same time/coins will be displayed
   if(empty($critera))
     $critera == "time";
@@ -46,10 +46,9 @@ function is_a_best_record($record, $best, $critera)
     return false;
   else if ($record['type'] == get_type_by_name("freestyle"))
     return false;
-  else if (($critera == "time") && ($time == $besttime))
-  //else if (($critera == "time") && ($time == $besttime) && ($coins == $bestcoins))
+  else if (($critera == "time") && ($time <= $besttime))
     return true;
-  else  if (($critera == "coins") && ($coins == $bestcoins)) 
+  else  if (($critera == "coins") && ($coins >= $bestcoins)) 
   {
     // ici c'est chiant, il faut comparer les temps si plusieurs records
     // ont le même nombre de pièces avec des temps différents
@@ -84,11 +83,33 @@ function is_a_best_record($record, $best, $critera)
     return false;
 }
 
+function is_best_record_by_type($record)
+{
+	global $table; /* pour accès à la base de donnée */
+	  
+	$ret = false;
+    switch ($record['type'])
+    {
+     case get_type_by_name("best time") : $critera = "time"; $check=true; break;
+     case get_type_by_name("most coins"): $critera = "coins";$check=true; break;
+     case get_type_by_name("fast unlock"): $critera = "time";$check=true; break;
+     default : $check=false; $ret=false; break;
+    }
+    if($check)
+    {
+      $best= $table->db->helper->GetBestRecord($val['type'], get_folder_by_name("contest"));
+      $ret = is_a_best_record($record, $best, $critera);
+    }
+    return $ret;
+}
+
 // return a string of representation of sec in min' sec''
 function sec_to_friendly_display($seconds, $sign_display_always=false)
 {
     if ($seconds>=9999)
         return "goal not reached";
+    
+    $str = "";        
     if ($seconds<0)
     {
         $str = "-";
@@ -103,7 +124,6 @@ function sec_to_friendly_display($seconds, $sign_display_always=false)
     $sec = floor($seconds-$min*60);
     $cen = round(($seconds-$min*60 - $sec)*100);
 
-    $str = "";
     $str .= $min.":";
     $str .= sprintf("%02d",$sec) . "''";
     $str .= sprintf("%02d",$cen); //pourquoi sprintf fait -1 de tps en tps ????

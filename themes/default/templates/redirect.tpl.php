@@ -47,7 +47,7 @@ if (!isset($delay))
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $lang['code'] ?>" lang="<?php echo $lang['code'] ?>">
 <head>
 <?php $this->SubTemplate('_head'); ?>
-<meta http-equiv="refresh" content="<?php echo ($delay == 0) ? 60 : $delay ?>;URL=<?php echo $redirect ?>" />
+<meta http-equiv="refresh" content="<?php echo ($delay == 0) ? 500 : $delay ?>;URL=<?php echo $redirect ?>" />
 </head>
 <body>
 <div id="page">
