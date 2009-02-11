@@ -145,14 +145,15 @@ function timestamp_diff_in_secs($u_t1,$u_t2)
 function get_arguments($post, $get)
 {
     $args = array();
+    /* using strip_tags everywhere to prevent XSS */
     foreach ($get as $arg => $value)
     {
-      $args[$arg] = $value;
+      $args[$arg] = strip_tags($value);
     }
     // POST is priority, so in last
     foreach ($post as $arg => $value)
     {
-      $args[$arg] = $value;
+      $args[$arg] = strip_tags($value);
     }
 
     return $args; // return args with all arguments
