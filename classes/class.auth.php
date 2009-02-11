@@ -39,10 +39,16 @@ class Auth
     session_name("__table15");
     session_start();
     
+    /* protect cooki against XSS */
+    $cookie = array();
+    foreach ($_COOKIE as $key => $value) {
+    	$cookie[$key] = trim(strip_tags($value));
+    }
+    
     /* if cookie is present.. */
-    if ( isset($_COOKIE[$config["cookie_name"]]))
+    if ( isset($cookie[$config["cookie_name"]]))
 	{
-      $cookiedata = unserialize(stripslashes($_COOKIE[$config["cookie_name"]]));
+      $cookiedata = unserialize(stripslashes($cookie[$config["cookie_name"]]));
       if ($cookiedata["auto"] && !isset($_SESSION['user_logged']) && !empty($cookiedata["user"]) && !empty($cookiedata["sha1"]))
         $this->Perform($cookiedata["user"], $cookiedata["sha1"], true, false);
 	}
