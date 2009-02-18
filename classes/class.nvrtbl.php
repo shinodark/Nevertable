@@ -737,7 +737,7 @@ class Nvrtbl
       $comp = array_diff_assoc( $current_stats, $new_stats );
       if (!empty($comp))
       {
-        echo "user #".$val['id']." (".$val['pseudo'].") is not uptodate, it's fixed now. Total: ".
+        echo "user #".$val['id']." (".$val['pseudo'].") is not up-to-date, it's fixed now. Total: ".
         $current_stats[0]. " -> ". $new_stats[0] . " ~ Best: " . 
         $current_stats[1]. " -> ". $new_stats[1] . " ~ Comments :" .
         $current_stats[2]. " -> ". $new_stats[2] . " <br/>\n";

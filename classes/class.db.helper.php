@@ -238,7 +238,7 @@ class DBHelper
    
    function CountUserBest($user_id)
    {
-     return $this->db->CountRows("rec", array("user_id"=>$user_id, "isbest"=>1));
+     return $this->db->CountRows("rec", array("user_id"=>$user_id, "isbest"=>1, "folder"=>get_folder_by_name("contest")));
    }
    
    function CountUserComments($user_id)

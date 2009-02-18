@@ -62,11 +62,11 @@ function is_a_best_record($record, $best, $critera)
     $table->db->AppendCustom(" AND (folder=".get_folder_by_name("contest")." OR folder=".get_folder_by_name("oldones").")");
     $table->db->Query();
     // recherche du temps le plus faible, pour ce niveau
-    $tmptime = 99999; $i=0;
+    $tmptime = 9999; $i=0;
     while ($val = $table->db->FetchArray())
     { 
       /* si ce record a le nb de pièces max */
-      if ($val['coins'] == $bestcoins)
+      if ($val['coins'] >= $bestcoins)
       {
         /* on cherche le tps le plus faible pour le maximum de pièces */
         if ($val['time'] < $tmptime)
@@ -74,7 +74,7 @@ function is_a_best_record($record, $best, $critera)
       }
     }
     /* tmptime contient le temps min pour le max de pièce */
-    if ($time == $tmptime)
+    if ($time <= $tmptime)
       return true;
     else
       return false;
@@ -97,7 +97,7 @@ function is_best_record_by_type($record)
     }
     if($check)
     {
-      $best= $table->db->helper->GetBestRecord($val['type'], get_folder_by_name("contest"));
+      $best= $table->db->helper->GetBestRecord($record['type'], get_folder_by_name("contest"));
       $ret = is_a_best_record($record, $best, $critera);
     }
     return $ret;

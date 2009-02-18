@@ -95,7 +95,7 @@ if (!isset($edit_enable))
 </tr>
 <tr>
 <td class="row2"><?php echo $lang['PROFILE_BEST_RECORDS'] ?></td>
-<td class="row1"><?php echo $user->GetTotalRecords() ?></td>
+<td class="row1"><?php echo $user->GetBestRecords() ?></td>
 </tr>
 
 <tr>
