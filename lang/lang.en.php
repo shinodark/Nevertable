@@ -35,7 +35,7 @@ $lang['code']			= "en";
 $lang['all']			= "all";
 $lang['best time']		= "time";
 $lang['most coins']		= "coins";
-$lang['freestyle']		= "personal";
+$lang['freestyle']		= "personnal";
 $lang['fast unlock']	= "fast unlock";
 
 //folders
@@ -272,12 +272,12 @@ $lang['PROFILE_TOTAL_RECORDS']      = "Total records ";
 $lang['PROFILE_BEST_RECORDS']       = "Best records ";
 $lang['PROFILE_BEST_TIME']          = "Best time ";
 $lang['PROFILE_BEST_COINS']         = "Most coins ";
-$lang['PROFILE_FREESTYLE']          = "Personal ";
+$lang['PROFILE_FREESTYLE']          = "Personnal ";
 $lang['PROFILE_FAST_UNLOCK']		= "Fast Unlock";
 $lang['PROFILE_COMMENTS']           = "Comments ";
 $lang['PROFILE_VIEWALL']            = "View all records of %s ";
 $lang['PROFILE_VIEWALL_CONTEST']    = "View all records of %s (contest only)";
-$lang['PROFILE_VIEWALL_PERSONALS']  = "View all personal replays of %s";
+$lang['PROFILE_VIEWALL_PERSONNALS']  = "View all personnal replays of %s";
 
 /*
   UPLOAD
@@ -288,7 +288,7 @@ $lang['UPLOAD_FORM_SIZEMAX']         = "Max size of a replay file : %dkB";
 $lang['UPLOAD_FORM_PSEUDO']          = "Your pseudo : ";
 $lang['UPLOAD_FORM_REPLAYFILE']      = "Replay file : ";
 $lang['UPLOAD_FORM_TYPE']            = "Type : ";
-$lang['UPLOAD_NOT_BEST_RECORD']      = "Your record is not a best record: added as personal record.";
+$lang['UPLOAD_NOT_BEST_RECORD']      = "Your record is not a best record: added as personnal record.";
 
 
 /*
