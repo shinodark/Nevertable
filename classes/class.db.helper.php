@@ -531,10 +531,11 @@ class DBHelper
 	            "SELECT", "com");
 	  
 	  $this->db->Where(
-        array($p."rec.user_id", $p."rec.levelset", $p."rec.level"),
-        array($p."users.id", $p."sets.id", $p."maps.level_num"),
+          array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
+          array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
         "AND", false
       );
+
 	  $this->db->Where($p."rec.id", $record_id);
 	  $this->db->Limit(1);
 	  $this->db->Query();
