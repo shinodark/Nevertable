@@ -99,7 +99,7 @@ $super_op_enable = Auth::Check(get_userlevel_by_name("admin"));
       ?>
       
       <tr class="<?php echo $rowclass ?>" <?php if ($diffview) { ?>style="font-weight: bold;"<?php } ?>
-      		onmouseover="return escape('<?php echo Javascriptize(GetShotMini($fields['set_path'], $fields['map_solfile'], 128)) ?>')">
+      		onmouseover="Tip('<?php echo Javascriptize(GetShotMini($fields['set_path'], $fields['map_solfile'], 128)) ?>')" onmouseout="UnTip()" >
       <td><?php if ($days<=3) echo $this->table->style->GetImage('new') ?></td>
       <td><?php echo $days?>&nbsp;d</td>
       <td><?php if ($fields['isbest']) echo $this->table->style->GetImage('best') ?></td>

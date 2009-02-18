@@ -98,7 +98,7 @@ else
 <div id="footer">
 <?php $this->SubTemplate('_footer');?>
 </div> 
-<script src="./includes/js/wz_tooltip.js" type="text/javascript"></script>
+<script src="./includes/js/wz_tooltip/wz_tooltip.js" type="text/javascript"></script>
 </div><!-- page end -->
 </body>
 </html>

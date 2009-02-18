@@ -46,7 +46,7 @@ $replay = empty($fields['replay']) ? $this->table->style->Getimage("no_replay", 
 <th></th>
 <th></th>
 </tr>
-<tr class="row1" onmouseover="return escape('<?php echo Javascriptize(GetShotMini($fields['set_path'], $fields['map_solfile'], 128)) ?>')">
+<tr class="row1" onmouseover="Tip('<?php echo Javascriptize(GetShotMini($fields['set_path'], $fields['map_solfile'], 128)) ?>')" onmouseout="UnTip()" >
 <td><?php if ($fields['isbest']) echo $this->table->style->GetImage('best') ?></td>
 <td><?php echo $this->table->style->GetImage(get_type_by_number($fields['type']))?></td>
 <td><a href="profile.php?id=<?php echo $fields['user_id'] ?>"><?php echo $fields['pseudo']?></a></td>

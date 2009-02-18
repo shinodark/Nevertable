@@ -43,14 +43,17 @@ while ($fields = $this->table->db->FetchArray($tags))
   
   while (($e = array_pop($errors)) != null)
   {
-  	?><span class="tag_error"><?php echo $e ?></span><br/> <?php
+  ?>
+  	<span class="tag_error"><?php echo $e ?></span>
+  	<br/>
+  <?php
   }
   ?>
   <tr class="tagheader">
   <td>
   <a href="?to=del&amp;id="<?php echo $fields['id'] ?>"><?php echo $this->table->style->GetImage('del', "Delete this comments" )?></a>
   <a href="?to=edit&amp;id="<?php echo $fields['id'] ?>"><?php echo $this->table->style->GetImage('edit', "Edit this comments" )?></a>
-  <span class="tag_pseudo" onmouseover="return escape('<?php echo $fields["ip_log"] ?>')"><?php echo $fields['pseudo'] ?></span>
+  <span class="tag_pseudo" onmouseover="Tip('<?php echo $fields["ip_log"] ?>')" onmouseout="UnTip()"><?php echo $fields['pseudo'] ?></span>
   <span class="tag_date"><?php echo GetDateLang_mini(GetDateFromTimestamp($fields['timestamp'])) ?></span>
   </td>
   </tr>

@@ -70,12 +70,14 @@ $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 <td height="20">
  <?php if (!empty($fields['user_avatar']))  {  ?>
 <a href="profile.php?id=<?php echo $fields['id'] ?>"
-     onmouseover="return_escape('<?php echo Javascriptize("<center><img src=\"".ROOT_PATH.$config['avatar_dir']."/".$fields['user_avatar']."\" alt=\"\" /></center>") ?>')">
-     <?php echo $fields['pseudo'] ?>
+     onmouseover="Tip('<?php echo Javascriptize("<center><img src=\"".ROOT_PATH.$config['avatar_dir']."/".$fields['user_avatar']."\" alt=\"\" /></center>") ?>')"
+     onmouseout="UnTip()">    
+ <?php echo $fields['pseudo'] ?>
 </a>
  <?php } else { ?>
 <a href="profile.php?id=<?php echo $fields['id'] ?>"
-     onmouseover="return_escape('<?php echo Javascriptize("<center><i>".$lang['MEMBER_NO_AVATAR']."</i></center>") ?>')">
+     onmouseover="Tip('<?php echo Javascriptize("<center><i>".$lang['MEMBER_NO_AVATAR']."</i></center>") ?>')"
+     onmouseout="UnTip()">
      <?php echo $fields['pseudo'] ?>
  </a>
  <?php } ?>
@@ -118,7 +120,7 @@ $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 <?php $this->SubTemplate('_footer');?>
 </div>
 
-<script src="./includes/js/wz_tooltip.js" type="text/javascript"></script>
+<script src="./includes/js/wz_tooltip/wz_tooltip.js" type="text/javascript"></script>
 </div><!-- page end -->
 </body>
 </html>

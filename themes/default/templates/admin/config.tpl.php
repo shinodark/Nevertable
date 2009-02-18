@@ -51,7 +51,7 @@ global $lang, $config;
   $form->AddTitle($lang['ADMIN_CONFIG_FORM_TITLE']);
   while ($val = $this->table->db->FetchArray($config_res))
   {
-     $option = 'onmouseover="return escape(\''.$val['conf_desc'].'\')" ';
+     $option = 'onmouseover="Tip(\''.$val['conf_desc'].'\')" onmouseout="UnTip()" ';
      $form->AddInputText($val['conf_name'], $val['conf_name'], $val['conf_name'], 30, $val['conf_value'], $option);
      $form->Br();
   }
@@ -68,6 +68,7 @@ global $lang, $config;
 <div id="footer">
 <?php $this->SubTemplate('_footer');?>
 </div> 
+<script src="./includes/js/wz_tooltip/wz_tooltip.js" type="text/javascript"></script>
 </div><!-- page end -->
 </body>
 </html>
