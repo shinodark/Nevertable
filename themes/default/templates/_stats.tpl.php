@@ -31,13 +31,15 @@ global $config, $lang;
 <span class="st_label"><?php echo $lang['STATS_NUMBERS_LABEL'] ?></span>
 <span class="st_text"><?php echo sprintf($lang['STATS_NUMBERS_TEXT'], $stats['registered'], $stats['guests']) ?></span>
 <br/>
-<span class="st_label"><?php echo $lang['STATS_LIST'] ?></span>
-<span class="st_text">&nbsp;
-<?php
-    for ($i=0; $i<$stats['registered']; $i++)
-    {
-	  echo $stats['registered_list'][$i];
-	  if ($i != $stats['registered']-1) echo ', ';
-    }
-?>
+<?php if ($stats['registered'] > 0) {  ?>
+	<span class="st_label"><?php echo $lang['STATS_LIST'] ?></span>
+	<span class="st_text">&nbsp;
+	<?php
+	    for ($i=0; $i<$stats['registered']; $i++)
+	    {
+		  echo $stats['registered_list'][$i];
+		  if ($i != $stats['registered']-1) echo ', ';
+	    }
+	?>
+<?php } ?>
 </span>

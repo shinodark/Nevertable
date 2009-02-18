@@ -32,17 +32,17 @@ $lang['code']			= "en";
  */
 
 //types
-$lang['all']			= "all";
-$lang['best time']		= "time";
-$lang['most coins']		= "coins";
-$lang['freestyle']		= "personnal";
-$lang['fast unlock']	= "fast unlock";
+$lang['all']			= "All";
+$lang['best time']		= "Best Time";
+$lang['most coins']		= "Best Coins";
+$lang['freestyle']		= "Personnal";
+$lang['fast unlock']	= "Fast Unlock";
 
 //folders
-$lang['contest']		= "contest";
-$lang['incoming']		= "incoming";
-$lang['trash']			= "trash";
-$lang['oldones']		= "oldones";
+$lang['contest']		= "Contest";
+$lang['incoming']		= "Incoming";
+$lang['trash']			= "Trash";
+$lang['oldones']		= "Beaten";
 
 //newonly
 $lang['off']			= "off";
@@ -98,7 +98,7 @@ $lang['REGISTER_PASSWD_LENGTH']     = "Password have to count at least 5 charact
 $lang['REGISTER_SPECIAL_CHARS']     = "Don't use specials characters.";
 $lang['REGISTER_FIRST_REGISTER']    = "You're the first registered member, welcome root ;)";
 $lang['REGISTER_WELCOME_SUBJECT']   = "Welcome on the Nevertable !";
-$lang['REGISTER_WELCOME_MESSAGE1']  = "You're registration is finished. \n Here are your account information : \n !";
+$lang['REGISTER_WELCOME_MESSAGE1']  = "You're registration is finished. \n Here are your account informations : \n !";
 $lang['REGISTER_WELCOME_MESSAGE1']  = "Thank you !";
 $lang['REGISTER_SUCCESSFUL']        = "You're registration is finished. You can log in ;)";
 
@@ -120,7 +120,7 @@ $lang['FORGOT_EMAIL_SENT']          = "New password created, email sent.";
 /*
   LOGIN
 */
-$lang['LOGIN_NOTLOGIN'] 	    = "You're not logged in";
+$lang['LOGIN_NOTLOGIN'] 	    	= "You're not logged in";
 $lang['LOGIN_ALREADYLOGIN'] 	    = "You're already logged in";
 $lang['LOGIN_LOGIN'] 	            = "You're logged in<br/>Redirecting to main page...";
 $lang['LOGIN_LOGOUT'] 	            = "You're logged out<br/>Redirecting to main page...";
@@ -135,7 +135,7 @@ $lang['LOGIN_FORM_PASSWD']          = "pass";
 */
 $lang['RESULTS_PRELUDE']	    = "%d records";
 $lang['TABLE_HEADER_OLD']	    = "old";
-$lang['TABLE_HEADER_PLAYER']	    = "player";
+$lang['TABLE_HEADER_PLAYER']	= "player";
 $lang['TABLE_HEADER_SET']	    = "set";
 $lang['TABLE_HEADER_LEVEL']	    = "lvl";
 $lang['TABLE_HEADER_TIME']	    = "time";
@@ -194,10 +194,6 @@ $lang['SIDEBAR_WELCOME']	    = "Welcome";
 $lang['SIDEBAR_LOGIN']		    = "Connection";
 $lang['SIDEBAR_LAST_COMMENTS']	    = "Last comments";
 $lang['SIDEBAR_LEGEND_BEST']	    = "Best records for this level.";
-$lang['SIDEBAR_LEGEND_BEST_TIME']   = "Best time.";
-$lang['SIDEBAR_LEGEND_MOST_COINS']  = "Most coins.";
-$lang['SIDEBAR_LEGEND_FREESTYLE']   = "Freestyle.";
-$lang['SIDEBAR_LEGEND_FAST_UNLOCK']   = "Fast Unlock.";
 
 $lang['MENU_ROOT']		    = "Root menu";
 $lang['MENU_ADMIN']		    = "Admin menu";

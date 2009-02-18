@@ -68,8 +68,7 @@ if (!isset($edit_enable))
 <br/>
 <center>
 <?php
-    for($i=0; $i<CalculRank($user->GetBestRecords()); $i++)
-      echo $this->table->style->GetImage('rank');
+	echo $this->table->style->GetImage('rank_'.CalculRank($user->GetBestRecords()));
 ?>
 </center>
 </td><td>

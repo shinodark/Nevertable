@@ -30,7 +30,7 @@ if (!defined('NVRTBL'))
  * @param: last_comments Last comments poted to display in the sidebar
  */
 
-global $lang, $config, $args, $nextargs;
+global $lang, $config, $args, $nextargs, $types_menu;
 
 $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 
@@ -93,7 +93,7 @@ else
     }
 ?>
 <script type="text/javascript">
-change_form_select('type',"<?php echo $args['type'] ?>.");
+change_form_select('type',"<?php echo array_search($args['type'], $types_menu) ?>.");
 change_form_select('folder',"<?php echo $args['folder'] ?>");
 <?php if ($args['levelset_f'] != 0) { // Tout afficher, premire option ?>
 change_form_select('levelset_f','<?php echo $ind_set_arr[$args['levelset_f']] ?>');

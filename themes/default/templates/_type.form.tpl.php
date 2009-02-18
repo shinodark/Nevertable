@@ -22,7 +22,7 @@
 if (!defined('NVRTBL'))
 	exit;
 		
-global $types, $folders, $folders_user, $newonly, $lang, $args;
+global $types_menu, $types, $folders, $folders_user, $newonly, $lang, $args;
 
   	
 /* Diffview allowed ? */
@@ -47,9 +47,25 @@ global $types, $folders, $folders_user, $newonly, $lang, $args;
 <td>
 <label for="type"><?php echo $lang['TYPE_FORM_TABLE_SELECT'] ?></label>
 <select name="type" id="type">
-<?php foreach($types as $nb => $value) { ?>
-	<option value="<?php echo $nb ?>"><?php echo $lang[$types[$nb]] ?></option>
-<?php } ?>
+<?php foreach ($types_menu as $t) {
+	if ($t == -1) {
+	?>
+		<option>--------</option>
+	<?php
+	} else {
+	?>
+		<option value="<?php echo $t ?>"><?php echo $lang[$types[$t]] ?></option>
+<?php
+	}
+ }
+ ?>
+<!-- 
+	<option value="<?php echo get_type_by_name("best time")?>"><?php echo $lang[$types[get_type_by_name("best time")]] ?></option>
+	<option value="<?php echo get_type_by_name("most coins")?>"><?php echo $lang[$types[get_type_by_name("most coins")]] ?></option>
+	<option value="<?php echo get_type_by_name("fast unlock")?>"><?php echo $lang[$types[get_type_by_name("fast unlock")]] ?></option>
+	<option>--------</option>
+	<option value="<?php echo get_type_by_name("freestyle")?>"><?php echo $lang[$types[get_type_by_name("freestyle")]] ?></option>
+-->
 </select>
 </td>
 <td>

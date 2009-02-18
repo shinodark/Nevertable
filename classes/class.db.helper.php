@@ -508,7 +508,8 @@ class DBHelper
 	  $p = $config['bdd_prefix'];
 	  $this->db->Select(
 	         array("rec", "users", "sets", "maps"),
-	            array(
+	         
+	         array(
 	                $p."rec.id AS id",
 		            $p."rec.levelset AS levelset",
 		            $p."rec.level AS level",
@@ -519,12 +520,13 @@ class DBHelper
 		            $p."rec.folder AS folder",
 		            $p."rec.timestamp AS timestamp",
 		            $p."rec.isbest AS isbest",
+		            $p."rec.comments_count AS comments_count",
 		            $p."rec.user_id AS user_id",
+		            $p."users.pseudo AS pseudo",
 	                $p."sets.set_name AS set_name",
 	                $p."sets.set_path AS set_path",
 	                $p."maps.map_solfile AS map_solfile",
 	                $p."maps.level_name AS level_name",
-	                $p."users.pseudo AS pseudo",
 	                ),
 	            "SELECT", "com");
 	  
@@ -537,7 +539,7 @@ class DBHelper
 	  $this->db->Limit(1);
 	  $this->db->Query();
 	  if ($this->db->NumRows() < 1)
-	    throw new Exception("No record match this id.");
+	    throw new Exception("No record matches this ID.");
 	  return $this->db->FetchArray();
    }
    

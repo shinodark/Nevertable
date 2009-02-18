@@ -202,16 +202,16 @@ echo $tagboard->Show($args) ?>
 <td><?php echo $lang['SIDEBAR_LEGEND_BEST'] ?></td>
 </tr><tr>
 <td><?php echo $this->table->style->GetImage('best time') ?></td>
-<td><?php echo $lang['SIDEBAR_LEGEND_BEST_TIME'] ?></td>
+<td><?php echo $lang['best time'] ?></td>
 </tr><tr>
 <td><?php echo $this->table->style->GetImage('most coins') ?></td>
-<td><?php echo $lang['SIDEBAR_LEGEND_MOST_COINS'] ?></td>
+<td><?php echo $lang['most coins'] ?></td>
 </tr><tr>
 <td><?php echo $this->table->style->GetImage('fast unlock') ?></td>
-<td><?php echo $lang['SIDEBAR_LEGEND_FAST_UNLOCK'] ?></td>
+<td><?php echo $lang['fast unlock'] ?></td>
 </tr><tr>
 <td><?php echo $this->table->style->GetImage('freestyle') ?></td>
-<td><?php echo $lang['SIDEBAR_LEGEND_FREESTYLE'] ?></td>
+<td><?php echo $lang['freestyle'] ?></td>
 </tr>
 </table>
 

@@ -58,7 +58,7 @@ $replay = empty($fields['replay']) ? $this->table->style->Getimage("no_replay", 
 <a href="<?php echo replay_link($fields['replay']) ?>" type="application/octet-stream"><?php echo $replay ?></a>
 </td>
 <td>
-<a href="index.php?levelset_f=<?php echo  $fields['levelset']."&amp;level_f=".$fields['level']."&amp;folder=-1" ?>" title="<?php echo $lang['TABLE_ATTACH'] ?>">
+<a href="index.php?levelset_f=<?php echo  $fields['levelset']."&amp;level_f=".$fields['level']?>&amp;folder=0&amp;type=<?php echo $fields['type']?>" title="<?php echo $lang['TABLE_ATTACH'] ?>">
   <?php echo $this->table->style->GetImage('attach', $lang['TABLE_ATTACH']) ?>
 </a>
 </td> 

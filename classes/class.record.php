@@ -50,7 +50,7 @@ class Record
       $this->db->Query();
       
       if ($this->db->NumRows()<1)
-         $this->SetError("No record match this id!");
+         $this->SetError("No record matches this ID!");
       
       $this->SetFields($this->db->FetchArray());
       $this->isload=true;

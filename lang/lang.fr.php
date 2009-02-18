@@ -32,17 +32,17 @@ $lang['code']			= "fr";
  */
 
 //types
-$lang['all']			= "tous";
-$lang['best time']		= "temps";
-$lang['most coins']		= "pièces";
-$lang['freestyle']		= "personnel";
-$lang['fast unlock']	= "fast unlock";
+$lang['all']			= "Tous";
+$lang['best time']		= "Temps";
+$lang['most coins']		= "Pièces";
+$lang['freestyle']		= "Personnel";
+$lang['fast unlock']	= "Fast Unlock";
 
 //folders
-$lang['contest']		= "contest";
-$lang['incoming']		= "en attente";
-$lang['trash']			= "poubelle";
-$lang['oldones']		= "obsolètes";
+$lang['contest']		= "Contest";
+$lang['incoming']		= "En attente";
+$lang['trash']			= "Poubelle";
+$lang['oldones']		= "Battus";
 
 //newonly
 $lang['off']			= "désactivé";
@@ -135,7 +135,7 @@ $lang['LOGIN_FORM_PASSWD']          = "pass";
 */
 $lang['RESULTS_PRELUDE']	    = "%d records";
 $lang['TABLE_HEADER_OLD']	    = "âge";
-$lang['TABLE_HEADER_PLAYER']	    = "joueur";
+$lang['TABLE_HEADER_PLAYER']	= "joueur";
 $lang['TABLE_HEADER_SET']	    = "set";
 $lang['TABLE_HEADER_LEVEL']	    = "niv";
 $lang['TABLE_HEADER_TIME']	    = "temps";
@@ -194,10 +194,6 @@ $lang['SIDEBAR_WELCOME']	    = "Bienvenue";
 $lang['SIDEBAR_LOGIN']		    = "Connexion";
 $lang['SIDEBAR_LAST_COMMENTS']	    = "Derniers commentaires";
 $lang['SIDEBAR_LEGEND_BEST']	    = "Meilleur record pour ce niveau.";
-$lang['SIDEBAR_LEGEND_BEST_TIME']   = "Meilleur temps.";
-$lang['SIDEBAR_LEGEND_MOST_COINS']  = "Meilleur pièces.";
-$lang['SIDEBAR_LEGEND_FREESTYLE']   = "Freestyle.";
-$lang['SIDEBAR_LEGEND_FAST_UNLOCK']   = "Fast Unlock.";
 
 $lang['MENU_ROOT']		    = "Menu Root";
 $lang['MENU_ADMIN']		    = "Menu d'administration";

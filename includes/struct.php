@@ -29,6 +29,9 @@ if (!defined('NVRTBL'))
 
 $types     = array ("all", "best time", "most coins", "fast unlock", "freestyle");
 
+/* order of types menu in drop-down list */
+$types_menu = array(0, 1, 2, 3, -1, 4);
+
 $folders   = array (0 => "all", 1 => "contest",  2 => "oldones", 3 => "incoming", 4 => "trash");
 $folders_user = array(0 => "all", 1 => "contest", 2 => "oldones");
 
