@@ -146,7 +146,7 @@ class Nvrtbl
 
     $p = $config['bdd_prefix'];
     $this->db->Select(
-        array("rec", "users", "sets" ),
+        array("rec", "users", "sets", "maps" ),
         array(
             $p."rec.id AS id",
             $p."rec.type AS type",
@@ -157,11 +157,12 @@ class Nvrtbl
             $p."rec.coins AS coins",
             $p."rec.timestamp AS timestamp",
             $p."sets.set_name AS set_name",
+            $p."maps.level_name AS level_name",
             )
      );
-     $this->db->Where(
-        array($p."rec.user_id", $p."rec.levelset"),
-        array($p."users.id", $p."sets.id"),
+     $this->db->Where(         
+        array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset"),
+        array($p."users.id", $p."sets.id", $p."maps.set_id"),
         "AND", false
     );
         
@@ -174,8 +175,8 @@ class Nvrtbl
     while($val = $this->db->FetchArray())
     {
       $Records[$i]['id'] = $val['id'];
-      $Records[$i]['title'] = htmlspecialchars(get_type_by_number($val['type'])." ~ ".($val['set_name'])." ".$val['level']." by ".$val['pseudo'],ENT_NOQUOTES);
-      $Records[$i]['level'] =  $val['set_name']." ".$val['level'];
+      $Records[$i]['title'] = htmlspecialchars(get_type_by_number($val['type'])." ~ ".($val['set_name'])." ".$val['level_name']." by ".$val['pseudo'],ENT_NOQUOTES);
+      $Records[$i]['level'] =  $val['set_name']." ".$val['level_name'];
       $Records[$i]['pseudo'] =  $val['pseudo'];
       $Records[$i]['time'] = sec_to_friendly_display($val['time']);
       $Records[$i]['coins'] = $val['coins'];

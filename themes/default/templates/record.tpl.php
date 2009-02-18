@@ -58,7 +58,7 @@ $enable_post = Auth::Check(get_userlevel_by_name("member"));
 <div class="embedded">
 <br/>
 <?php $bbcode =  "[url=http://".$_SERVER['SERVER_NAME'] ."/".$config['nvtbl_path'] . "?link=".$record_fields['id']."]" .
-             get_type_by_number($record_fields['type']) ." by ".$record_fields['pseudo']." on ". $record_fields['set_name'] . " " . $record_fields['level'].
+             get_type_by_number($record_fields['type']) ." by ".$record_fields['pseudo']." on ". $record_fields['set_name'] . " " . $record_fields['level_name'].
      "[/url]";
 ?>
 <center>
