@@ -378,6 +378,7 @@ function Javascriptize($string)
   $ret = str_replace("'", "\\'", $ret);
   $ret = str_replace("\n", "\\", $ret);
   $ret = str_replace("\r", "\\", $ret);
+  $ret = htmlspecialchars($ret);
   return $ret;
 }
 

@@ -63,7 +63,7 @@ global $types_menu, $types, $folders, $folders_user, $newonly, $lang, $args;
 	<option value="<?php echo get_type_by_name("best time")?>"><?php echo $lang[$types[get_type_by_name("best time")]] ?></option>
 	<option value="<?php echo get_type_by_name("most coins")?>"><?php echo $lang[$types[get_type_by_name("most coins")]] ?></option>
 	<option value="<?php echo get_type_by_name("fast unlock")?>"><?php echo $lang[$types[get_type_by_name("fast unlock")]] ?></option>
-	<option>--------</option>
+	<option>&ndash;&ndash;&ndash;&ndash;&ndash;&ndash;&ndash;</option>
 	<option value="<?php echo get_type_by_name("freestyle")?>"><?php echo $lang[$types[get_type_by_name("freestyle")]] ?></option>
 -->
 </select>
