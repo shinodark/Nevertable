@@ -102,9 +102,10 @@ $i++;
 
 if ($enable_edit) { ?>
 <script type="text/javascript">
+//<![CDATA[
  $(document).ready(function() {
   $(".comedit").editable("ajax/com_edit.php", { 
-      indicator : "<img src='themes/default/images/indicator.gif'>",
+      indicator : "<img src='themes/default/images/indicator.gif' alt='loading...' />",
       loadurl   : "ajax/com_load.php",
       tooltip   : "Double click to edit...",
       type      : "textarea",
@@ -113,5 +114,6 @@ if ($enable_edit) { ?>
       submit    : "Edit!"
   });
  });
+//]]>
 </script>
 <?php } ?>

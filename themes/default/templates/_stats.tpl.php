@@ -41,5 +41,5 @@ global $config, $lang;
 		  if ($i != $stats['registered']-1) echo ', ';
 	    }
 	?>
+	</span>
 <?php } ?>
-</span>

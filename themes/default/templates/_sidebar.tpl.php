@@ -228,9 +228,10 @@ echo $tagboard->Show($args) ?>
 
 <?php if (Auth::Check(get_userlevel_by_name("moderator"))) { ?>
 <script type="text/javascript">
+//<![CDATA[
  $(document).ready(function() {
   $(".tagedit").editable("ajax/tag_edit.php", { 
-      indicator : "<img src='themes/default/images/indicator.gif'>",
+      indicator : "<img src='themes/default/images/indicator.gif' alt='loading...' />",
       loadurl   : "ajax/tag_load.php",
       tooltip   : "Double click to edit...",
       type      : "textarea",
@@ -239,5 +240,6 @@ echo $tagboard->Show($args) ?>
       submit    : "Edit!"
   });
  });
+//]]>
 </script>
 <?php } ?>
