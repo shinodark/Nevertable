@@ -37,12 +37,12 @@ $table = new Nvrtbl();
 if (!Auth::Check(get_userlevel_by_name("root")))
   throw new Exception($lang['NOT_ROOT']);
 
-if (isset($args['upmember']))
+if (isset($args['upmembername']))
 {
   if (!empty($args['id']) && !empty($args['pseudo'])) {
     $u = new user($table->db);
     $u->LoadFromId($args['id']);
-    $u->SetFields(array("pseudo" => $args['pseudo'], "level" => $args['authlevel']));
+    $u->SetFields(array("pseudo" => $args['pseudo']));
     $u->Update();
     
     $tpl_params['message_array'] = array();
@@ -51,6 +51,26 @@ if (isset($args['upmember']))
     $tpl_params['delay'] = 2;
     $table->template->Show('redirect', $tpl_params);
   }
+  else
+    throw new Exception("URL error");
+}
+
+else if (isset($args['upmemberauth']))
+{
+  if (!empty($args['id']) && isset($args['authlevel'])) {
+    $u = new user($table->db);
+    $u->LoadFromId($args['id']);
+    $u->SetFields(array("level" => $args['authlevel']));
+    $u->Update();
+    
+    $tpl_params['message_array'] = array();
+    array_push( $tpl_params['message_array'], "user #".$args['id']." updated.");
+    $tpl_params['redirect'] = "memberlist.php";
+    $tpl_params['delay'] = 2;
+    $table->template->Show('redirect', $tpl_params);
+  }
+  else
+    throw new Exception("URL error");
 }
 
 else if (isset($args['delmember']))

@@ -58,7 +58,7 @@ global $lang, $config, $sort_type, $themes, $langs;
 <select id="sort" name="sort">
 <?php
 foreach ( $sort_type as $key => $value) { ?>
- <option value="<?php echo $key ?>"><?php echo $value ?></option>'
+ <option value="<?php echo $key ?>"><?php echo $value ?></option>
 <?php } ?>
 </select>
 </td>
@@ -69,7 +69,7 @@ foreach ( $sort_type as $key => $value) { ?>
 <select id="theme" name="theme">
 <?php
 foreach ( $themes as $key => $value) { ?>
- <option value="<?php echo $key ?>"><?php echo $value ?></option>'
+ <option value="<?php echo $key ?>"><?php echo $value ?></option>
 <?php } ?>
 </select>
 </td>
@@ -79,7 +79,7 @@ foreach ( $themes as $key => $value) { ?>
 <td><select id="lang" name="lang">
 <?php
 foreach ( $langs as $key => $value) { ?>
- <option value="<?php echo $key ?>"><?php echo $value ?></option>'
+ <option value="<?php echo $key ?>"><?php echo $value ?></option>
 <?php } ?>
 </select>
 </td>

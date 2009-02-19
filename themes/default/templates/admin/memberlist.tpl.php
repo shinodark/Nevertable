@@ -53,13 +53,13 @@ global $lang, $config, $userlevel, $lang;
 <table style="text-align: center;">
 <caption><?php echo  $lang['ADMIN_MEMBERS_TITLE']?></caption>
 <tr>
-<th style="text-align: center;"><a href=memberlist.php?sort=id>#</a></th>
-<th style="text-align: center;"><a href=memberlist.php?sort=pseudo><?php echo $lang['MEMBER_HEADER_NAME']?></a></th>
-<th style="text-align: center;"><a href=memberlist.php?sort=records><?php echo $lang['MEMBER_HEADER_RECORDS']?></a></th>
-<th style="text-align: center;"><a href=memberlist.php?sort=best><?php echo $lang['MEMBER_HEADER_BEST_RECORDS']?></a></th>
-<th style="text-align: center;"><a href=memberlist.php?sort=comments><?php echo $lang['MEMBER_COMMENTS']?></a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=id">#</a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=pseudo"><?php echo $lang['MEMBER_HEADER_NAME']?></a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=records"><?php echo $lang['MEMBER_HEADER_RECORDS']?></a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=best"><?php echo $lang['MEMBER_HEADER_BEST_RECORDS']?></a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=comments"><?php echo $lang['MEMBER_COMMENTS']?></a></th>
 <th style="text-align: center;"><?php echo $lang['MEMBER_MAIL']?></th>
-<th style="text-align: center;"><a href=memberlist.php?sort=cat><?php echo $lang['MEMBER_CATEGORY']?></a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=cat"><?php echo $lang['MEMBER_CATEGORY']?></a></th>
 <th></th>
 <th></th>
 </tr>
@@ -74,12 +74,14 @@ global $lang, $config, $userlevel, $lang;
 </td>
 </tr>
 <tr class="<?php echo $rowclass?>">
-<form name="memberform_<?php echo $fields['id']?>" id="memberform_<?php echo $fields['id']?>" method="post" action="memberlist.php?upmember&amp;id=<?php echo $fields['id']?>">
 <td>
 <a href="editprofile.php?id=<?php echo $fields['id']?>"><?php echo $fields['id']?></a>
 </td>
 <td>
+<form id="memberform_name_<?php echo $fields['id']?>" method="post" action="memberlist.php?upmembername&amp;id=<?php echo $fields['id']?>">
 <input type="text" name="pseudo" value="<?php echo $fields['pseudo']?>" size="15" />
+<input type="submit" value="<?php echo $lang['ADMIN_MEMBERS_FORM_UPDATE']?>" />
+</form>
 </td>
 <td>
 <?php echo $fields['stat_total_records']; ?>
@@ -91,9 +93,10 @@ global $lang, $config, $userlevel, $lang;
 <?php echo $fields['stat_comments'];?>
 </td>
 <td>
-<a href="mailto:<?php echo $fields['email']?>"><?php echo $fields['email']?><a/>
+<a href="mailto:<?php echo $fields['email']?>"><?php echo $fields['email']?></a>
 </td>
 <td>
+<form id="memberform_auth_<?php echo $fields['id']?>" method="post" action="memberlist.php?upmemberauth&amp;id=<?php echo $fields['id']?>">
 <select name="authlevel" id="authlevel_<?php echo $fields['id']?>">
 <?php 
     $level_index = 0;
@@ -105,22 +108,20 @@ global $lang, $config, $userlevel, $lang;
          $level_index++;
     } ?>
 </select>
-</td>
-<td>
 <input type="submit" value="<?php echo $lang['ADMIN_MEMBERS_FORM_UPDATE']?>" />
-</td>
-<?php echo '</form>'?>
-<form name="memberdelete_<?php echo $fields['id']?>" method="post" action="memberlist.php?delmember&amp;id=<?php echo $fields['id']?>">
-<td>
-<input type="submit" value="<?php echo $lang['ADMIN_MEMBERS_FORM_DELETE']?>" />
-</td>
-<?php echo '</form>' ?>
-</tr>
-    
+</form>
 <script type="text/javascript">
   change_form_select('authlevel_<?php echo $fields['id']?>', '<?php echo $level_index ?>' );
 </script>
-
+</td>
+<td>
+</td>
+<td>
+<form name="memberdelete_del_<?php echo $fields['id']?>" method="post" action="memberlist.php?delmember&amp;id=<?php echo $fields['id']?>">
+<input type="submit" value="<?php echo $lang['ADMIN_MEMBERS_FORM_DELETE']?>" />
+</form>
+</td>
+</tr>
 <?php
       $i++;
     }
@@ -128,8 +129,6 @@ global $lang, $config, $userlevel, $lang;
 </table>
 </div>
 </center>
-
-
 
 <div class="button" style="width:200px;">
 <a href="../index.php"><?php echo $lang['GUI_BUTTON_MAINPAGE'] ?></a>

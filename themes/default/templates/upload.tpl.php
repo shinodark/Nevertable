@@ -50,10 +50,10 @@ global $lang, $config, $types;
 <form method="post" action="upload.php?autoadd" name="upload_form" enctype="multipart/form-data">
 <table>
 <tr>
-<th colspan="2" align="center"><?php echo $lang['UPLOAD_FORM_TITLE'] ?></th></tr><tr>
-</tr><tr>
-<td colspan="2"><center><?php echo sprintf($lang['UPLOAD_FORM_SIZEMAX'], floor($config['upload_size_max']/1024)) ?></center></td></tr><tr>
-</tr><tr>
+<th colspan="2" align="center"><?php echo $lang['UPLOAD_FORM_TITLE'] ?></th></tr>
+<tr>
+<td colspan="2"><center><?php echo sprintf($lang['UPLOAD_FORM_SIZEMAX'], floor($config['upload_size_max']/1024)) ?></center></td></tr>
+<tr>
 <td><label for="pseudo"><?php echo$lang['UPLOAD_FORM_PSEUDO'] ?></label></td>
 <td colspan="1"><input type="text" id="pseudo" name="pseudo"  size="10" value="<?php echo $_SESSION['user_pseudo'] ?>" readonly="readonly"  /></td>
 </tr><tr>

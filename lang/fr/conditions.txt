@@ -1,1 +1,2 @@
-<p>Pas de conditions, c'est une beta :) </p> 
+Pas de conditions, c'est une beta :)  
+ 

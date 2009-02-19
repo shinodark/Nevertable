@@ -193,7 +193,7 @@ if (!isset($edit_enable))
 <div  class="generic_form" style="width: 600px;">
 <form method="post" action="profile.php?upinfos&amp;id=<?php echo $user->GetId() ?>" name="personnal" >
 <table><tr>
-<th colspan="2" align="center"><?php echo $lang['PROFILE_FORM_INFO_TITLE'] ?></th></tr><tr>
+<th colspan="2" align="center"><?php echo $lang['PROFILE_FORM_INFO_TITLE'] ?></th>
 </tr><tr>
 <td colspan="2"><center><?php echo $lang['PROFILE_FORM_INFO_INFO'] ?></center></td></tr><tr>
 <td><label for="user_localisation"><?php echo $lang['PROFILE_FORM_INFO_LOCAL'] ?></label></td>
@@ -216,7 +216,7 @@ if (!isset($edit_enable))
 <div  class="generic_form" style="width: 600px;">
 <form method="post" action="profile.php?upavatar&amp;id=<?php echo $user->GetId() ?>" name="avatar_form"  enctype="multipart/form-data">
 <table><tr>
-<th colspan="2" align="center"><?php echo $lang['PROFILE_FORM_AVATAR_TITLE'] ?></th></tr><tr>
+<th colspan="2" align="center"><?php echo $lang['PROFILE_FORM_AVATAR_TITLE'] ?></th>
 </tr>
 <tr>
 <td colspan="2">

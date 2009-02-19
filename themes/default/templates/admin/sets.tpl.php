@@ -87,11 +87,10 @@ while ($val = $this->table->db->FetchArray($res))
 <div  class="generic_form" style="width: 400px;">
 <form method="post" action="?setadd" name="setadd_form" id="setadd_form"  enctype="multipart/form-data">
 <table><tr>
-<th colspan="2" align="center">Add a new set from set file</th></tr><tr>
-</tr><tr>
+<th colspan="2" align="center">Add a new set from set file</th></tr>
+<tr>
 <td><label for="setfile">set file : </label></td>
 <td colspan="1"><input type="file" id="setfile" name="setfile"  size="25" /></td>
-
 <td colspan="2"><input type="hidden" id="size_max" name="MAX_FILE_SIZE"  value="50000" /></td>
 </tr><tr>
 <td colspan="2"><center><input type="submit"  /></center></td>
@@ -111,7 +110,7 @@ foreach ($sets as $id => $name)
     <tr style="background: white;">
     <td colspan="4">
     <br/>
-    <b><a name="<?php echo $name ?>">
+    <b><a name="s<?php echo $id ?>">
     <?php echo $name ?>
     </a>
     </b>

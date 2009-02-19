@@ -53,8 +53,8 @@ global $lang, $config;
 <div  class="generic_form" style="width: 400px;">
 <form method="post" action="forgot.php?run" name="forgot" >
 <table><tr>
-<th colspan="2" align="center"><?php echo $lang['FORGOT_FORM_TITLE'] ?></th></tr><tr>
-</tr><tr>
+<th colspan="2" align="center"><?php echo $lang['FORGOT_FORM_TITLE'] ?></th></tr>
+<tr>
 <td><label for="email"><?php echo  $lang['REGISTER_FORM_EMAIL'] ?></label></td>
 <td colspan="1"><input type="text" id="email" name="email"  size="40" /></td>
 </tr><tr>

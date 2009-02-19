@@ -66,7 +66,8 @@ if ($count_incoming > 0)
    echo '</b>';
 ?>
 </a>
-<br/></div>
+<br/>
+</div>
 
 <div class="menuitem"><a href="index.php?folder=<?php echo get_folder_by_name("trash")?>">
 <?php echo $this->table->style->GetImage("trash_full") ?>
@@ -109,7 +110,8 @@ if ($count_incoming > 0)
 <br/></div>
 <div class="menuitem"><a href="login.php?out"><?php echo $this->table->style->GetImage("menu_logout") ?>
 <?php echo $lang['MENU_MEMBER_LOGOUT'] ?></a>
-<br/></div>
+<br/>
+</div>
 </div>
 <?php
 }
@@ -134,7 +136,7 @@ else // Guest menu
 </form>
 <br/>
 
-<h1></h1>
+<h1>&nbsp;</h1>
 <div class="menubar">
 <div class="menuitem"><a href="register.php"><?php echo $this->table->style->GetImage("menu_register") ?>
 <?php echo $lang['MENU_REGISTER']?></a><br/></div>
@@ -145,7 +147,8 @@ else // Guest menu
 <?php echo $lang['MENU_MEMBER_MEMBERS']?></a>
 <br/></div>
 <!-- <div class="menuitem"><a href="stats.php"><?php echo $lang['MENU_MEMBER_STATS']?></a>
-<br/></div>-->
+<br/>-->
+</div>
 <?php } ?>
 
 <h2>TagBoard</h2>
@@ -187,7 +190,7 @@ echo $tagboard->Show($args) ?>
 	<?php echo GetDateLang_mini(GetDateFromTimestamp($fields['timestamp'])) ?>
 	</td></tr>
 	<tr><td class="comPreview">
-	<a href="record.php?page=last&amp;id=<?php echo $fields['replay_id']."#".$fields['com_id'] ?>">
+	<a href="record.php?page=last&amp;id=<?php echo $fields['replay_id']."#c".$fields['com_id'] ?>">
 	<?php echo $text ?>
 	</a>
 	</td></tr>

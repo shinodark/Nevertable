@@ -63,15 +63,15 @@ $pseudo = isset($fields['pseudo']) ?  $fields['pseudo'] :  $_SESSION['user_pseud
 <?php } ?>
 </td>
 <td style="text-align: right">
-<a href="javascript:child=window.open('./popup_smilies.php?referer_form=commentform', 'Smiles', 'fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=220,left='+(Math.floor(screen.width/2)-140));child.focus()">
+<a href="javascript:child=window.open('./popup_smilies.php?referer_form=commentform','Smiles','fullscreen=no,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=yes,directories=no,location=no,width=270,height=220,left='+(Math.floor(screen.width/2)-140));child.focus()">
 <?php echo $this->table->style->GetImage('smilies') ?>
 </a>
 </td></tr>
 </table>
 </form>
 
-<script>
-
+<script type="text/javascript">
+//<![CDATA[
 $(document).ready(function() {
   $("#preview").bind("click",
   function() {
@@ -80,6 +80,7 @@ $(document).ready(function() {
 	return false;
   });
 });
+//]]>
 </script>
 
 <?php if (!empty($fields['content']))  { ?>

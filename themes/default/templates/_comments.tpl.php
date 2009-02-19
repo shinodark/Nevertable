@@ -40,12 +40,12 @@ while ($val = $this->table->db->FetchArray($comments_res))
 	if (!empty($val['user_avatar']))
 	    $avatar_html = '<img src="'.ROOT_PATH.$config['avatar_dir'].'/'.$val['user_avatar'].'" alt="" />';
 	else
-		$avatar_html = "";
+		$avatar_html = "&nbsp;";
 		
 ?>
 <!-- anchor -->
 <div class="comment">
-<a name="<?php echo $val['id'] ?>"></a>
+<a name="c<?php echo $val['id'] ?>" id="c<?php echo $val['id'] ?>"></a>
 <table>
 <tr><td>
 <!-- comment header -->

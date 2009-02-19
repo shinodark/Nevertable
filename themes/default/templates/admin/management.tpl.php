@@ -53,8 +53,8 @@ global $lang, $config;
 <div  class="generic_form" style="width: 400px;">
 <form method="post" action="management.php" name="lang_form" id="lang_form" >
 <table><tr>
-<th colspan="2" align="center"><?php echo $lang['ADMIN_MANAGEMENT_LANG_FORM_TITLE'] ?></th></tr><tr>
-</tr><tr>
+<th colspan="2" align="center"><?php echo $lang['ADMIN_MANAGEMENT_LANG_FORM_TITLE'] ?></th></tr>
+<tr>
 <td><label for="manage_lang"><?php echo $lang['ADMIN_MANAGEMENT_LANG_FORM_LANG'] ?></label></td>
 <td>
 <select id="manage_lang" name="manage_lang">
@@ -72,7 +72,9 @@ global $lang, $config;
 </form>
 </div>
 
-<script>change_form_select('manage_lang',  '<?php echo get_lang_by_name($manage_lang) ?>');</script>
+<script type="text/javascript">
+	change_form_select('manage_lang',  '<?php echo get_lang_by_name($manage_lang) ?>');
+</script>
 
 <div  class="generic_form" style="width: 700px;">
 <form method="post" action="management.php?upannounce&amp;manage_lang=<?php echo get_lang_by_name($manage_lang) ?>" name="announce_form" id="announce_form" >
@@ -106,7 +108,7 @@ global $lang, $config;
 </tr>
 <tr>
 <td colspan="2">
-<textarea id="speech" name="speech" rows="20" style="width:100%;">
+<textarea id="speech" name="speech" rows="20" cols="" style="width:100%;">
 <?php echo $speech ?>
 </textarea>
 </td>
@@ -129,7 +131,7 @@ global $lang, $config;
 </tr>
 <tr>
 <td colspan="2">
-<textarea id="conditions" name="conditions" rows="60" style="width:100%;">
+<textarea id="conditions" name="conditions" rows="60" cols="" style="width:100%;">
 <?php echo $conditions ?> 
 </textarea>
 </td>
@@ -142,7 +144,6 @@ global $lang, $config;
 </table>
 </form>
 </div>
-
 
 <div class="button" style="width:200px;">
 <a href="../index.php"><?php echo $lang['GUI_BUTTON_MAINPAGE'] ?></a>
