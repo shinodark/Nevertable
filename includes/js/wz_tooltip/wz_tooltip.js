@@ -71,8 +71,8 @@ config. CopyContent		= true		// When converting a HTML element to a tooltip, cop
 config. Delay			= 100		// Time span in ms until tooltip shows up
 config. Duration		= 0			// Time span in ms after which the tooltip disappears; 0 for infinite duration, < 0 for delay in ms _after_ the onmouseout until the tooltip disappears
 config. Exclusive		= false		// false or true - no other tooltip can appear until the current one has actively been closed
-config. FadeIn			= 400		// Fade-in duration in ms, e.g. 400; 0 for no animation
-config. FadeOut			= 400
+config. FadeIn			= 100		// Fade-in duration in ms, e.g. 400; 0 for no animation
+config. FadeOut			= 100
 config. FadeInterval	= 30		// Duration of each fade step in ms (recommended: 30) - shorter is smoother but causes more CPU-load
 config. Fix				= null		// Fixated position, two modes. Mode 1: x- an y-coordinates in brackets, e.g. [210, 480]. Mode 2: Show tooltip at a position related to an HTML element: [ID of HTML element, x-offset, y-offset from HTML element], e.g. ['SomeID', 10, 30]. Value null (default) for no fixated positioning.
 config. FollowMouse		= true		// false or true - tooltip follows the mouse
@@ -80,7 +80,7 @@ config. FontColor		= '#000066'
 config. FontFace		= 'Verdana,Geneva,sans-serif'
 config. FontSize		= '8pt'		// E.g. '9pt' or '12px' - unit is mandatory
 config. FontWeight		= 'normal'	// 'normal' or 'bold';
-config. Height			= 0			// Tooltip height; 0 for automatic adaption to tooltip content, < 0 (e.g. -100) for a maximum for automatic adaption
+config. Height			= 124			// Tooltip height; 0 for automatic adaption to tooltip content, < 0 (e.g. -100) for a maximum for automatic adaption
 config. JumpHorz		= true		// false or true - jump horizontally to other side of mouse if tooltip would extend past clientarea boundary
 config. JumpVert		= true		// false or true - jump vertically		"
 config. Left			= false		// false or true - tooltip on the left of the mouse
@@ -100,7 +100,7 @@ config. TitleFontColor	= '#FFFFFF'	// Color of title text - if '', BgColor (of t
 config. TitleFontFace	= ''		// If '' use FontFace (boldified)
 config. TitleFontSize	= ''		// If '' use FontSize
 config. TitlePadding	= 2
-config. Width			= 0			// Tooltip width; 0 for automatic adaption to tooltip content; < -1 (e.g. -240) for a maximum width for that automatic adaption;
+config. Width			= 128			// Tooltip width; 0 for automatic adaption to tooltip content; < -1 (e.g. -240) for a maximum width for that automatic adaption;
 									// -1: tooltip width confined to the width required for the titlebar
 //=======  END OF TOOLTIP CONFIG, DO NOT CHANGE ANYTHING BELOW  ==============//
 

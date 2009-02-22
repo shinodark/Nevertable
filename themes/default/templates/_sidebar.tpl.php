@@ -185,7 +185,7 @@ echo $tagboard->Show($args) ?>
  	?>
 	<tr><td class="comPreviewHeader">
 	<a href="profile.php?id=<?php echo $fields['user_id']?>" title="View profile of <?php echo $fields['pseudo'] ?>"><?php echo $fields['pseudo'] ?></a>
-	<a href="?levelset_f=<?php echo $fields['levelset'] ?>&amp;level_f=<?php echo $fields['level'] ?>" title="Show this level">[<?php echo $fields['set_name']."&nbsp;".$fields['level'] ?>]</a>
+	<a href="?levelset_f=<?php echo $fields['levelset'] ?>&amp;level_f=<?php echo $fields['level'] ?>" title="Show this level">[<?php echo $fields['set_name']."&nbsp;".$fields['level_name'] ?>]</a>
 	<br/>
 	<?php echo GetDateLang_mini(GetDateFromTimestamp($fields['timestamp'])) ?>
 	</td></tr>

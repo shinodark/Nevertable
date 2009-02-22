@@ -30,15 +30,20 @@ include_once ROOT_PATH ."includes/classes.php";
 try {
 
 $table = new Nvrtbl();
-
-if (!Auth::Check(get_userlevel_by_name("moderator")))
-  throw new Exception($lang['NOT_MODERATOR']);
-  
+ 
 /* Id is com_<id> */
 $id = substr($_POST['id'], 4);
-
 if (empty($id))
   throw new Exception("id error.");
+
+$comment = new Comment($table->db);
+$comment->LoadFromId($id);
+
+$enable_edit  = Auth::CheckUser($comment->GetUserId()) || Auth::Check(get_userlevel_by_name("moderator"));
+
+if (!$enable_edit)
+  throw new Exception($lang['NOT_MODERATOR']);
+
 if (empty($_POST['value']))
   throw new Exception("empty value not allowed.");
   

@@ -47,6 +47,9 @@ class FileManager
   function Upload($files, $ident, $upload_dir, $file_name, $always_overwrite=false)
   {
     $tmp_file = $files[$ident]['tmp_name'];
+    
+    if (empty($tmp_file))
+    	$this->SetError("No uploaded file found.");
 
     /* si pas de slash à la fin */
     if (preg_match("/\/$/",$upload_dir)==0)

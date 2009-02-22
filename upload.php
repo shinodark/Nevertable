@@ -64,17 +64,16 @@ if(isset($args['autoadd']))
   $f = new FileManager();
   $u = new User($table->db);
   $u->LoadFromId($rec->GetUserId());
-  $replayName = sprintf("%s_%s_%s_%05d.nbr",
-	str_replace(" ", "_", $sets[$rec->GetSet()]),
-  	$maps[$rec->GetSet()][$rec->GetLevel()],
+  $replayName = sprintf("__%s_%05d.nbr",
   	$u->GetPseudo(),
-  	0 //Id non encore connu ˆ ce stade
+  	99999//Id non encore connu ˆ ce stade
   	);
   	
+
+  $f->Upload($_FILES, 'replayfile', $up_dir, $replayName);
+  
   try
-  {
-	  $f->Upload($_FILES, 'replayfile', $up_dir, $replayName);
-	
+  {	
 	  /* Analyse */
 	  $rep = new Replay($table->db, $f->GetFileName(), $rec->GetType());
 	  

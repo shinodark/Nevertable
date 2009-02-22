@@ -273,7 +273,7 @@ $lang['PROFILE_FAST_UNLOCK']		= "Fast Unlock";
 $lang['PROFILE_COMMENTS']           = "Commentaires ";
 $lang['PROFILE_VIEWALL']            = "Voir tous les records de %s ";
 $lang['PROFILE_VIEWALL_CONTEST']    = "Voir tous les records de %s (championnat seulement)";
-$lang['PROFILE_VIEWALL_PERSONNALS']  = "Voir les records personnels de %s";
+$lang['PROFILE_VIEWALL_PERSONALS']  = "Voir les records personnels de %s";
 
 /*
   UPLOAD

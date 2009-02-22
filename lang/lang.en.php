@@ -34,8 +34,8 @@ $lang['code']			= "en";
 //types
 $lang['all']			= "All";
 $lang['best time']		= "Best Time";
-$lang['most coins']		= "Best Coins";
-$lang['freestyle']		= "Personnal";
+$lang['most coins']		= "Most Coins";
+$lang['freestyle']		= "Personal";
 $lang['fast unlock']	= "Fast Unlock";
 
 //folders
@@ -84,7 +84,7 @@ $lang['NOT_MEMBER']             = "You have to be registered to view this page."
 $lang['LOGIN_TO_POST']          = "You have to login to post comments.";
 
 $lang['CHECK_ERR_TOOLONG']  =  "Field too long: %s, limit is: %d";
-$lang['CHECK_ERR_LIMITS']   =  "Field out of bounds: %s, bouns are : [ %d - %d ]";
+$lang['CHECK_ERR_LIMITS']   =  "Field out of bounds: %s, bounds are : [ %d - %d ]";
 
 /*
   REGISTER
@@ -98,7 +98,7 @@ $lang['REGISTER_PASSWD_LENGTH']     = "Password have to count at least 5 charact
 $lang['REGISTER_SPECIAL_CHARS']     = "Don't use specials characters.";
 $lang['REGISTER_FIRST_REGISTER']    = "You're the first registered member, welcome root ;)";
 $lang['REGISTER_WELCOME_SUBJECT']   = "Welcome on the Nevertable !";
-$lang['REGISTER_WELCOME_MESSAGE1']  = "You're registration is finished. \n Here are your account informations : \n !";
+$lang['REGISTER_WELCOME_MESSAGE1']  = "You're registration is finished. \n Here are your account information : \n !";
 $lang['REGISTER_WELCOME_MESSAGE1']  = "Thank you !";
 $lang['REGISTER_SUCCESSFUL']        = "You're registration is finished. You can log in ;)";
 
@@ -182,7 +182,7 @@ $lang['TAG_FORM_PSEUDO']            = "Pseudo";
 $lang['TAG_FORM_CONTENT']           = "Your tag";
 $lang['TAG_FORM_SUBMIT']            = "Tag!";
 $lang['TAG_EMPTY_CONTENT']          = "Nothing is filled.";
-$lang['TAG_EMPTY_PSEUDO']           = "No peusdo.";
+$lang['TAG_EMPTY_PSEUDO']           = "No pseudo.";
 $lang['TAG_NO_TAG']                 = "No tag slected.";
 $lang['TAG_TOO_LONG']               = "Tag too long.";
 
@@ -245,11 +245,11 @@ $lang['PROFILE_FORM_IDENT_MAIL']     = "New email : ";
 $lang['PROFILE_FORM_IDENT_PASSWD1']  = "New password : ";
 $lang['PROFILE_FORM_IDENT_PASSWD2']  = "New password, again : ";
 
-$lang['PROFILE_FORM_INFO_TITLE']    = "Personnal informations";
+$lang['PROFILE_FORM_INFO_TITLE']    = "Personal information";
 $lang['PROFILE_FORM_INFO_INFO']     = "No fields are required";
 $lang['PROFILE_FORM_INFO_LOCAL']    = "Localization : ";
-$lang['PROFILE_FORM_INFO_WEB']      = "Personnal web site : ";
-$lang['PROFILE_FORM_INFO_SPEECH']   = "Personnal quote : ";
+$lang['PROFILE_FORM_INFO_WEB']      = "Personal web site : ";
+$lang['PROFILE_FORM_INFO_SPEECH']   = "Personal quote : ";
 
 $lang['PROFILE_FORM_AVATAR_TITLE']  = "Upload an avatar";
 $lang['PROFILE_FORM_AVATAR_FILE']   = "File : ";
@@ -261,19 +261,19 @@ $lang['PROFILE_AVATAR_RESIZE_OK']   = "Picture too big, it was resized. ";
 
 $lang['PROFILE_TITLE']              = "%s profile";
 $lang['PROFILE_LOCALISATION']       = "Localization ";
-$lang['PROFILE_WEB']                = "Personnal website ";
-$lang['PROFILE_SPEECH']             = "Personnal quote ";
+$lang['PROFILE_WEB']                = "Personal website ";
+$lang['PROFILE_SPEECH']             = "Personal quote ";
 $lang['PROFILE_LEVEL']              = "Auth level ";
 $lang['PROFILE_TOTAL_RECORDS']      = "Total records ";
-$lang['PROFILE_BEST_RECORDS']       = "Best records ";
-$lang['PROFILE_BEST_TIME']          = "Best time ";
-$lang['PROFILE_BEST_COINS']         = "Most coins ";
-$lang['PROFILE_FREESTYLE']          = "Personnal ";
+$lang['PROFILE_BEST_RECORDS']       = "Best Records ";
+$lang['PROFILE_BEST_TIME']          = "Best Time ";
+$lang['PROFILE_BEST_COINS']         = "Most Coins ";
+$lang['PROFILE_FREESTYLE']          = "Personal ";
 $lang['PROFILE_FAST_UNLOCK']		= "Fast Unlock";
 $lang['PROFILE_COMMENTS']           = "Comments ";
 $lang['PROFILE_VIEWALL']            = "View all records of %s ";
 $lang['PROFILE_VIEWALL_CONTEST']    = "View all records of %s (contest only)";
-$lang['PROFILE_VIEWALL_PERSONNALS']  = "View all personnal replays of %s";
+$lang['PROFILE_VIEWALL_PERSONALS']  = "View all personnal replays of %s";
 
 /*
   UPLOAD

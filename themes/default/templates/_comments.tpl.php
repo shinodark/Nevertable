@@ -29,7 +29,6 @@ if (!defined('NVRTBL'))
 global $config, $lang, $args;
 
 $enable_moder = Auth::Check(get_userlevel_by_name("moderator"));
-$enable_edit  = Auth::CheckUser($val['poster_id']) || Auth::Check(get_userlevel_by_name("moderator"));
 $i=0;
 
 ?>
@@ -37,6 +36,8 @@ $i=0;
 <?php
 while ($val = $this->table->db->FetchArray($comments_res))
 { 	
+	$enable_edit  = Auth::CheckUser($val['user_id']);
+	
 	if (!empty($val['user_avatar']))
 	    $avatar_html = '<img src="'.ROOT_PATH.$config['avatar_dir'].'/'.$val['user_avatar'].'" alt="" />';
 	else
@@ -77,7 +78,7 @@ while ($val = $this->table->db->FetchArray($comments_res))
 <table>
 <tr>
 <td class="com_avatar"><center><?php echo $avatar_html ?></center></td>
-<td class="com_content comedit" id="com_<?php echo $val['id'] ?>">
+<td class="com_content <?php if ($enable_edit || $enable_moder){echo 'comedit';}?>" id="com_<?php echo $val['id'] ?>">
 <?php echo $this->RenderText($val['content']) ?>
 </td>
 </tr>
@@ -100,7 +101,7 @@ $i++;
 <?php
 }
 
-if ($enable_edit) { ?>
+if ($enable_edit || $enable_moder) { ?>
 <script type="text/javascript">
 //<![CDATA[
  $(document).ready(function() {

@@ -140,9 +140,9 @@ class Nvrtbl
     return GetDateFromTimestamp($val['timestamp']);
   }
   
-  function GetLastRecords($order, $folder="contest")
+  function GetLastRecords($depth, $folder="contest")
   {
-    global $config;
+    global $config, $lang;
 
     $p = $config['bdd_prefix'];
     $this->db->Select(
@@ -161,14 +161,14 @@ class Nvrtbl
             )
      );
      $this->db->Where(         
-        array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset"),
-        array($p."users.id", $p."sets.id", $p."maps.set_id"),
+        array($p."rec.user_id", $p."rec.levelset", $p."rec.levelset", $p."rec.level"),
+        array($p."users.id", $p."sets.id", $p."maps.set_id", $p."maps.level_num"),
         "AND", false
     );
         
     $this->db->Where("folder", get_folder_by_name($folder));
-    $this->db->helper->SortFilter("old");
-    $this->db->Limit($order, 0);
+    $this->db->helper->SortFilter("id");
+    $this->db->Limit($depth, 0);
     $this->db->Query();
 
     $i=0;
@@ -180,11 +180,12 @@ class Nvrtbl
       $Records[$i]['pseudo'] =  $val['pseudo'];
       $Records[$i]['time'] = sec_to_friendly_display($val['time']);
       $Records[$i]['coins'] = $val['coins'];
-      $Records[$i]['type']  = get_type_by_number($val['type']);
+      $Records[$i]['type']  = $lang[get_type_by_number($val['type'])];
       $Records[$i]['date'] = getIsoDate(GetDateFromTimestamp($val['timestamp']));
     
       $i++;
     }
+    $Records['total'] = $i;
   return $Records;
   }
 

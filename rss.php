@@ -36,7 +36,7 @@ $items = $seq = '';
 
 $Records = $table->GetLastRecords(LEVEL);
 
-for ($i=0; $i<LEVEL; $i++)
+for ($i=0; $i<$Records['total']; $i++)
 {
     $URL = NVRTBL_PATH . "index.php?link=".$Records[$i]['id'];
     $seq .=  "<rdf:li rdf:resource=\"".$URL."\" />\n";

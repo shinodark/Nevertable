@@ -553,7 +553,7 @@ class DBHelper
    	
       $p = $config['bdd_prefix'];
       $this->db->Select(
-        array("rec", "users", "com", "sets" ),
+        array("rec", "users", "com", "sets", "maps" ),
         array(
             $p."com.replay_id AS replay_id",
             $p."com.id AS com_id",
@@ -564,12 +564,13 @@ class DBHelper
             $p."rec.level AS level",
             $p."users.pseudo AS pseudo",
             $p."sets.set_name AS set_name",
+            $p."maps.level_name AS level_name",
             )
       );
-
+ 
       $this->db->Where(
-        array($p."com.user_id", $p."com.replay_id", $p."rec.levelset"),
-        array($p."users.id", $p."rec.id", $p."sets.id"),
+        array($p."com.user_id", $p."com.replay_id", $p."rec.levelset", $p."rec.level"),
+        array($p."users.id", $p."rec.id", $p."sets.id", $p."maps.level_num"),
         "AND", false
       );
       
