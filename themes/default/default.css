@@ -2,7 +2,8 @@
 
 body {
 	font: 11px Verdana, Helvetica, Arial, sans-serif;
-    background : #eee;
+    /*background: #FF4949 url("images/background.png") repeat-x;*/
+    background-color: #eee;
 }
 
 a {
@@ -17,12 +18,13 @@ img {
 
 
 #page {
-    background: #fff url(images/bg.png) repeat-y left;
+    background: transparent url(images/bg.png) repeat-y left;
     color : #223;
 }
 
 #main {
     background: transparent;
+    
 }
 
 input, textarea {
