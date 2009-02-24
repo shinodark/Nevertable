@@ -93,7 +93,7 @@ $lang['REGISTER_EMPTY_FIELDS']      = "Incomplete fields.";
 $lang['REGISTER_PSEUDO_EXISTS']     = "Pseudo already exists.";
 $lang['REGISTER_MAIL_EXISTS']       = "This e-mail already exists.";
 $lang['REGISTER_MAIL_NOTVALID']     = "Invalid e-mail.";
-$lang['REGISTER_PASSWD_CHECK']      = "Paswords don't match.";
+$lang['REGISTER_PASSWD_CHECK']      = "Passwords don't match.";
 $lang['REGISTER_PASSWD_LENGTH']     = "Password have to count at least 5 characters.";
 $lang['REGISTER_SPECIAL_CHARS']     = "Don't use specials characters.";
 $lang['REGISTER_FIRST_REGISTER']    = "You're the first registered member, welcome root ;)";
@@ -273,7 +273,7 @@ $lang['PROFILE_FAST_UNLOCK']		= "Fast Unlock";
 $lang['PROFILE_COMMENTS']           = "Comments ";
 $lang['PROFILE_VIEWALL']            = "View all records of %s ";
 $lang['PROFILE_VIEWALL_CONTEST']    = "View all records of %s (contest only)";
-$lang['PROFILE_VIEWALL_PERSONALS']  = "View all personnal replays of %s";
+$lang['PROFILE_VIEWALL_PERSONALS']  = "View all personal replays of %s";
 
 /*
   UPLOAD
@@ -284,7 +284,7 @@ $lang['UPLOAD_FORM_SIZEMAX']         = "Max size of a replay file : %dkB";
 $lang['UPLOAD_FORM_PSEUDO']          = "Your pseudo : ";
 $lang['UPLOAD_FORM_REPLAYFILE']      = "Replay file : ";
 $lang['UPLOAD_FORM_TYPE']            = "Type : ";
-$lang['UPLOAD_NOT_BEST_RECORD']      = "Your record is not a best record: added as personnal record.";
+$lang['UPLOAD_NOT_BEST_RECORD']      = "Your record is not a best record: added as personal record.";
 
 
 /*

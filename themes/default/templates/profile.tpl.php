@@ -191,7 +191,7 @@ if (!isset($edit_enable))
 
 <!-- Personal infos -->
 <div  class="generic_form" style="width: 600px;">
-<form method="post" action="profile.php?upinfos&amp;id=<?php echo $user->GetId() ?>" name="personnal" >
+<form method="post" action="profile.php?upinfos&amp;id=<?php echo $user->GetId() ?>" name="personal" >
 <table><tr>
 <th colspan="2" align="center"><?php echo $lang['PROFILE_FORM_INFO_TITLE'] ?></th>
 </tr><tr>

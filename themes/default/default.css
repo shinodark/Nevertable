@@ -5,7 +5,16 @@ body {
     /*background: #FF4949 url("images/background.png") repeat-x;*/
     background-color: #eee;
 }
-
+/*
+#topback {
+	background:transparent url(images/stars.png) repeat scroll 0% 0%;
+	height:256px;
+	padding:0pt;
+	position:absolute;
+	top:0pt;
+	width:100%;
+}
+*/
 a {
     color : #003;
     background: transparent;
@@ -20,6 +29,7 @@ img {
 #page {
     background: transparent url(images/bg.png) repeat-y left;
     color : #223;
+ /*   opacity: 0.96;*/
 }
 
 #main {

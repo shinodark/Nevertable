@@ -44,6 +44,7 @@ $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 <script type="text/javascript" src="includes/js/jquery.jeditable.mini.js" charset="utf-8"></script>
 </head>
 <body>
+<div id="topback">
 <div id="page">
 <div id="top">
 <?php $this->SubTemplate('_top');?>
@@ -126,5 +127,6 @@ change_form_select('newonly','<?php echo $args['newonly']?>');
 </div> 
 <script src="./includes/js/wz_tooltip/wz_tooltip.js" type="text/javascript"></script>
 </div><!-- page end -->
+</div>
 </body>
 </html>

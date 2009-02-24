@@ -49,13 +49,13 @@ class DBHelper
         $this->db->Where($p."rec.level", $level);
    }
    
-   function TypeFilter($typeP, $personnal=false)
+   function TypeFilter($typeP, $personal=false)
    {
      global $config;
 
      if ($typeP == get_type_by_name("all"))
      {
-     	if ($personnal == false)
+     	if ($personal == false)
      	{
      	    $p = $config['bdd_prefix'];
      	    $this->db->Where($p."rec.type", get_type_by_name("freestyle"), "AND", true, true);
