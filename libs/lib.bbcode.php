@@ -100,7 +100,7 @@ class parse_bbcode
 		if ($is_inline)
 		{
 			$text = preg_replace('#\[quote=(&quot;|"|\'|)(.*?)\\1\]#e', 'str_replace(array(\'[\', \'\\"\'), array(\'&#91;\', \'"\'), \'$2\')." ".$lang[\'WROTE\'].":&nbsp;<span class=\"quotebox\">"', $text);
-			$text = preg_replace('#\[quote\]\s*#', '<span class=\"quotebox\">', $text);
+			$text = preg_replace('#\[quote\]\s*#', '<span class="quotebox">', $text);
 			$text = preg_replace('#\s*\[\/quote\]#S', '</span>', $text);
 		}
 		else
