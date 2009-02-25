@@ -48,9 +48,10 @@ $table = new Nvrtbl();
 </head>
 <body>
  <table><tr>
- <td colspan="5" class="smiliesHeader">
+ <td class="smiliesHeader">
    Smilies
- </td></tr><tr>
+ </td></tr>
+ </table>
 
 <?php
 
@@ -63,8 +64,7 @@ if ($Smilies->IsLoad()) {
  foreach($list as $code => $icon)
  {
   if (!($i % 5))  
-    echo "</tr><tr>\n";
-  echo "<td>\n";
+    echo "<br/>\n";
 
   $mes  = "<a href=\"javascript:opener.document.forms['".$_GET['referer_form']."'].content.value+=' ";
   $mes .= $code . " ';window.focus();\">";
@@ -76,12 +76,12 @@ if ($Smilies->IsLoad()) {
 }
 else
 {
-  echo "<tr><td colspan=\"5\">No Smilies defined !</td></tr>";
+  echo "No Smilies defined !";
 }
 ?>
-  
-</tr>
-<tr><td colspan="5" class="smiliesHeader">
+
+<table>  
+<tr><td class="smiliesHeader">
     <a href="javascript:window.close()">Close</a>
 </td></tr>
 </table>

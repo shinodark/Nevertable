@@ -1,7 +1,7 @@
-<p>
 C'est la version beta de Nevertable 3.0. C'est juste pour jouer un peu, tout peut potentiellement être effacé n'importe quand, ou changer sans préavis. Cela dit, on va tacher d'éviter :)
-</p>
-<p>
-Seuls les records de Neverball 1.5 sont supportés pour l'instant, pour les 4 sets principaux.
-</p>
-<p> <a href="conditions.php">Les conditions</a></p>
+
+Seuls les records de [color=#ff0000][b]Neverball 1.5[/b][/color] sont supportés [i]pour l'instant[/i], pour les 4 sets principaux :) .
+
+[url=conditions.php]les conditions[/url]
+[img]http://www.nevercorner.net/table14/themes/Oxygen/images/best.png[/img]
+edit
