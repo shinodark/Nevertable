@@ -86,6 +86,8 @@ $lang['LOGIN_TO_POST']          = "Connectez-vous pour poster des commentaires."
 $lang['CHECK_ERR_TOOLONG']  =  "Champ trop long: %s, limite: %d";
 $lang['CHECK_ERR_LIMITS']   =  "Champ hors limite: %s, limites : [ %d - %d ]";
 
+$lang['WROTE']				=  "a écrit";
+
 /*
   REGISTER
 */

@@ -174,10 +174,10 @@ class Template
    * @param: text Text to render
    * @return: rendered text
    */
-  function RenderText($text)
+  function RenderText($text, $is_inline=false)
   {
   	 $out = CleanContentHtml($text);
-  	 $out = $this->bbcode->parse($out, "all", false);
+  	 $out = $this->bbcode->parse($out, $is_inline);
      $out = $this->smilies->Apply($out);
      return $out;
   }

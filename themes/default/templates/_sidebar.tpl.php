@@ -181,7 +181,7 @@ echo $tagboard->Show($args) ?>
  	$text = $fields['content'];
  	if (strlen($text) > $config['sidebar_comlength'])
        $text = layout_wrap(substr($text,0,$config['sidebar_comlength']) . "...", $config['sidebar_autowrap'])  ; 
- 	$text = $this->RenderText($text);
+ 	$text = $this->RenderText($text, true);
  	?>
 	<tr><td class="comPreviewHeader">
 	<a href="profile.php?id=<?php echo $fields['user_id']?>" title="View profile of <?php echo $fields['pseudo'] ?>"><?php echo $fields['pseudo'] ?></a>

@@ -86,6 +86,7 @@ $lang['LOGIN_TO_POST']          = "You have to login to post comments.";
 $lang['CHECK_ERR_TOOLONG']  =  "Field too long: %s, limit is: %d";
 $lang['CHECK_ERR_LIMITS']   =  "Field out of bounds: %s, bounds are : [ %d - %d ]";
 
+$lang['WROTE']				=  "wrote";
 /*
   REGISTER
 */

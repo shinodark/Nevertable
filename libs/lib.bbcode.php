@@ -91,13 +91,24 @@ class parse_bbcode
    *
    * @param string : the string to transform
   **/
-  function parse($text) {
+  function parse($text, $is_inline=false) {
+  	
+  	global $lang;
     
 	if (strpos($text, '[quote') !== false)
 	{
-		$text = preg_replace('#\[quote=(&quot;|"|\'|)(.*?)\\1\]#e', '"</p><div class=\"quotebox\"><cite>".str_replace(array(\'[\', \'\\"\'), array(\'&#91;\', \'"\'), \'$2\')." ".$lang_common[\'wrote\'].":</cite><blockquote><p>"', $text);
-		$text = preg_replace('#\[quote\]\s*#', '</p><div class="quotebox"><blockquote><p>', $text);
-		$text = preg_replace('#\s*\[\/quote\]#S', '</p></blockquote></div><p>', $text);
+		if ($is_inline)
+		{
+			$text = preg_replace('#\[quote=(&quot;|"|\'|)(.*?)\\1\]#e', 'str_replace(array(\'[\', \'\\"\'), array(\'&#91;\', \'"\'), \'$2\')." ".$lang[\'WROTE\'].":&nbsp;<span class=\"quotebox\">"', $text);
+			$text = preg_replace('#\[quote\]\s*#', '<span class=\"quotebox\">', $text);
+			$text = preg_replace('#\s*\[\/quote\]#S', '</span>', $text);
+		}
+		else
+		{			
+		 	$text = preg_replace('#\[quote=(&quot;|"|\'|)(.*?)\\1\]#e', '"<div class=\"quotebox\"><cite>".str_replace(array(\'[\', \'\\"\'), array(\'&#91;\', \'"\'), \'$2\')."&nbsp;".$lang[\'WROTE\'].":</cite><blockquote>"', $text);
+		 	$text = preg_replace('#\[quote\]\s*#', '<div class="quotebox"><blockquote>', $text);
+		 	$text = preg_replace('#\s*\[\/quote\]#S', '</blockquote></div>', $text);
+		}
 	}
 
 
@@ -109,15 +120,17 @@ class parse_bbcode
 	$pattern[] = '#\[i\](.*?)\[/i\]#ms';
 	$pattern[] = '#\[u\](.*?)\[/u\]#ms';
 	$pattern[] = '#\[colou?r=([a-zA-Z]{3,20}|\#[0-9a-fA-F]{6}|\#[0-9a-fA-F]{3})](.*?)\[/colou?r\]#ms';
-	$pattern[] = '#\[h\](.*?)\[/h\]#ms';
-	$pattern[] = '#\[spoiler\](.*?)\[/spoiler\]#ms';
+	if (!$is_inline)
+		$pattern[] = '#\[h\](.*?)\[/h\]#ms';
+	//$pattern[] = '#\[spoiler\](.*?)\[/spoiler\]#ms';
 
 	$replace[] = '<strong>$1</strong>';
 	$replace[] = '<em>$1</em>';
 	$replace[] = '<span class="bbu">$1</span>';
 	$replace[] = '<span style="color: $1">$2</span>';
-	$replace[] = '</p><h5>$1</h5><p>';
-	$replace[] = '</p><blockquote><div class="quotebox" onclick="pchild=this.getElementsByTagName(\'p\'); if(pchild[0].style.visibility!=\'hidden\'){pchild[0].style.visibility=\'hidden\'; pchild[0].style.height=\'0\';}else{pchild[0].style.visibility=\'\'; pchild[0].style.height=\'\';}"><span style="font-style:italic">Spoiler:</span><p style="visibility:hidden; height:0;">$1</p></div></blockquote><p>';
+	if (!$is_inline)
+		$replace[] = '<h5>$1</h5>';
+	//$replace[] = '<blockquote><div class="quotebox" onclick="pchild=this.getElementsByTagName(\'p\'); if(pchild[0].style.visibility!=\'hidden\'){pchild[0].style.visibility=\'hidden\'; pchild[0].style.height=\'0\';}else{pchild[0].style.visibility=\'\'; pchild[0].style.height=\'\';}"><span style="font-style:italic">Spoiler:</span><p style="visibility:hidden; height:0;">$1</p></div></blockquote>';
 
 
 	$pattern[] = '#\[img\]((ht|f)tps?://)([^\s<"]*?)\[/img\]#e';

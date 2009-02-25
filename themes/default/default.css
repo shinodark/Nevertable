@@ -166,6 +166,10 @@ td .com_content {
     padding: 10px 10px 10px 10px;
 }
 
+.quotebox {
+	color: #444;
+}
+
 /******** Prelude ****************************/
 
 #prelude {
