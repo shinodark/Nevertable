@@ -328,8 +328,6 @@ function GetContentFromPost($content)
 {
   if(get_magic_quotes_gpc())
      $content = stripslashes($content);
-  $content = str_replace("&lt;","<", $content);
-  $content = str_replace("&gt;",">", $content);
   $content = strip_tags($content);
 
   return $content;
@@ -337,8 +335,6 @@ function GetContentFromPost($content)
 
 function CleanContentHtml($content)
 {
-  $content = str_replace("&lt;","<", $content);
-  $content = str_replace("&gt;",">", $content);
   $content = strip_tags($content);
   $content = LineFeed2Html($content);
 

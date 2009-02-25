@@ -176,7 +176,7 @@ class Template
    */
   function RenderText($text, $is_inline=false)
   {
-  	 $out = htmlspecialchars($text);
+  	 $out = htmlentities($text,  ENT_QUOTES, "UTF-8");
   	 $out = CleanContentHtml($out);
   	 $out = $this->bbcode->parse($out, $is_inline);
      $out = $this->smilies->Apply($out);
