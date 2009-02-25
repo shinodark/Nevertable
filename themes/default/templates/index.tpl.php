@@ -34,6 +34,9 @@ global $lang, $config, $args, $nextargs, $types_menu;
 
 $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 
+/* Cache for texts */
+$cache = new Cache("text");
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -65,17 +68,35 @@ else
 
 <div id="speech">
   <?php
+  if ($cache->Hit('speech_txt'))
+    echo $cache->Read();
+  else
+  {
   	$f = new FileManager($langpath . "speech.txt");
     if ($f->Exists())
-      echo  $f->ReadString();
+    {
+      $content = $this->RenderText($f->ReadString());
+      echo $content;
+      $cache->Create('speech_txt', $content);
+    }
+  }
   ?>
 <br/>
 </div>
 <div id="announce">
   <?php
-    $f = new FileManager($langpath . "announce.txt");
-    if ($f->Exists())
-      echo  $f->ReadString();
+    if ($cache->Hit('announce_txt'))
+    	echo $cache->Read();
+    else
+    {
+	  $f = new FileManager($langpath . "announce.txt");
+	  if ($f->Exists())
+	  {
+	    $content = $this->RenderText($f->ReadString());
+	    echo $content;
+	    $cache->Create('announce_txt', $content);
+	  }
+    }
   ?>
 <br/>
 </div>

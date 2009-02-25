@@ -35,6 +35,7 @@ class Cache
   /*__Constructeur__
 	
   Cette fonction initialise l'objet Cache.
+@param: type "text" or "array"
   */
   function Cache($type="array", $cache_dir="")
   {
@@ -62,7 +63,7 @@ class Cache
     $this->CacheFile->SetFileName($this->cache_dir .  $ident . ".cache");
     if (is_array($cache_data))
        $cache_data = serialize($cache_data);
-    
+    $this->CacheFile->Write($cache_data);
     return true;
   }
 

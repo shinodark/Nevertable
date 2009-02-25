@@ -30,11 +30,25 @@ $table = new Nvrtbl();
 
 try {
 	
+/* Cache for texts */
+$cache = new Cache("text");
+	
 $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 $conditions  = $langpath . "conditions.txt";
-$f = new FileManager($conditions);
-if ($f->Exists())
-	$tpl_params['content'] = $f->ReadString() . '<br/>'. gui_button_back();
+
+if ($cache->Hit('conditions_txt'))
+   echo $cache->Read();
+else
+{
+   $f = new FileManager($conditions);
+   if ($f->Exists())
+   {
+      $content = $table->template->RenderText($f->ReadString());
+      $cache->Create('conditions_txt', $content);
+   }
+}
+    
+$tpl_params['content'] = $content . '<br/>'. gui_button_back();
 $table->template->Show("generic", $tpl_params);
 
 } catch (Exception $ex)

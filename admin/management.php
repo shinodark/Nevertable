@@ -44,9 +44,12 @@ if (!in_array($manage_lang, $langs))
 $langpath = ROOT_PATH . $config['lang_dir']. $manage_lang . "/";
 $tpl_params['message_array'] = array();
 
+$cache = new Cache('text');
+
 if (isset($args['upannounce']))
 {
     file_put_contents($langpath . "announce.txt", stripslashes($args['announce']));
+    $cache->Dirty('announce_txt');
     array_push( $tpl_params['message_array'], "Announcement updated.");
     $tpl_params['redirect'] = "management.php";
     $tpl_params['delay'] = 2;
@@ -56,6 +59,7 @@ if (isset($args['upannounce']))
 else if (isset($args['upspeech']))
 {
     file_put_contents($langpath . "speech.txt", stripslashes($args['speech']));
+    $cache->Dirty('speech_txt');
     array_push( $tpl_params['message_array'], "Speech updated.");
     $tpl_params['redirect'] = "management.php";
     $tpl_params['delay'] = 2;
@@ -65,6 +69,7 @@ else if (isset($args['upspeech']))
 else if (isset($args['upconditions']))
 {
     file_put_contents($langpath . "conditions.txt", stripslashes($args['conditions']));
+    $cache->Dirty('conditions_txt');
     array_push( $tpl_params['message_array'], "Conditions updated.");
     $tpl_params['redirect'] = "management.php";
     $tpl_params['delay'] = 2;
