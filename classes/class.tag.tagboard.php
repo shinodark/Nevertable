@@ -61,7 +61,7 @@ class Tagboard
     
     if (isset($args['tagdel']))
     {
-    	if (Auth::Check(get_userlevel_by_name("member")))
+    	if (Auth::Check(get_userlevel_by_name("moderator")))
     	{
     		if (isset($args['tagid']) && !empty($args['tagid']))
     			$this->Purge($args['tagid']);
@@ -76,7 +76,10 @@ class Tagboard
         else
         	$tpl = 'admin/_tags';
 
-        $cache_id = empty($err) ? 'tags' : ""; // Invalid cache if errors have to be displayed  
+        $cache_id = 'tags';
+        // Invalid cache if errors have to be displayed  
+        if(empty($err) || Auth::Check(get_userlevel_by_name("moderator")))
+        	$cache_id = '';
         $this->template->Show( $tpl, array("tags" => $res, "errors" => $err), $cache_id);
     
     }

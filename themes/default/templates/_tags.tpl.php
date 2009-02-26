@@ -47,7 +47,9 @@ while ($fields = $this->table->db->FetchArray($tags))
   
   while (($e = array_pop($errors)) != null)
   {
-  	?><span class="tag_error"><?php echo $e ?></span> <?php
+  	?>
+  	<tr><td><span class="tag_error"><?php echo $e ?></span></td></tr>
+  	<?php
   }
   ?>
   <tr class="tagheader">
