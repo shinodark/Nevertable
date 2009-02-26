@@ -126,7 +126,7 @@ class parse_bbcode
 
 	$replace[] = '<strong>$1</strong>';
 	$replace[] = '<em>$1</em>';
-	$replace[] = '<span class="bbu">$1</span>';
+	$replace[] = '<span style="text-decoration: underline;">$1</span>';
 	$replace[] = '<span style="color: $1">$2</span>';
 	if (!$is_inline)
 		$replace[] = '<h5>$1</h5>';
