@@ -68,7 +68,7 @@ else
 
 <div id="speech">
   <?php
-  if ($cache->Hit('speech_txt'))
+  if ($cache->Hit('speech_txt_'.$config['opt_user_lang']))
     echo $cache->Read();
   else
   {
@@ -77,7 +77,7 @@ else
     {
       $content = $this->RenderText($f->ReadString());
       echo $content;
-      $cache->Create('speech_txt', $content);
+      $cache->Create('speech_txt_'.$config['opt_user_lang'], $content);
     }
   }
   ?>
@@ -85,7 +85,7 @@ else
 </div>
 <div id="announce">
   <?php
-    if ($cache->Hit('announce_txt'))
+    if ($cache->Hit('announce_txt_'.$config['opt_user_lang']))
     	echo $cache->Read();
     else
     {
@@ -94,7 +94,7 @@ else
 	  {
 	    $content = $this->RenderText($f->ReadString());
 	    echo $content;
-	    $cache->Create('announce_txt', $content);
+	    $cache->Create('announce_txt_'.$config['opt_user_lang'], $content);
 	  }
     }
   ?>

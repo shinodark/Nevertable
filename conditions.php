@@ -36,7 +36,7 @@ $cache = new Cache("text");
 $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 $conditions  = $langpath . "conditions.txt";
 
-if ($cache->Hit('conditions_txt'))
+if ($cache->Hit('conditions_txt_'.$config['opt_user_lang']))
    echo $cache->Read();
 else
 {
@@ -44,7 +44,7 @@ else
    if ($f->Exists())
    {
       $content = $table->template->RenderText($f->ReadString());
-      $cache->Create('conditions_txt', $content);
+      $cache->Create('conditions_txt_'.$config['opt_user_lang'], $content);
    }
 }
     
