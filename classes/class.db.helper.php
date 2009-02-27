@@ -213,7 +213,10 @@ class DBHelper
    	  if (isset($args['filter']) && isset($args['filterval']))
    	  	$this->db->Where($args['filter'], $args['filterval']);
       $this->db->helper->LevelsFilter($args['levelset_f'], $args['level_f']);
-      $personnal = ($args['folder'] == get_folder_by_name("contest")) ? false : true;
+      $personnal = ($args['type'] == get_type_by_name("freestyle") 
+      			|| $args['folder'] == get_folder_by_name("trash") 
+      			|| $args['folder'] == get_folder_by_name("incoming") 
+      			) ? true : false;
       $this->TypeFilter($args['type'], $personnal);
       $this->db->helper->TypeFilter($args['type']);
       $this->db->helper->NewFilter($args['newonly']);
