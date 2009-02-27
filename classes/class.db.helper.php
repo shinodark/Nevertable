@@ -302,7 +302,10 @@ class DBHelper
       
       $this->db->Where($args['filter'], $args['filterval']);
       $this->LevelsFilter($args['levelset_f'], $args['level_f']);
-      $personnal = ($args['folder'] == get_folder_by_name("contest")) ? false : true;
+      $personnal = ($args['type'] == get_type_by_name("freestyle") 
+      			|| $args['folder'] == get_folder_by_name("trash") 
+      			|| $args['folder'] == get_folder_by_name("incoming") 
+      			) ? true : false;
       $this->TypeFilter($args['type'], $personnal);
       $this->NewFilter($args['newonly']);
       $this->FolderFilter($args['folder']);
