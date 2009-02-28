@@ -225,7 +225,7 @@ echo $tagboard->Show($args) ?>
 <br/>
 <a href="http://validator.w3.org/check?uri=referer"><img src="<?php echo ROOT_PATH.$config['image_dir']."logo-xhtml.png"?>" alt="Valid XHTML 1.0!" /></a>
 <br/>
-<a href="http://jigsaw.w3.org/css-validator/check/referer"><img src="<?php echo ROOT_PATH.$config['image_dir']."logo-css2.png"?>" alt="Valid CSS2 !" /></a>
+<a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3"><img src="<?php echo ROOT_PATH.$config['image_dir']."logo-css2.png"?>" alt="Valid CSS2 !" /></a>
 <br/>
 </center>
 

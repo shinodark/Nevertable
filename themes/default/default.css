@@ -304,7 +304,6 @@ font-size: 0.9em;
 {
     background: #FFF url(images/back-vertic.png) repeat-x;
     color: #335;
-    -moz-border-radius: 6px;
 }
 
 #footer a{
@@ -347,7 +346,6 @@ font-size: 0.9em;
     border: 1px solid #E0E0E0;
     color: #335;
     background: #FFF url(images/back-vertic.png) repeat-x;
-    -moz-border-radius: 6px;
 }
 .button a {
     font-weight: bold;
