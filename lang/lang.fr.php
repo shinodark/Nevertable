@@ -262,7 +262,7 @@ $lang['PROFILE_AVATAR_RESIZE_OK']   = "Image trop grande, redimensionnée avec s
 
 
 $lang['PROFILE_TITLE']              = "Profil de %s";
-$lang['PROFILE_LOCALISATION']       = "Localisation ";
+$lang['PROFILE_LOCATION']      		= "Localisation ";
 $lang['PROFILE_WEB']                = "Site perso ";
 $lang['PROFILE_SPEECH']             = "Citation perso ";
 $lang['PROFILE_LEVEL']              = "Permissions ";

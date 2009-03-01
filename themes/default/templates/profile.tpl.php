@@ -74,7 +74,7 @@ if (!isset($edit_enable))
 </td><td>
 <table>
 <tr>
-<td class="row2" width="150"><?php echo $lang['PROFILE_LOCALISATION'] ?> </td>
+<td class="row2" width="150"><?php echo $lang['PROFILE_LOCATION'] ?> </td>
 <td class="row1"><?php echo $user->GetLocalisation() ?></td>
 </tr>
 <tr>

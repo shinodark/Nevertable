@@ -261,7 +261,7 @@ $lang['PROFILE_AVATAR_RESIZE_OK']   = "Picture too big, it was resized. ";
 
 
 $lang['PROFILE_TITLE']              = "%s profile";
-$lang['PROFILE_LOCALISATION']       = "Localization ";
+$lang['PROFILE_LOCATION']      		= "Location";
 $lang['PROFILE_WEB']                = "Personal website ";
 $lang['PROFILE_SPEECH']             = "Personal quote ";
 $lang['PROFILE_LEVEL']              = "Auth level ";
