@@ -248,7 +248,7 @@ $lang['PROFILE_FORM_IDENT_PASSWD2']  = "New password, again : ";
 
 $lang['PROFILE_FORM_INFO_TITLE']    = "Personal information";
 $lang['PROFILE_FORM_INFO_INFO']     = "No fields are required";
-$lang['PROFILE_FORM_INFO_LOCAL']    = "Localization : ";
+$lang['PROFILE_FORM_INFO_LOCAL']    = "Location : ";
 $lang['PROFILE_FORM_INFO_WEB']      = "Personal web site : ";
 $lang['PROFILE_FORM_INFO_SPEECH']   = "Personal quote : ";
 
