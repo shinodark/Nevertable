@@ -37,7 +37,7 @@ $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 $conditions  = $langpath . "conditions.txt";
 
 if ($cache->Hit('conditions_txt_'.$config['opt_user_lang']))
-   echo $cache->Read();
+   $content = $cache->Read();
 else
 {
    $f = new FileManager($conditions);
