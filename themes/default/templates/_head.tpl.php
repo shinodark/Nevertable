@@ -30,7 +30,7 @@ if (!defined('NVRTBL'))
 ?>
 
 <title><?php echo $title ?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/>
 <link rel="shortcut icon" href="<?php echo ROOT_PATH ?>favicon.ico"/> 
 <link rel="stylesheet" href="<?php echo $this->table->style->GetCss() ?>" type="text/css" />
 <link rel="alternate" type="application/rss+xml" title="Nevertable rss feed" href="http://www.nevercorner.net/table/rss.php" />
