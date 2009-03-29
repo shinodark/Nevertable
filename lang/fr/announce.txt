@@ -1,1 +1,1 @@
-version beta 2.99 lang: fr ou pas ?
+version beta 3.0

@@ -1,1 +1,23 @@
-<p>No conditions, it's a beta version :) </p>
+[u]Technical conditions[/u]
+
+[b]Best Time[/b]: Best time on a level. Goal is unlocked since the beginning. 
+
+[b]Most Coins[/b]: Grab the most coins as you can. Goal unlocked since the beginning. If two records have the same coin value then best one is best time.
+
+[b]Fast Unlock[/b]: Collect enough coins to open the goal and enter as quick as you can. Try to play with the goal locked at the beginning.
+
+[b]Personal[/b]: Records which are not in the contest. Those replays will be submitted to a voting system soon then worse ones will be removed from the table.
+
+If your new record doesn't beat the current contest record you are warned after uploading your replay file and status is automatically changed into "personal record".
+
+[u]Camera conditions[/u]
+
+Only the standard camera settings (or nearer from the ball) are accepted for "best time", "most coins" and "fast unlock" categories. Settings where the camera is more distant from the ball are not accepted because in many cases it helps the player to finish easily a level.
+
+That's all folks.
+ 
+ 
+ 
+ 
+ 
+ 

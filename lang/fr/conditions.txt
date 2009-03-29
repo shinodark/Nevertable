@@ -1,2 +1,17 @@
-Pas de conditions, c'est une beta :)  
- 
+[u]Type de records pris en charge : [/u]
+
+[b]Meilleur Temps[/b]: Meilleur temps pour finir un niveau. Le goal est débloqué depuis le début. 
+
+[b]Meilleur pièces[/b]: Ramasser le plus de pièces possibles. Le Goal est dévéreouillé au début. Si deux records ont le même nombre de pièces, le meilleur sera celui ayant le meilleur temps.
+
+[b]Fast Unlock[/b]: Collectez le nombre suffisant de pièces pour dévérouiller le Goal et l'atteindre aussi vite que possible. 
+
+[b]Records personnels [/b]: Tout record ne correspondant pas aux criètres sus-cités pour entrer dans le championnat. Ces records vont être soumis prochainement à un système de vote et ceux obtenant les moins bonnes appréciations seront automatiquement retirés de la table.
+
+Si vous soumettez un record qui ne bat pas le record actuellement présent dans sa catégorie (type / niveau), alors il sera automatiquement transformé en records personnel.
+
+[u]Camera[/u]
+
+Seule la caméra standard (ou rapprochée encore plus de la balle) est acceptée pour les records du championnat "Meilleur temps", "Meilleur pièces" ou "Fast Unlock". Les paramètres correspondant à une caméra plus éloignée de la balle ne sont pas acceptés car dans la plupart des cas cela aide le joueur à finir le niveau plus facilement.
+
+Voilà, c'est tout ce qu'il y'a savoir, merci d'avoir pris connaissance de ces règles.

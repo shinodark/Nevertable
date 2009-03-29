@@ -1,7 +1,5 @@
-C'est la version beta de Nevertable 3.0. C'est juste pour jouer un peu, tout peut potentiellement être effacé n'importe quand, ou changer sans préavis. Cela dit, on va tacher d'éviter :)
+Seuls les records de [b]Neverball 1.5.x[/b] sont pris en charge.
 
-Seuls les records de [color=#ff0000][b]Neverball 1.5[/b][/color] sont supportés [i]pour l'instant[/i], pour les 4 sets principaux :) .
+Merci de lire les [url=conditions.php][b][color=#0000FF]règles[/color][/b][/url] avant de soumettre vos records.
 
-[url=conditions.php]les conditions[/url]
-[img]http://www.nevercorner.net/table14/themes/Oxygen/images/best.png[/img]
-edit
+[b][color=#FF0000]ALERTE SPOILER[/color][/b]: Vous pouvez voir des replays présents sur Nevertable pour des niveaux que vous n'avez pas encore atteints, ou découvrir des astuces, des zones secrètes, qui pourraient vous être révélés.

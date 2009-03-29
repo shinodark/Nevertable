@@ -1,1 +1,1 @@
-version beta 2.99 lang: en
+version beta 3.0
