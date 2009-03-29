@@ -83,23 +83,35 @@ else
   ?>
 <br/>
 </div>
-<div id="announce">
+
   <?php
     if ($cache->Hit('announce_txt_'.$config['opt_user_lang']))
-    	echo $cache->Read();
+    {
+    	?>
+    	<div id="announce">
+    	<?php echo $cache->Read();?>
+    	</div>
+    	<?php
+    }
     else
     {
 	  $f = new FileManager($langpath . "announce.txt");
 	  if ($f->Exists())
 	  {
 	    $content = $this->RenderText($f->ReadString());
-	    echo $content;
+	    if (!empty($content))
+	    {
+    	  ?>
+    	  <div id="announce">
+    	  <?php echo $content;?>
+    	  </div>
+    	  <?php
+        }
 	    $cache->Create('announce_txt_'.$config['opt_user_lang'], $content);
 	  }
     }
   ?>
 <br/>
-</div>
 
 <div class="generic_form" style="width: 800px;">
 <?php  $this->SubTemplate('_type.form'); ?>
