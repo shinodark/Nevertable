@@ -41,14 +41,24 @@ $manage_lang = get_lang_by_number($args['manage_lang']);
 if (!in_array($manage_lang, $langs))
    $manage_lang = $lang['code'];
 
-$langpath = ROOT_PATH . $config['lang_dir']. $manage_lang . "/";
+$langpath = $config['lang_dir']. $manage_lang . "/";
 $tpl_params['message_array'] = array();
 
 $cache = new Cache('text');
 
 if (isset($args['upannounce']))
 {
-    file_put_contents($langpath . "announce.txt", stripslashes($args['announce']));
+	/* We delete the file */
+	if (empty($args['announce']))
+	{
+		$f = new FileManager($langpath . "announce.txt");
+		if ($f->Exists())
+		  $f->Unlink();
+	}
+	else
+	{
+      @file_put_contents(ROOT_PATH . $langpath . "announce.txt", stripslashes($args['announce']));
+	}
     $cache->Dirty('announce_txt_'.$manage_lang);
     array_push( $tpl_params['message_array'], "Announcement updated.");
     $tpl_params['redirect'] = "management.php";
@@ -58,8 +68,18 @@ if (isset($args['upannounce']))
 
 else if (isset($args['upspeech']))
 {
-    file_put_contents($langpath . "speech.txt", stripslashes($args['speech']));
-    $cache->Dirty('speech_txt_'.$manage_lang);
+	/* We delete the file */
+	if (empty($args['speech']))
+	{
+		$f = new FileManager($langpath . "speech.txt");
+		if ($f->Exists())
+		  $f->Unlink();
+	}
+	else
+	{
+      @file_put_contents(ROOT_PATH . $langpath . "speech.txt", stripslashes($args['speech']));
+	}
+	$cache->Dirty('speech_txt_'.$manage_lang);
     array_push( $tpl_params['message_array'], "Speech updated.");
     $tpl_params['redirect'] = "management.php";
     $tpl_params['delay'] = 2;
@@ -68,8 +88,18 @@ else if (isset($args['upspeech']))
 
 else if (isset($args['upconditions']))
 {
-    file_put_contents($langpath . "conditions.txt", stripslashes($args['conditions']));
-    $cache->Dirty('conditions_txt_'.$manage_lang);
+	/* We delete the file */
+	if (empty($args['conditions']))
+	{
+		$f = new FileManager($langpath . "conditions.txt");
+		if ($f->Exists())
+		  $f->Unlink();
+	}
+	else
+	{
+      file_put_contents(ROOT_PATH . $langpath . "conditions.txt", stripslashes($args['conditions']));
+	}
+	$cache->Dirty('conditions_txt_'.$manage_lang);
     array_push( $tpl_params['message_array'], "Conditions updated.");
     $tpl_params['redirect'] = "management.php";
     $tpl_params['delay'] = 2;
@@ -82,12 +112,12 @@ else
   
   $tpl_params['manage_lang'] = $manage_lang;
 
-  if (file_exists($langpath . "announce.txt"))
-    $tpl_params['announce'] = file_get_contents($langpath . "announce.txt");
-  if (file_exists($langpath . "speech.txt"))
-    $tpl_params['speech'] = file_get_contents($langpath . "speech.txt");
-  if (file_exists($langpath . "conditions.txt"))
-    $tpl_params['conditions'] = file_get_contents($langpath . "conditions.txt");
+  if (file_exists(ROOT_PATH . $langpath . "announce.txt"))
+    $tpl_params['announce'] = file_get_contents(ROOT_PATH . $langpath . "announce.txt");
+  if (file_exists(ROOT_PATH . $langpath . "speech.txt"))
+    $tpl_params['speech'] = file_get_contents(ROOT_PATH . $langpath . "speech.txt");
+  if (file_exists(ROOT_PATH . $langpath . "conditions.txt"))
+    $tpl_params['conditions'] = file_get_contents(ROOT_PATH . $langpath . "conditions.txt");
 
   
   $table->template->Show('admin/management', $tpl_params);
