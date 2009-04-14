@@ -279,7 +279,7 @@ $lang['PROFILE_VIEWALL_PERSONALS']  = "View all personal replays of %s";
 /*
   UPLOAD
 */
-$lang['UPLOAD_REGISTERED']           = "Your record is posted. Please wait validation of an admin :)";
+$lang['UPLOAD_REGISTERED']           = "Your record is posted. Please wait for validation by an admin :)";
 $lang['UPLOAD_FORM_TITLE']           = "Upload a record";
 $lang['UPLOAD_FORM_SIZEMAX']         = "Max size of a replay file : %dkB";
 $lang['UPLOAD_FORM_PSEUDO']          = "Your pseudo : ";
