@@ -41,7 +41,7 @@ if (!defined('NVRTBL'))
 	    for ($i=1; $i<=$nb_pages; $i++)
 	    {
 		      if ($i != $page) { ?>
-		         &nbsp;<a href="<?php echo $callback ?>?page=<?php echo $i.$nextargs?>"><?php echo $i ?></a>&nbsp;
+		         &nbsp;<a href="<?php echo $callback ?>&amp;page=<?php echo $i.$nextargs?>"><?php echo $i ?></a>&nbsp;
 		      <?php } else { ?>
 		         &nbsp;<b><?php echo $i ?></b>&nbsp;
 		      <?php } ?>
