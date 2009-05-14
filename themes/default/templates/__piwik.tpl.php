@@ -27,7 +27,7 @@ if (!defined('NVRTBL'))
 <!-- Piwik -->
 <a href="http://piwik.org" title="Web analytics api" onclick="window.open(this.href);return(false);">
 <script type="text/javascript">
-var pkBaseURL = (("https:" == document.location.protocol) ? "https://new.nevercorner.net/piwik/" : "http://new.nevercorner.net/piwik/");
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://www.nevercorner.net/piwik/" : "http://new.nevercorner.net/piwik/");
 document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
 </script><script type="text/javascript">
 piwik_action_name = '';
