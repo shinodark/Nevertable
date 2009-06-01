@@ -179,9 +179,9 @@ echo $tagboard->Show($args) ?>
  while($fields = $this->table->db->FetchArray($last_comments))
  {  
  	$text = $fields['content'];
- 	if (strlen($text) > $config['sidebar_comlength'])
-       $text = layout_wrap(substr($text,0,$config['sidebar_comlength']) . "...", $config['sidebar_autowrap'])  ; 
+    $text = layout_wrap($text, $config['sidebar_autowrap'])  ; 
  	$text = $this->RenderText($text, true);
+ 	$text = truncate($text, $config['sidebar_comlength']);
  	?>
 	<tr><td class="comPreviewHeader">
 	<a href="profile.php?id=<?php echo $fields['user_id']?>" title="View profile of <?php echo $fields['pseudo'] ?>"><?php echo $fields['pseudo'] ?></a>
