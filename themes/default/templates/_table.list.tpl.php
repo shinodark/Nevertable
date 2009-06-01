@@ -98,7 +98,7 @@ $super_op_enable = Auth::Check(get_userlevel_by_name("admin"));
          $comments = $this->table->style->Getimage("comments", sprintf($lang['TABLE_COMMENTS'] ,$fields['comments_count']));
       ?>
       
-      <tr class="<?php echo $rowclass ?>" <?php if ($diffview) { ?>style="font-weight: bold;"<?php } ?>
+      <tr class="<?php echo $rowclass ?>" <?php if ($diffview && $i==0) { ?>style="font-weight: bold;"<?php } ?>
       		onmouseover="Tip('<?php echo Javascriptize(GetShotMini($fields['set_path'], $fields['map_solfile'], 128)) ?>')" onmouseout="UnTip()" >
       <td><?php if ($days<=3) echo $this->table->style->GetImage('new') ?></td>
       <td><?php echo $days?>&nbsp;d</td>
