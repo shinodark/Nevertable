@@ -55,7 +55,7 @@ if(!isset($args['levelset_f']))
 if(!isset($args['level_f']))  
    $args['level_f'] = 0;        // all by default
 if(!isset($args['folder']))
-   $args['folder'] = get_folder_by_name("contest");
+   $args['folder'] = get_folder_by_name("all");
  
  
 $table = new Nvrtbl();
