@@ -48,7 +48,9 @@ function is_a_best_record($record, $best, $critera)
     return false;
   else if (($critera == "time") && ($time <= $besttime))
     return true;
-  else  if (($critera == "coins") && ($coins >= $bestcoins)) 
+  else if (($critera == "coins") && ($coins > $bestcoins))
+    return true;
+  else  if (($critera == "coins") && ($coins == $bestcoins)) 
   {
     // ici c'est chiant, il faut comparer les temps si plusieurs records
     // ont le même nombre de pièces avec des temps différents
