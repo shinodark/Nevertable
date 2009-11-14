@@ -26,7 +26,7 @@ if (!defined('NVRTBL'))
 
 <center>
 <a href="http://neverball.org/">Neverball official site</a> &nbsp; | &nbsp;
-<a href="http://www.nevercorner.net/table14">Archives</a>&nbsp; | &nbsp;
-<a href="http://www.nevercorner.net/forum/">Neverforum</a>&nbsp; | &nbsp;
-<a href="http://www.nevercorner.net/wiki/">NeverWiki</a>
+<a href="http://table14.nevercorner.net">Archives</a>&nbsp; | &nbsp;
+<a href="http://forum.nevercorner.net">Neverforum</a>&nbsp; | &nbsp;
+<a href="http://wiki.nevercorner.net">NeverWiki</a>
 </center>

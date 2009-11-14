@@ -25,15 +25,14 @@ if (!defined('NVRTBL'))
 ?>
     
 <!-- Piwik -->
-<a href="http://piwik.org" title="Web analytics api" onclick="window.open(this.href);return(false);">
 <script type="text/javascript">
-var pkBaseURL = (("https:" == document.location.protocol) ? "https://www.nevercorner.net/piwik/" : "http://www.nevercorner.net/piwik/");
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.nevercorner.net/" : "http://piwik.nevercorner.net/");
 document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
 </script><script type="text/javascript">
-piwik_action_name = '';
-piwik_idsite = 1;
-piwik_url = pkBaseURL + "piwik.php";
-piwik_log(piwik_action_name, piwik_idsite, piwik_url);
-</script>
-<object><noscript><p>Web analytics api <img src="http://www.nevercorner.net/piwik/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript></object></a>
-<!-- End Piwik Tag --> 
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.nevercorner.net/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
+<!-- End Piwik Tag -->
