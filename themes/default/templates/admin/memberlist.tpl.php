@@ -53,13 +53,13 @@ global $lang, $config, $userlevel, $lang;
 <table style="text-align: center;">
 <caption><?php echo  $lang['ADMIN_MEMBERS_TITLE']?></caption>
 <tr>
-<th style="text-align: center;"><a href="memberlist.php?sort=id">#</a></th>
-<th style="text-align: center;"><a href="memberlist.php?sort=pseudo"><?php echo $lang['MEMBER_HEADER_NAME']?></a></th>
-<th style="text-align: center;"><a href="memberlist.php?sort=records"><?php echo $lang['MEMBER_HEADER_RECORDS']?></a></th>
-<th style="text-align: center;"><a href="memberlist.php?sort=best"><?php echo $lang['MEMBER_HEADER_BEST_RECORDS']?></a></th>
-<th style="text-align: center;"><a href="memberlist.php?sort=comments"><?php echo $lang['MEMBER_COMMENTS']?></a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=5">#</a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=0"><?php echo $lang['MEMBER_HEADER_NAME']?></a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=1"><?php echo $lang['MEMBER_HEADER_RECORDS']?></a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=2"><?php echo $lang['MEMBER_HEADER_BEST_RECORDS']?></a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=3"><?php echo $lang['MEMBER_COMMENTS']?></a></th>
 <th style="text-align: center;"><?php echo $lang['MEMBER_MAIL']?></th>
-<th style="text-align: center;"><a href="memberlist.php?sort=cat"><?php echo $lang['MEMBER_CATEGORY']?></a></th>
+<th style="text-align: center;"><a href="memberlist.php?sort=4"><?php echo $lang['MEMBER_CATEGORY']?></a></th>
 <th></th>
 <th></th>
 </tr>

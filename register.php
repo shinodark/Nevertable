@@ -55,6 +55,9 @@ if(isset($args['valid']))
 
   if ($args['passwd1'] != $args['passwd2'])
     throw new Exception ($lang['REGISTER_PASSWD_CHECK']);
+  
+  if ((strtoupper($args['human'] ) != "HELLO") && (strtoupper($args['human']) != "HI"))
+    throw new Exception ($lang['REGISTER_HUMAN_CHECK']);
 
   if (strlen($args['passwd1']) <= 4)
   	throw new Exception ($lang['REGISTER_PASSWD_LENGTH']);

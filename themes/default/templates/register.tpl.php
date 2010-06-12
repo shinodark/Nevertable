@@ -63,6 +63,9 @@ global $lang, $config;
 <td><label for="passwd2"><?php echo $lang['REGISTER_FORM_PASSWD2'] ?></label></td>
 <td colspan="1"><input type="password" id="passwd2" name="passwd2"  size="20" /></td>
 </tr><tr>
+<td><label for="human"><?php echo $lang['REGISTER_HUMAN_TEST'] ?></label></td>
+<td colspan="1"><input type="text" id="human" name="human"  size="20" /></td>
+</tr><tr>
 <td colspan="2"><center><input type="submit"  /></center></td>
 </tr></table></form>
 </div>
