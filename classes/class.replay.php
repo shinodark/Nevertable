@@ -74,7 +74,7 @@ class Replay
 	
 		$this->struct_replay['version'] = $f->ReadInt();
 	
-	    $this->struct_replay['timer']   = $f->ReadInt() / 100.0;
+	    $this->struct_replay['timer']   = $f->ReadInt();
 	    $this->struct_replay['coins']   = $f->ReadInt() ;
 	    $this->struct_replay['state']   = $f->ReadInt();
 		$this->struct_replay['mode']    = $f->ReadInt() ;
@@ -157,7 +157,7 @@ class Replay
 		/* Copy header data */
 		$fw->WriteInt($this->struct_replay['magic']);
 		$fw->WriteInt($this->struct_replay['version']);
-		$fw->WriteInt($this->struct_replay['timer'] * 100.0);
+		$fw->WriteInt($this->struct_replay['timer']);
 		$fw->WriteInt($this->struct_replay['coins']);
 		$fw->WriteInt($this->struct_replay['state']);
 		$fw->WriteInt($this->struct_replay['mode']);
@@ -190,7 +190,7 @@ class Replay
     
     function GetTime()
     {
-        return $this->struct_replay['timer'];
+        return $this->struct_replay['timer'] / 100.0;
     }
     
     function GetCoins()
@@ -227,7 +227,7 @@ class Replay
     function GetFields()
     {
         return array(
-            "time"      => $this->struct_replay['timer'],
+            "time"      => $this->struct_replay['timer'] / 100.0,
             "coins"     => $this->struct_replay['coins'],
             "levelset"  => $this->set,
             "level"     => $this->level,
