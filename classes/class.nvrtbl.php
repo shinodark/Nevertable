@@ -94,7 +94,7 @@ class Nvrtbl
         {
           Auth::_LoadUserOptions();
         }
-        $this->style->Select($config['opt_user_theme']);
+        $this->style->Select(get_theme_by_num($config['opt_user_theme']));
     }
     else
     {
