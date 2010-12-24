@@ -1,10 +1,8 @@
+@import url('../default/layout.css');
+
 body {
-	font-family: Tahoma, Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
-	font-size: 12px;
-	background : #eee;
-    height : 100%;
-    margin: 0;
-    padding: 0;
+	font: 11px Verdana, Helvetica, Arial, sans-serif;
+    background-color: #eee;
 }
 
 a {
@@ -17,43 +15,34 @@ img {
     border: 0;
 }
 
-
 #page {
-	background: #fff url(images/bg.png) repeat-y left;
+    background: transparent url(../default/images/bg.png) repeat-y left;
     color : #223;
-    width: 950px;
-    margin : 0 auto;
-    padding : 0 0 0 0;
 }
 
 #main {
     background: transparent;
-    width: 900px;
-    margin : 0 auto;
 }
 
 input, textarea {
-	font-family: Tahoma, Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
 	border : 1px solid gray;
 	background: #5af;
-	font-size: 10px;
 }
+
 select, option {
 	background: #5af;
 }
+
 input[type=submit]:hover, input[type=submit]:focus {
 	background : #7cf;
 }
 
 input[type=text]:focus, input[type=password]:focus, textarea:focus {
 	border: 1px solid blue;
-	padding:0;
 }
 
 table {
     border: 1px solid #E0E0E0;
-    background: transparent;
-    border-collapse: collapse;
     width: 100%;
 }
 
@@ -61,7 +50,7 @@ th {
     font-weight: bold;
     text-align: center;
     color: #556;
-    background: #FFF url(images/back-vertic.png) repeat-x;
+    background: #FFF url(../default/images/back-vertic.png) repeat-x;
     padding-left: 4px;
     padding-right: 4px;
     padding-top: 7px;
@@ -81,44 +70,44 @@ caption {
 
 .embedded table, .embedded td, .embedded tr, .embedded th {
     border: 0px;
-    padding: 0 0 0 0;
-}
-
-.embedded td {
-    height: 40px;
+    padding: 0px;
 }
 
 .embedded input {
     font-family: "Courier New";
-    font-size: 14px;
+    font-size: 1em;
     border: 1px;
     border-color: #888;
     background: #ffe;
 }
 
+/******** Title ****************************/
+
+#top {
+    color: #223;
+}
+
+#announce {
+    background: blue;
+    color: white;
+    font-weight: bold;
+}
+
 /******** Record table ********************/
 
 /* style only for main page */
+
 .results-prelude {
-    margin-top: 5px;
-    width: 670px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
-    text-align: center;
 	color : #38f;
 }
 
 .results {
-    float: right; 
-    margin-left : 0px;
-    margin-top : 5px;
-    margin-bottom : 30px;
-    width : 670px;
-    font-size: 11px;
     clear: both;
 }
 
+.results table {
+	border-collapse:collapse;
+}
 
 .results tr:hover {
     background : #fff;
@@ -127,7 +116,6 @@ caption {
 .results td {
     padding-top: 0px;
     padding-bottom: 0px;
-    text-align: center;
     color: #223;
 }
 
@@ -138,23 +126,14 @@ caption {
 
 .row1 {
     background: #fbfbfb;  
-   /* border-top: 1px solid #e8e8e8;  */
 }
 
 .row2 {
     background: #f4f4f4;  
-  /*    border-top: 1px solid #eee;  */
 }
 
-/******** ONE result table *********/
-.oneresult {
-    margin-left : auto;
-    margin-right : auto;
-    margin-top : 30px;
-    margin-bottom : 30px;
-    width : 670px;
-    text-align: center;
-    clear: both;
+.oneresult table {	
+	border-collapse:collapse;
 }
 
 .oneresult a {
@@ -163,193 +142,125 @@ caption {
 
 /******** Comments table ********************/
 
-.comments {
-    margin : 20px auto;
-    width : 650px;
-    font-size: 11px;
-}
-
-.comments a {
+.comment a {
     color: #336;
 }
 
 .com_header {
-    background: #fff url(images/back-vertic.png) repeat-x;
-    height: 30px;
-    padding: 2px;
+    background: #fff url(../default/images/back-vertic.png) repeat-x;
 }
 
 td .com_content {
-    border: 2px solid #d0d0f8;
-    padding: 10px 10px 10px 10px;
+    border: 1px solid #d0d0f8;
     background: #bdf; 
+    padding: 10px 10px 10px 10px;
 }
 
-
-/******** Title ****************************/
-
-#top {
-    color: #223;
-    width: 932px;
-    height: 169px;
-    margin-left: 9px;
-    margin-top: 0px;
+.quotebox {
+	color: #444;
 }
 
 /******** Prelude ****************************/
 
 #prelude {
-    margin-top: 5px;
-    width: 820px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 40px;
-	background: #FFF url(images/back-vertic.png) repeat-x;
-    text-align: left;
+    background: #FFF url(../default/images/back-vertic.png) repeat-x;
     font-weight: bold;
-	color : #3030f0;
+    color : #3030f0;
 }
 
 #prelude a {
-	color : #00f;
+    color : #00f;
 }
 #prelude a:hover, #prelude a:focus {
-	color : #0373A1;
+    color : #0373A1;
 }
 #prelude p,ul,li {
-	color : #333;
+    color : #333;
     text-decoration: none;
     font-weight: normal;
 }
 
 /******** Speech ****************************/
+
 #speech {
-    position: relative;
-    float: left;
-    width: 820px;
-    margin-left: 11px;
-    margin-right: 10px;
-    margin-bottom: 40px;
-    text-align: left;
 	color : #333;
 }
 
 /******** Navbar *****************************/
+
 .navbar {
-	background: #FFF url(images/back-vertic.png) repeat-x;
-    width: 880px;
-    clear: both;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    text-align: left;
-    font-weight: bold;
 	color : #38f;
 }
-.navbar a {
-	color : #558;
-}
-
 
 /******** Sidebar ****************************/
+
 #sidebar {
-    position : relative;
-    float : left;
-    top : 0px;
-    left : 3px;
-    bottom: auto;
-    margin-right: 0px;
-    margin-bottom: 60px;
-    width: 170px;
-    font-size: 10px;
+	font-size: 0.9em;
+}
+
+#sidebar h1, h2 {
+    font-size: 1em;
+    font-weight: bold;
+    color: #335;
+    border-bottom: 1px solid #66c;
 }
 
 #sidebar h2 {
-    padding-top: 6px;
-    padding-bottom: 6px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    background: #28d;
-    font-size: 14px;
-    text-align: center;
-    color: white;
-    font-weight: bold;
+	border: 1px solid #66c;
+	border-bottom: none;
 }
 
-#sidebar table {
-    padding: 0 0 0 0;
-}
 .comPreviewHeader {
     background: #eee;
+    font-size: 0.9em;
 }
+
 .comPreviewHeader a{
     color: #114;
 }
+
 .comPreview {
     background: #fff;
 }
 
-.menubar {
-    padding: 0px;
-    margin-bottom: 10px;
-    margin-top: 0px;
-}
-
 .menuitem {
-    padding-left: 6px;
-    border-top: 1px solid #f8f8f8;
-    background: #fbfbfb;
+ /*   border-top: 1px solid #f8f8f8;
+    border-bottom: 1px solid #f8f8f8;*/
+/*    background: #fbfbfb;*/
 }
 
-.menuitem:hover {    background: url(images/curseur.gif) repeat-y left; }
-.menuitem a:hover { color: #335 ; }
+.menuitem:hover {
+	background: url(../default/images/curseur.gif) repeat-y left;
+}
+
+.menuitem a:hover {
+	color: #335;
+}
 
 /******** Tagform ****************************/
 
-#tagform {
-    margin : 0 auto;
-    width: 160px;
-}
-#tagform table
-{
-    border: 0;
-    background: transparent;
-    width: 100%;
-}
-#tagform td {
-    padding: 1px;
-}
 #tagform label {
     font-weight: bold;
     color: #525;
 }
 
 /*********** Tags **************/
-#tagboard {
-    width: 160px;
-    margin-bottom: 20px;
-}
 
 #tags {
-    margin : 0 auto;
-    margin-top : 5px;
-    font-size: 10px;
-    width: 160px;
-    height: 220px;
-    overflow: auto;
+	font-size: 0.9em;
 }
+
+#content {
+    font-size:1em;
+}
+
+#tags textarea {
+    font-size: 1.1em;
+	}
 
 #tags table {
-    border: 0;
     background: transparent;
-    padding: 0;
     table-layout: fixed;
-}
-
-#tags td {
-    padding: 0;
-    border: 0;
 }
 
 .tagheader {
@@ -370,7 +281,7 @@ td .com_content {
     font-weight: bold;
 }
 
-.tag_pseudo a{
+.tag_pseudo a {
     color: #006;
     text-decoration: none;
     font-weight: bold;
@@ -386,90 +297,61 @@ td .com_content {
     font-weight: bold;
 }
 
-
 /******** Footer ****************************/
 
-#footer
-{
-    margin-top: 0px;
-    margin-bottom: 0px;
-	margin-left: 10px;
-    margin-right: 10px;
-    clear: both;
-	padding: 0;
-	background: #FFF url(images/back-vertic.png) repeat-x;
-	text-align: center;
-    width: 929px;
-    height: 20px;
-    border: 1px solid #E0E0E0;
-
+#footer {
+    background: #FFF url(../default/images/back-vertic.png) repeat-x;
     color: #335;
- 
-    -moz-border-radius: 6px;
 }
 
-#footer a{
-	color: #558;
+#footer a {
+    color: #558;
 }
 
-#stats
-{
-    margin-top: 50px;
-    margin-bottom: 0px;
-	margin-left: 10px;
-    margin-right: 10px;
-    clear: both;
-	padding: 0;
-	text-align: center;
-    width: 929px;
-    height: 20px;
+#stats {
+    text-align: left;
+}
+
+.st_label {
+   font-weight: bold;
+   text-align: left;
+}
+
+.st_text {
+   font-style: italic;
+   text-align: left;
+}
+
+#perfs {
     border: 1px solid #E0E0E0;
     color: #335;
 }
 
 /******** generic form  *****************/
 
-.nvform {
-	background: #FFF url(images/back-vertic.png) repeat-x;
-    clear: both;
-    margin-top : 50px;
-    margin-bottom : 30px;
-    margin-right: auto;
-    margin-left: auto;
-    font-size: 11px;
+.generic_form {
+    background: #FFF url(../default/images/back-vertic.png) repeat-x;
     color: #224;
 }
 
-.nvform td {
+.generic_form td {
     padding: 5px;
 }
 
 /****** General Button ************************/
 
 .button {
-    margin-top: 30px;
-	margin-left: auto;
-    margin-right: auto;
-    clear: both;
-	padding: 5px;
-	background: #FFF url(images/back-vertic.png) repeat-x;
-	text-align: center;
     border: 1px solid #E0E0E0;
     color: #335;
-    -moz-border-radius: 6px;
+    background: #FFF url(../default/images/back-vertic.png) repeat-x;
 }
+
 .button a {
     font-weight: bold;
 }
+
 .error {
-    margin-top: 30px;
-	margin-left: auto;
-    margin-right: auto;
-    clear: both;
-	padding: 5px;
-	background: #f55;
-	text-align: center;
+    background: #f55;
     font-weight: bold;
-    border: 1px solid #E0E0E0;
     color: #fff;
 }
