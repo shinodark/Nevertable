@@ -221,6 +221,7 @@ $toolbar_el = array (
 $themes = array(
     "default",
     "Oxygen",
+    "Lithium",
     );
 
 $icons = array (
