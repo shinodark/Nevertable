@@ -220,7 +220,7 @@ function gui_button_return($name, $page)
 function replay_link($replay_file)
 {
   global $config;
-  return "http://".$_SERVER['SERVER_NAME'] ."/".$config['nvtbl_path'] . $config['replay_dir']. $replay_file;
+  return $config['nvtbl_path'] . $config['replay_dir']. $replay_file;
 }
 
 function GetShot($set_path, $map_solfile)

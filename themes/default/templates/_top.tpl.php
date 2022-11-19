@@ -26,5 +26,5 @@ global $config;
 ?>
 
 <center>
-<a href="http://<?php echo $_SERVER['SERVER_NAME'] . '/'.$config['nvtbl_path'] ?>"><?php echo $this->table->style->GetImage('top') ?></a>
+<a href="<?php echo $config['nvtbl_path'] ?>"><?php echo $this->table->style->GetImage('top') ?></a>
 </center>
