@@ -66,7 +66,7 @@ if(isset($args['autoadd']))
   $u->LoadFromId($rec->GetUserId());
   $replayName = sprintf("__%s_%05d.nbr",
   	$u->GetPseudo(),
-  	99999//Id non encore connu ˆ ce stade
+  	99999//Id non encore connu Ã  ce stade
   	);
   	
 
@@ -83,7 +83,7 @@ if(isset($args['autoadd']))
 	  /* Insertion du record */
 	  $rec->SetFields($rep->GetFields());
 	      
-	  /* récupération de la case "goal not reached */
+	  /* rÃ©cupÃ©ration de la case "goal not reached */
 	  if (!$rep->IsGoalReached())
 	  {
 	     $rec->SetFields(array(
@@ -96,7 +96,7 @@ if(isset($args['autoadd']))
 	
 	  $ret = $rec->Insert();
 	  
-	  /* Mise ˆ jour de l'ID */
+	  /* Mise Ã  jour de l'ID */
 	  $replayName = sprintf("%s_%s_%s_%05d.nbr",
 	    // get rid of spaces in file names 
 	  	str_replace(" ", "_", $sets[$rec->GetSet()]),

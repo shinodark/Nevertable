@@ -24,6 +24,7 @@ if (!defined('NVRTBL'))
 	
 class Nvrtbl
 {
+  /** @var \DB */
   var $db;
   var $dialog;
   var $template;
@@ -111,12 +112,12 @@ class Nvrtbl
     {
 		throw new Exception("lang is not supported.", 200);
     }
-    // anglais par dŽfaut pour les chaines, puis Žcrasement avec la langue de l'utilisateur
+    // anglais par dÃ©faut pour les chaines, puis Ã©crasement avec la langue de l'utilisateur
     if ($langcode != "en")
     	include (ROOT_PATH.$config['lang_dir']."lang.en.php");
     include (ROOT_PATH.$config['lang_dir']."lang.".$langcode.".php");
 
-    /* Compte et gère les utilisateur en ligne */
+    /* Compte et gÃ©re les utilisateur en ligne */
     $this->UpdateOnlineUsers();
   }
 
@@ -207,7 +208,7 @@ class Nvrtbl
     $time = explode(' ', $time);
     $time = $time[1] + $time[0];
     $this->process_time = timestamp_diff_in_secs($time, $this->start_time);
-    /* on ne garde que 3 décimales */
+    /* on ne garde que 3 dÃ©cimales */
     return substr($this->process_time,0,5);
   }
   
@@ -276,10 +277,10 @@ class Nvrtbl
     return $ret;
   }
 
-  /* Appelé quand un utilisateur se loggue */
+  /* AppelÃ© quand un utilisateur se loggue */
   function AddOnlineUser()
   {
-    /* on enlève l'utilisateur de la liste des guests */
+    /* on enlÃ¨ve l'utilisateur de la liste des guests */
     $this->db->NewQuery("DELETE", "online");
     $this->db->Where("user_id", 0);
     $this->db->Where("ident", $_SERVER['REMOTE_ADDR']);
@@ -287,17 +288,17 @@ class Nvrtbl
     $this->db->Query();
   }
 
-  /* Ajout d'un utilisateur loggué dans la liste des online */
+  /* Ajout d'un utilisateur logguÃ© dans la liste des online */
   function UpdateLoggedOnlineUser()
   {
-    /* recherche de l'utilisateur déjà présent dans la liste */
+    /* recherche de l'utilisateur dÃ©jÃ  prÃ©sent dans la liste */
     $this->db->NewQuery("SELECT", "online", "COUNT(user_id)");
     $this->db->Where("user_id", $_SESSION['user_id']);
     $this->db->Where("ident", $_SESSION['user_pseudo']);
     $this->db->Query();
 
     $res = $this->db->FetchArray();
-    if ($res['COUNT(user_id)'] > 0) /* déjà présent */
+    if ($res['COUNT(user_id)'] > 0) /* dÃ©jÃ  prÃ©sent */
     {
       $this->db->NewQuery("UPDATE", "online");
       $this->db->UpdateSet(array("logged_time" => $this->start_time));
@@ -316,16 +317,16 @@ class Nvrtbl
     }
   }
 
-  /* Appelé quand un utilisateur non loggué arrive */
+  /* AppelÃ© quand un utilisateur non logguÃ© arrive */
   function AddOnlineGuest()
   {
-    /* recherche de l'utilisateur déjà présent dans la liste */
+    /* recherche de l'utilisateur dÃ©jÃ  prÃ©sent dans la liste */
     $this->db->NewQuery("SELECT", "online", "COUNT(user_id)");
     $this->db->Where("user_id", $_SESSION['user_id']);
     $this->db->Where("ident", $_SERVER['REMOTE_ADDR']);
     $this->db->Query();
     $res = $this->db->FetchArray();
-    if ($res['COUNT(user_id)'] > 0) /* déjà présent */
+    if ($res['COUNT(user_id)'] > 0) /* dÃ©jÃ  prÃ©sent */
     {
       $this->db->NewQuery("UPDATE", "online");
       $this->db->UpdateSet(array("logged_time" => $this->start_time));
@@ -344,7 +345,7 @@ class Nvrtbl
     }
   }
 
-  /* Appelé quand un utilisateur se déloggue */
+  /* AppelÃ© quand un utilisateur se dÃ©loggue */
   function RemoveOnlineUser()
   {
     $this->db->NewQuery("DELETE", "online");
@@ -358,7 +359,7 @@ class Nvrtbl
   function UpdateOnlineUsers()
   {
     global $config;
-    /* Mettre à jour l'utilisateur */
+    /* Mettre Ã  jour l'utilisateur */
     if ($_SESSION['user_logged'] == true)
     {
       $this->UpdateLoggedOnlineUser();
@@ -369,7 +370,7 @@ class Nvrtbl
     $this->db->Where_lt("logged_time", $this->start_time-$config['online_idletime']);
     $this->db->Query();
     
-    /* récupère la liste */
+    /* rÃ©cupÃ©rÃ© la liste */
     $this->db->NewQuery("SELECT", "online");
     $this->db->Query();
 
@@ -403,12 +404,12 @@ class Nvrtbl
     $dir_list = array();
     $f = new FileManager();
 
-    /* listing du rŽpertoire replays  */
+    /* listing du rÃ©pertoire replays  */
     $res = $f->DirList($replay_path);
     $dir_list = $res["files"] ;
     if (!$dir_list)
     {
-       throw new Exception("Error opening \"".$dir."\" directory.",500);
+       throw new Exception("Error opening \"".$replay_path."\" directory.",500);
     }
     
 
@@ -471,7 +472,7 @@ class Nvrtbl
     echo "<table>\n";
     echo "<tr><th>files uploaded, but not used</th></tr>\n";
 
-    /* des fichiers non-orphelins ont ŽtŽ trouvŽs, affichage des diffŽrences */
+    /* des fichiers non-orphelins ont Ã©tÃ© trouvÃ©s, affichage des diffÃ©rences */
     if (!empty($dir_list_found))
         $orphans = array_diff($dir_list, $dir_list_found);
       /* ce ne sont que des fichiers orphelins, si il y en a */
@@ -711,7 +712,7 @@ class Nvrtbl
     while ($val = $this->db->FetchArray($res))
     { 
       $rec->LoadFromId($val['id']);
-      /* remet à jour les statistiques du record */
+      /* remet Ã  jour les statistiques du record */
       $count = $this->db->helper->CountComments($rec->GetId());
       $rec->SetFields(array("comments_count" => $count));
       $rec->Update(true);

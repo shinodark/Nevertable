@@ -31,7 +31,7 @@ class Record
     /*__Constructeur__
     Cette fonction initialise l'objet Record.
 
-    @param: pointeur vers la base de donnŽe
+    @param: pointeur vers la base de donnÃ©e
     */
     function Record(&$db)
     {
@@ -39,7 +39,7 @@ class Record
        $this->isload = false;
     }
 
-    /* Chargement des champs d'un record ˆ partir de l'id */
+    /* Chargement des champs d'un record Ã  partir de l'id */
     function LoadFromId($id)
     {
       if (empty($id))
@@ -57,9 +57,9 @@ class Record
       return true;
     }
 
-    /* Chargement des champs d'un record ˆ partir de l'id */
-    /* @return: $hash['nb'] : Nombre de records trouvés 
-                $hash['id'] : array("id1", "id2", ...) : liste des ids trouvés 
+    /* Chargement des champs d'un record Ã  partir de l'id */
+    /* @return: $hash['nb'] : Nombre de records trouvÃ©s 
+                $hash['id'] : array("id1", "id2", ...) : liste des ids trouvÃ©s 
     */
     function LoadFromMatch($pseudo, $levelset, $level, $type, $folder)
     {
@@ -85,7 +85,7 @@ class Record
       return $ret;
     }
 
-    /* Mise à jour du record dans la bdd avec les champs actuellement chargŽ */
+    /* Mise Ã  jour du record dans la bdd avec les champs actuellement chargÃ© */
     function Update($conservative=false)
     {
       if(!$this->isload)
@@ -117,7 +117,7 @@ class Record
       $this->db->Insert($this->fields);
       $this->db->Query();
       
-      /* le but ici est de rŽcupŽrer le nouveau record pour mise ˆ jour des infos */
+      /* le but ici est de rÃ©cupÃ©rer le nouveau record pour mise Ã  jour des infos */
       /* cela permet d'avoir le bon id surtout, pour un affichage correct */
       $this->db->NewQuery("SELECT", "rec");
       $this->db->Sort(array("id"), "DESC");
@@ -137,13 +137,13 @@ class Record
       if (!$this->isload)
 	      $this->SetError("Trying to move a record which is not loaded!");
 	  
-      /* DŽjˆ dans le bon dossier */
+      /* DÃ©jÃ  dans le bon dossier */
       if ($this->fields['folder'] == $folder)
         return true;
       
       $ret = true;
      
-      /* DŽplacement hors du contest -> Plus un best record */
+      /* DÃ©placement hors du contest -> Plus un best record */
       if ($folder != get_folder_by_name("contest"))
       {
         $this->SetIsBest(0);
@@ -156,7 +156,7 @@ class Record
       return $ret;
     }
 
-    /* Fusionne le replay avec target. Le replay en cours est effacŽ et la clible est modifiŽe ! */
+    /* Fusionne le replay avec target. Le replay en cours est effacÃ© et la clible est modifiÃ©e ! */
     function Merge($target_id)
     {
       global $config;
@@ -212,7 +212,7 @@ class Record
       return true;
     }
 
-    /* Effacement dŽfinitif d'un record + fichier attachŽ si parametre est true */
+    /* Effacement dÃ©finitif d'un record + fichier attachÃ© si parametre est true */
     function Purge($filedelete=false)
     {
      if (!$this->isload)
@@ -334,7 +334,7 @@ class Record
 
     function _UpdateUserStats()
     {
-      /* mise à jour stat utilisateur */
+      /* mise Ã  jour stat utilisateur */
       $u = new User($this->db);
       $ret = $u->LoadFromId($this->GetUserId());
       if ($ret)

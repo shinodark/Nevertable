@@ -601,7 +601,7 @@ class DBHelper
    	  $level = (integer) $level;
       $set   = (integer) $set;
 
-     /* Récupère le chemin du levelshot */
+     /* RÃ©cupÃ¨re le chemin du levelshot */
      $p = $config['bdd_prefix'];
      $this->db->Select(
         array("maps", "sets"),

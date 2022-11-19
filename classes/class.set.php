@@ -31,7 +31,7 @@ class Set
     /*__Constructeur__
       Cette fonction initialise l'objet Set.
 
-      @param: pointeur vers la base de donnée
+      @param: pointeur vers la base de donnÃ©e
     */
     function Set(&$db)
     {
@@ -39,7 +39,7 @@ class Set
        $this->isload = false;
     }
 
-    /* Chargement des champs d'un record à partir de l'id */
+    /* Chargement des champs d'un record Ã  partir de l'id */
     function LoadFromId($id)
     {
       $this->isload = false;
@@ -133,7 +133,7 @@ class Set
       $this->db->Insert($this->fields);
       $this->db->Query();
       
-      /* le but ici est de récupérer le nouveau set pour mise à jour des infos */
+      /* le but ici est de rÃ©cupÃ©rer le nouveau set pour mise Ã  jour des infos */
       /* cela permet d'avoir le bon id surtout, pour un affichage correct */
       $this->db->NewQuery("SELECT", "sets");
       $this->db->Sort(array("id"), "DESC");

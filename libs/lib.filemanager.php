@@ -41,8 +41,8 @@ class FileManager
 
   /** files est la strcture $_FILES d'origine 
    ** ident est le nom d'identification du fichier dans le formulaire
-   ** upload_dir le répertoire ou sauver le fichier
-   ** file_name le nom du fichier à sauver
+   ** upload_dir le rÃ©pertoire ou sauver le fichier
+   ** file_name le nom du fichier Ã  sauver
   **/
   function Upload($files, $ident, $upload_dir, $file_name, $always_overwrite=false)
   {
@@ -51,7 +51,7 @@ class FileManager
     if (empty($tmp_file))
     	$this->SetError("No uploaded file found.");
 
-    /* si pas de slash à la fin */
+    /* si pas de slash Ã  la fin */
     if (preg_match("/\/$/",$upload_dir)==0)
       $upload_dir = $upload_dir."/"  ;
 
@@ -76,7 +76,7 @@ class FileManager
 
     if (!$always_overwrite)
     {
-      /* boucle les noms de fichers jusqu'à trouver un fichier qui n'existe pas */
+      /* boucle les noms de fichers jusqu'Ã  trouver un fichier qui n'existe pas */
       $i=0; $base=$file_name;
       while (file_exists($upload_dir . $file_name))
       {
@@ -113,13 +113,13 @@ class FileManager
   {
     if (empty($newname))
       $newname=basename($this->filename);
-    /* si pas de slah à la fin */
+    /* si pas de slah Ã  la fin */
     if (preg_match("/\/$/",$newdir)==0)
       $newdir = $newdir."/"  ;
     $newfile = $newdir.$newname;
 
-    /* boucle pour changer le nom si il existe déjà */
-    /* si le nom contient déjà un _, on élimine pour réindexer (sinon on accumule les _0_0_0...) */
+    /* boucle pour changer le nom si il existe dÃ©jÃ  */
+    /* si le nom contient dÃ©jÃ  un _, on Ã©limine pour rÃ©indexer (sinon on accumule les _0_0_0...) */
     if(preg_match('/^(.*)_[^_]*$/', $newfile, $matches)>0)
       $base=$matches[1];
     else

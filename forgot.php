@@ -39,7 +39,7 @@ if(isset($args['run']))
     throw new Exception($lang['FORGOT_EMPTY_MAIL']);
   
   $res = $table->db->helper->SelectUserByMail($args['email']);
-  if ($table->db->NumRows() == 0) // pas trouvÈ
+  if ($table->db->NumRows() == 0) // pas trouv√©
   {
     throw new Exception ($lang['FORGOT_INVALID_MAIL']);
   }

@@ -32,7 +32,7 @@ class Smilies
   /*__Constructeur__
   Cette fonction initialise l'objet Record.
 
-  @param: pointeur vers la base de donnée
+  @param: pointeur vers la base de donnÃ©e
   */
   function Smilies()
   {

@@ -108,7 +108,7 @@ try {
      $ret = $rec->Move(get_folder_by_name("contest"));
   
      /* gestion des records, qqsoit le resultat, des erreurs de $rec->Move etant */
-     /* non critiques, il peut y avoir modification quand m�me */
+     /* non critiques, il peut y avoir modification quand même */
      if($rec->GetType()!=get_type_by_name("freestyle"))
      {
         /* Gestion */
@@ -148,12 +148,12 @@ try {
      $rec->LoadFromId($id);
 
 
-     /* garde en m�moire l'�tat du record avant d�placement */
+     /* garde en mémoire l'état du record avant déplacement */
      $wasbest = $rec->IsBest();
      !$rec->Move(get_folder_by_name("trash"));
   
-     /* gestion des records, qqsoit le r�sultat, des erreurs de $rec->Move �tant */
-     /* non critiques, il peut y avoir modification quand m�me */
+     /* gestion des records, qqsoit le résultat, des erreurs de $rec->Move étant */
+     /* non critiques, il peut y avoir modification quand même */
      if($rec->GetType()!=get_type_by_name("freestyle"))
      {
         /* Gestion */
@@ -233,7 +233,7 @@ try {
 	  if (isset($args['folder'])) $nextargs .= "&amp;folder=".$args['folder'];
 
 	  $sort = $args['sort'];
-	  /* Récupération de l'option utilisateur de l'ordre de tri par défaut */
+	  /* RÃ©cupÃ©ration de l'option utilisateur de l'ordre de tri par dÃ©faut */
 	  if (empty($args['sort']) && !Auth::Check(get_userlevel_by_name("member")))
 	    $sort = get_sort_by_name("old");
 	  else if (empty($args['sort']) && Auth::Check(get_userlevel_by_name("member")))

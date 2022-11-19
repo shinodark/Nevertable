@@ -29,7 +29,7 @@ if (!defined('NVRTBL'))
 	
 function is_a_best_record($record, $best, $critera)
 {
-  global $table; /* pour accès à la base de donnée */
+  global $table; /* pour accÃ¨s Ã  la base de donnÃ©e */
   
   $time      = 0 + $record['time'];
   $coins     = 0 + $record['coins'];
@@ -53,10 +53,10 @@ function is_a_best_record($record, $best, $critera)
   else  if (($critera == "coins") && ($coins == $bestcoins)) 
   {
     // ici c'est chiant, il faut comparer les temps si plusieurs records
-    // ont le même nombre de pièces avec des temps différents
-    // seul le record avec le plus de pièces, et le temps min est retenu
+    // ont le mÃªme nombre de piÃ¨ces avec des temps diffÃ©rents
+    // seul le record avec le plus de piÃ¨ces, et le temps min est retenu
 
-    // récupère tous les temps pour ce niveau / set
+    // rÃ©cupÃ¨re tous les temps pour ce niveau / set
     $table->db->NewQuery("SELECT", "rec");
     $table->db->Where("level", (integer)$level);
     $table->db->Where("levelset", (integer)$levelset);
@@ -67,15 +67,15 @@ function is_a_best_record($record, $best, $critera)
     $tmptime = 9999; $i=0;
     while ($val = $table->db->FetchArray())
     { 
-      /* si ce record a le nb de pièces max */
+      /* si ce record a le nb de piÃ¨ces max */
       if ($val['coins'] >= $bestcoins)
       {
-        /* on cherche le tps le plus faible pour le maximum de pièces */
+        /* on cherche le tps le plus faible pour le maximum de piÃ¨ces */
         if ($val['time'] < $tmptime)
            $tmptime = $val['time'];
       }
     }
-    /* tmptime contient le temps min pour le max de pièce */
+    /* tmptime contient le temps min pour le max de piÃ¨ce */
     if ($time <= $tmptime)
       return true;
     else
@@ -87,7 +87,7 @@ function is_a_best_record($record, $best, $critera)
 
 function is_best_record_by_type($record)
 {
-	global $table; /* pour accès à la base de donnée */
+	global $table; /* pour accÃ¨s Ã  la base de donnÃ©e */
 	  
 	$ret = false;
     switch ($record['type'])
@@ -248,7 +248,7 @@ function GetDateFromTimestamp($timestamp)
   $h = substr($timestamp,11,2); // heure
   $d = substr($timestamp,8,2); // jour
   $m = substr($timestamp,5,2); // mois
-  $y = substr($timestamp,0,4); // année
+  $y = substr($timestamp,0,4); // annÃ©e
    
   // TIMESTAMP mysql >> TIMESTAMP UNIX
   return mktime($h, $mn, $s, $m, $d, $y);
@@ -261,7 +261,7 @@ function GetDateFromDate($date)
   
   $d = substr($date,8,2); // jour
   $m = substr($date,5,2); // mois
-  $y = substr($date,0,4); // année
+  $y = substr($date,0,4); // annÃ©e
 
   // TIMESTAMP mysql >> TIMESTAMP UNIX
   return mktime(0, 0, 0, $m, $d, $y);

@@ -129,7 +129,7 @@ else
 <script type="text/javascript">
 change_form_select('type',"<?php echo array_search($args['type'], $types_menu) ?>.");
 change_form_select('folder',"<?php echo $args['folder'] ?>");
-<?php if ($args['levelset_f'] != 0) { // Tout afficher, premire option ?>
+<?php if ($args['levelset_f'] != 0) { // Tout afficher, premiÃ¨re option ?>
 change_form_select('levelset_f','<?php echo $ind_set_arr[$args['levelset_f']] ?>');
 <?php } ?>
 change_form_select('level_f','<?php echo $args['level_f'] ?>');

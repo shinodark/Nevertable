@@ -119,7 +119,7 @@ if (isset($args['upident']))
   if (!empty($args['email']) && $args['email'] != $user->GetMail())
   {
     $table->db->helper->SelectUserByMail($args['email']);
-    if ($table->db->NumRows() > 0) // dejà existant
+    if ($table->db->NumRows() > 0) // dejÃ  existant
       throw new Exception($lang['REGISTER_MAIL_EXISTS']);
 
     if (!CheckMail($args['email']))
@@ -139,7 +139,7 @@ if (isset($args['upident']))
 
     else
     {
-      //mise à jour du nouveau mot de passe
+      //mise Ã  jour du nouveau mot de passe
       $user->SetFields(array('passwd' => Auth::Hash($args['passwd1'])));
       $user->Update();
     }
@@ -176,7 +176,7 @@ else if(isset($args['upavatar'])  && !isset($args['delavatar']))
       throw $ex;
   }
 
-  /* Vérification des limites */
+  /* VÃ©rification des limites */
   if ($p->GetWidth() > $config['avatar_width_max'] || $p->GetHeight > $config['avatar_height_max'] )
   {
       $factor = $p->GetWidth() / $p->GetHeight();

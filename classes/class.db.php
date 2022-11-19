@@ -82,7 +82,7 @@ class DB
    
    function Query()
    {
-      // on élimine le flag
+      // on Ã©limine le flag
       if ($this->request{0} == "%")
         $this->request = substr($this->request,1);
      
@@ -211,9 +211,9 @@ class DB
        
      foreach ($fields_array as $f => $value)
      {
-       if (!empty($req))  /* ajoute une virgule si on n'est pas au début */
+       if (!empty($req))  /* ajoute une virgule si on n'est pas au dÃ©but */
            $req .= ",";
-       if (ereg("(^#)(.*)",$value, $regs)) /* si dièse, il s'agit d'une fonction SQL */
+       if (ereg("(^#)(.*)",$value, $regs)) /* si diÃ¨se, il s'agit d'une fonction SQL */
            $req .= $f . "=" . $regs[2] ;
        else /* sinon normale, et on escape */
        $req .= $f . "='" . $this->Protect($value) . "'";
@@ -259,7 +259,7 @@ class DB
      $logic=trim($logic);
      $equality = $neg ? '!=' : '=';
 
-     /* version récursive */
+     /* version rÃ©cursive */
      if (is_array($filter) && is_array($filterval))
      {
        $first=true;
@@ -267,7 +267,7 @@ class DB
        {
          $flag = "";
          if ($this->request{0} == "%")
-           if ($first) /* toujours AND par rapport au précédent */
+           if ($first) /* toujours AND par rapport au prÃ©cÃ©dent */
              $command = " AND ";
            else
              $command = " ".$logic." ";
@@ -277,7 +277,7 @@ class DB
            $flag = "%";
          }
          if($first)
-         { /* ajout parenthèse */
+         { /* ajout parenthÃ¨se */
            $command .= "( " ; $first=false;
          }
      
@@ -327,7 +327,7 @@ class DB
      if(empty($filter) || empty($filterval))
         return;
      $flag = "";
-     // % est le flag d'indication de l'état de la requete pour le WHERE
+     // % est le flag d'indication de l'Ã©tat de la requete pour le WHERE
      if ($this->request{0} == "%")
      {
        $command = " AND ";
@@ -350,7 +350,7 @@ class DB
      if(empty($filter) || empty($filterval))
         return;
      $flag = "";
-     // % est le flag d'indication de l'état de la requete pour le WHERE
+     // % est le flag d'indication de l'Ã©tat de la requete pour le WHERE
      if ($this->request{0} == "%")
      {
        $command = " AND ";

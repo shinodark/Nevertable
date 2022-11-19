@@ -31,7 +31,7 @@ class User
 	/*__Constructeur__
 	Cette fonction initialise l'objet Record.
 
-    @param: pointeur vers la base de donnée
+    @param: pointeur vers la base de donnÃ©e
 	*/
 	function User(&$db)
 	{
@@ -39,7 +39,7 @@ class User
         $this->isload = false;
 	}
 
-    /* Chargement des champs d'un record à partir de l'id */
+    /* Chargement des champs d'un record Ã  partir de l'id */
     function LoadFromId($id)
     {
       $this->isload = false;
@@ -64,7 +64,7 @@ class User
       }
     }
 
-    /* Chargement des champs d'un record à partir du pseudo */
+    /* Chargement des champs d'un record Ã  partir du pseudo */
     function LoadFromPseudo($pseudo)
     {
       $this->isload = false;
@@ -181,7 +181,7 @@ class User
         $this->SetError($this->db->GetError());
         return false;
       }
-      /* le but ici est de récupérer le nouveau user pour mise à jour des infos */
+      /* le but ici est de rÃ©cupÃ©rer le nouveau user pour mise Ã  jour des infos */
       /* cela permet d'avoir le bon id surtout, pour un affichage correct */
       $this->db->NewQuery("SELECT", "users");
       $this->db->Sort(array("id"), "DESC");

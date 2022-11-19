@@ -31,7 +31,7 @@ class Map
 	/*__Constructeur__
 	Cette fonction initialise l'objet Map.
 
-    @param: pointeur vers la base de donnée
+    @param: pointeur vers la base de donnÃ©e
 	*/
 	function Map(&$db)
 	{
@@ -39,7 +39,7 @@ class Map
         $this->isload = false;
 	}
 
-    /* Chargement des champs d'une map à partir de l'id */
+    /* Chargement des champs d'une map Ã  partir de l'id */
     function LoadFromId($id)
     {
       $this->isload = false;
