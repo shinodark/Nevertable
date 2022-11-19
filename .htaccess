@@ -1,9 +1,0 @@
- <FilesMatch "\.(php)$"> 
- php_value short_open_tag "Off"
- php_value auto_append_file "/home/shinobufan/public_html/count.php"
- </FilesMatch>
-  AddType application/x-httpd-php .htm .html  
- <FilesMatch "\.(html?)$">  
- php_value short_open_tag "Off"  
- php_value auto_append_file "/home/shinobufan/public_html/count.php"  
- </FilesMatch>
