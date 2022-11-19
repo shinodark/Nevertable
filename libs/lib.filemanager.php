@@ -230,7 +230,7 @@ class FileManager
             $this->SetError("file ".$this->filename." doesn't exist or is not readable");
             return false;
         }
-       $this->handle = @fopen($this->filename, $att);
+       $this->handle = fopen($this->filename, $att);
     }
     if (!$this->handle)
     {
@@ -395,13 +395,13 @@ class FileManager
     do
     {
     	$c = fgetc($this->handle);
-    	$str{$i} = $c;
+    	$str[$i] = $c;
     	$i++;
     }
     while ((ord($c) != 0) && ($max-- > 0) );
     
-    if (ord($str{$i-1}) != 0)
-    	$str{$i-1} = chr(0);
+    if (ord($str[$i-1]) != 0)
+    	$str[$i-1] = chr(0);
 
     return  $str;
   }
@@ -415,14 +415,14 @@ class FileManager
     
     if (empty($str) || !($length > 0))
     	return false;
-    $c = $str{0};
+    $c = $str[0];
     $i=0;
     $max = $length - 1; //-1 for chr(0) at the end
     do
     {
     	fwrite($this->handle, $c, 1);
     	$i++;
-    	$c = $str{$i};
+    	$c = $str[$i];
     }
     while ((ord($c) != 0) && ($max-- > 0) );
     fwrite($this->handle, chr(0), 1);

@@ -47,11 +47,14 @@ class Auth
     
     /* if cookie is present.. */
     if ( isset($cookie[$config["cookie_name"]]))
-	{
+	  {
       $cookiedata = unserialize(stripslashes($cookie[$config["cookie_name"]]));
       if ($cookiedata["auto"] && !isset($_SESSION['user_logged']) && !empty($cookiedata["user"]) && !empty($cookiedata["sha1"]))
         $this->Perform($cookiedata["user"], $cookiedata["sha1"], true, false);
-	}
+	  } else {
+      $_SESSION['user_logged'] = false;
+      $_SESSION['user_id']     = 0;
+    }
   }
 
   function Perform($login, $passwd, $sha1_passwd=false, $cookie=false)

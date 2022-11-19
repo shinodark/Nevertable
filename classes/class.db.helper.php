@@ -25,6 +25,7 @@ if (!defined('NVRTBL'))
 	
 class DBHelper
 {
+   /** @var \DB */
    var $db;
    var $cache_struct;
    
@@ -86,8 +87,8 @@ class DBHelper
        $day = 31;
   
 
-     $res = mysql_query("SELECT DATE_SUB( CURRENT_TIMESTAMP( ) , INTERVAL ".$day." DAY ) +0 AS lim");
-     $val = mysql_fetch_array($res);
+     $res = mysqli_query($this->db->con_id, "SELECT DATE_SUB( CURRENT_TIMESTAMP( ) , INTERVAL ".$day." DAY ) +0 AS lim");
+     $val = mysqli_fetch_array($res);
      $lim = $val['lim'];
    
      $p = $config['bdd_prefix'];
@@ -303,7 +304,7 @@ class DBHelper
           "AND", false
       );
       
-      $this->db->Where($args['filter'], $args['filterval']);
+      $this->db->Where($args['filter'], isset($args['filterval']) ? $args['filterval'] : false);
       $this->LevelsFilter($args['levelset_f'], $args['level_f']);
       $personnal = ($args['type'] == get_type_by_name("freestyle") 
       			|| $args['folder'] == get_folder_by_name("trash") 

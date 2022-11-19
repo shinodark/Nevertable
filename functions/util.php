@@ -233,7 +233,7 @@ function GetShotMini($set_path, $map_solfile, $width="")
 {
     global $config;
     if (empty($width))
-      return GetShot($map_solfile);
+      return GetShot($set_path, $map_solfile);
     else
       return "<img src=\"".ROOT_PATH.$config['shot_dir']."shot".strstr($set_path, '-')."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" width=\"".$width."\"/>";
 }
@@ -328,7 +328,7 @@ function CleanContent($content, $slashes = false, $cslashes = false)
 
 function GetContentFromPost($content)
 {
-  if(get_magic_quotes_gpc())
+  if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
      $content = stripslashes($content);
   $content = strip_tags($content);
 
@@ -383,7 +383,7 @@ function Javascriptize($string)
 function CheckMail($email)
 {
   // same as lib.mail 
-  if (ereg("^[^@  ]+@([a-zA-Z0-9\-]+\.)+([a-zA-Z0-9\-]{2}|net|com|gov|mil|org|edu|int)\$",$email))
+  if (preg_match("/^[^@  ]+@([a-zA-Z0-9\-]+\.)+([a-zA-Z0-9\-]{2}|net|com|gov|mil|org|edu|int)\$/",$email))
     return true;
   else
     return false;
@@ -393,7 +393,7 @@ function CheckMail($email)
 function CheckUrl($url)
 {
    $ret = $url;
-   if (!empty($url) && (ereg("^http://",$url) == FALSE))
+   if (!empty($url) && (preg_match(",^http://,",$url) == FALSE))
      $ret = "http://" . $url;
    return $ret;
 }

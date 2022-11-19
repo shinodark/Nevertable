@@ -38,7 +38,7 @@ class Smilies
   {
     global $config;
 
-    $smilpath = "http://".$_SERVER['SERVER_NAME'] ."/".$config['nvtbl_path'] . $config['smilies_dir'] . "/";
+    $smilpath = "http://".$_SERVER['SERVER_NAME'] . $config['nvtbl_path'] . $config['smilies_dir'];
     $smil = ROOT_PATH . "/" . $config['smilies_dir'] . "/smilies.txt";
 
     if (file_exists($smil))

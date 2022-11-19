@@ -232,8 +232,7 @@ try {
 	  if (isset($args['level_f'])) $nextargs .= "&amp;level_f=".$args['level_f'];
 	  if (isset($args['folder'])) $nextargs .= "&amp;folder=".$args['folder'];
 
-	  $sort = $args['sort'];
-	  /* RÃ©cupÃ©ration de l'option utilisateur de l'ordre de tri par dÃ©faut */
+	  /* Récupération de l'option utilisateur de l'ordre de tri par défaut */
 	  if (empty($args['sort']) && !Auth::Check(get_userlevel_by_name("member")))
 	    $sort = get_sort_by_name("old");
 	  else if (empty($args['sort']) && Auth::Check(get_userlevel_by_name("member")))

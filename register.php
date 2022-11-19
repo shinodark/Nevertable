@@ -29,7 +29,7 @@ include_once ROOT_PATH ."includes/classes.php";
 //args process
 $args = get_arguments($_POST, $_GET);
 
-$args['pseudo']  = trim($args['pseudo']);
+$args['pseudo']  = isset($args['pseudo']) ? trim($args['pseudo']) : false;
 
 $table = new Nvrtbl();
 

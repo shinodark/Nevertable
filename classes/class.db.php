@@ -32,6 +32,7 @@ class DB
    var $db_passwd;
    var $error;
    var $errno;
+   /** @var \mysqli */
    var $con_id;
    var $last_result;
    var $request_count;
@@ -55,13 +56,13 @@ class DB
    
    function Connect()
    {
-      $this->con_id = @mysql_connect($this->db_server, $this->db_user, $this->db_passwd);
+      $this->con_id = mysqli_connect($this->db_server, $this->db_user, $this->db_passwd);
       if ($this->con_id == false)
       {
         $this->SetError();
         return false;
       }
-      mysql_select_db($this->db_name);
+      mysqli_select_db($this->con_id, $this->db_name);
       $this->helper = new DBHelper($this);
       return true;
    }
@@ -71,7 +72,7 @@ class DB
    {
       if ($this->con_id)
       {
-		mysql_close($this->con_id);
+		mysqli_close($this->con_id);
 		return true;
 	  }
       else
@@ -83,10 +84,10 @@ class DB
    function Query()
    {
       // on élimine le flag
-      if ($this->request{0} == "%")
+      if ($this->request[0] == "%")
         $this->request = substr($this->request,1);
      
-      $this->last_result = @mysql_query($this->request, $this->con_id);
+      $this->last_result = mysqli_query($this->con_id, $this->request);
       //echo "req: ".$this->request . "<br />\n";
       //echo "res: ".$this->last_result . "<br />\n";
 
@@ -106,14 +107,14 @@ class DB
    {
      if($result==null)
         $result=$this->last_result;
-     return @mysql_fetch_array($result, MYSQL_ASSOC);
+     return mysqli_fetch_array($result, MYSQLI_ASSOC);
    }
    
    function NumRows($result=null)
    {
      if($result==null)
         $result=$this->last_result;
-     return @mysql_num_rows($result);
+     return mysqli_num_rows($result);
    }
     
    function GetReqCount()
@@ -127,23 +128,15 @@ class DB
    	
      if (!empty($config['bdd_debug']) && ($config['bdd_debug'] == true) ) 
      {
-       if ($this->con_id)
-       {
-      	 $this->error = mysql_error($this->con_id);
-	     $this->errno = mysql_errno($this->con_id);
-       }
-       else
-       {
-	     $this->error = (mysql_error() !== false) ? mysql_error() : 'Unknown error';
-	     $this->errno = (mysql_errno() !== false) ? mysql_errno() : 0;
-       }
+      	$this->error = mysqli_error($this->con_id);
+	      $this->errno = mysqli_errno($this->con_id);
      }
      else
      {
         $this->error = "SQL Error. Debug mode is not set.";
         throw new DBException($this->error);
      }
-     throw new DBException($this->error . "  errno: " . $this->errno);
+     throw new DBException($this->error . "  errno: " . $this->errno . "\nfor query:\n{$this->request}\n");
    }
    
    function GetError()
@@ -213,7 +206,7 @@ class DB
      {
        if (!empty($req))  /* ajoute une virgule si on n'est pas au début */
            $req .= ",";
-       if (ereg("(^#)(.*)",$value, $regs)) /* si dièse, il s'agit d'une fonction SQL */
+       if (preg_match("/(^#)(.*)/",$value, $regs)) /* si dièse, il s'agit d'une fonction SQL */
            $req .= $f . "=" . $regs[2] ;
        else /* sinon normale, et on escape */
        $req .= $f . "='" . $this->Protect($value) . "'";
@@ -242,7 +235,7 @@ class DB
        if (!empty($vlist))
            $vlist .= ",";
        /* if a value begin with #, it's consired as a sql function, so no ' is added. */
-       if (ereg("(^#)(.*)",$value, $regs))
+       if (preg_match("/(^#)(.*)/",$value, $regs))
            $vlist .= $regs[2];
        else    
        $vlist .= "'".$this->Protect($value)."'";
@@ -266,7 +259,7 @@ class DB
        foreach ($filter as $key => $val)
        {
          $flag = "";
-         if ($this->request{0} == "%")
+         if ($this->request[0] == "%")
            if ($first) /* toujours AND par rapport au précédent */
              $command = " AND ";
            else
@@ -301,7 +294,7 @@ class DB
         return;
         
        $flag = "";
-       if ($this->request{0} == "%")
+       if ($this->request[0] == "%")
          $command = " ".$logic." ";
        else
        {
@@ -328,7 +321,7 @@ class DB
         return;
      $flag = "";
      // % est le flag d'indication de l'état de la requete pour le WHERE
-     if ($this->request{0} == "%")
+     if ($this->request[0] == "%")
      {
        $command = " AND ";
      }
@@ -351,7 +344,7 @@ class DB
         return;
      $flag = "";
      // % est le flag d'indication de l'état de la requete pour le WHERE
-     if ($this->request{0} == "%")
+     if ($this->request[0] == "%")
      {
        $command = " AND ";
      }
@@ -439,7 +432,7 @@ class DB
      }
  */  
      $ret = $string;
-     $ret = mysql_real_escape_string($ret, $this->con_id);
+     $ret = mysqli_real_escape_string($this->con_id, $ret);
      
      if ($ret === FALSE)
      {
