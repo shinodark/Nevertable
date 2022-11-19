@@ -4,8 +4,8 @@ Bienvenue sur la Nevertable !
 C'est ici vous pouvez regarder les performances des joueurs de Neverball, ou envoyer les vôtres.
 Pour ajouter votre record sur cette page, veuillez d'abord vérifier qu'il remplit correctement les [url=conditions.php][color=#0000FF]conditions[/color][/url] requises, puis connectez-vous (ou inscrivez-vous si vous êtes nouveau ici), cliquez sur "Soumettre un record" et suivez les indications du formulaire pour envoyer votre film. Il sera ajouté à la page une fois validé par un administrateur.
 
-Les films sont stockés dans votre répertoire neverball, dans lequel vous devez copier les films téléchargés afin de les voir. Sous GNU/Linux et autres systèmes de type Unix, vous devez copier les films dans "$HOME/.neverball/".
+Vous pouvez regarder un film en cliquant sur le lien de téléchargement puis en ouvrant le fichier avec Neverball (p. ex. neverball.exe sous Windows).
 
-Seulement les films créés avec [b]Neverball 1.5.x[/b] et pour les 6 collections officielles de niveaux sont acceptés à l'heure actuelle.
+Seulement les films créés avec [b]Neverball 1.5.x[/b],  [b]Neverball 1.6.x[/b]  et [b][url=http://www.nevercorner.net/forum/viewtopic.php?id=1759]Nuncabola[/url][/b], pour les 6 collections officielles de niveaux sont acceptés à l'heure actuelle.
 
 [b][color=#FF0000]ATTENTION (SPOILER ALERT) [/color][/b] : regarder les films sur ce site peut vous révéler des niveaux que vous n'avez pas encore atteints, ou des techniques, raccourcis et emplacements secrets que vous souhaiteriez peut-être découvrir par vous-même.

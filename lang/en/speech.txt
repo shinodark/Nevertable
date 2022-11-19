@@ -4,9 +4,9 @@ Welcome to the Nevertable!
 Here you can witness performances of Neverball's players, or upload your own ones.
 To add your own record to this page, please first check if it matches the [url=conditions.php][color=#0000FF]conditions[/color][/url], then login (or register if you are new here), click on "Upload a record" and use the form to send your file replay. Your record will be added in the table once validated by an administrator. 
 
-Replays are stored into your neverball directory, in which you have to copy downloaded replays in order to watch them. Under GNU/Linux and other unix-like systems, you need to copy replays in "$HOME/.neverball/". 
+You can watch a replay by clicking the download link and opening the file with Neverball (e.g. neverball.exe on Windows).
 
-Only [b]Neverball 1.5.x[/b] replays of 6 official sets are supported at the moment.
+Only [b]Neverball 1.5.x[/b], [b]Neverball 1.6.x[/b] and [b][url=http://www.nevercorner.net/forum/viewtopic.php?id=1759]Nuncabola[/url][/b] replays of 6 official sets are supported at the moment.
 
 [b][color=#FF0000]SPOILER ALERT[/color][/b]: Watching Nevertable's replays may reveal levels you haven't reached yet, as well as special tricks and secret places you may want to discover by yourself.
 
