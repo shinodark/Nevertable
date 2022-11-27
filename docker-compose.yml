@@ -1,0 +1,29 @@
+services:
+  web:
+    image: parasti/nevertable
+    build: "./build/web" #dev
+    volumes:
+      - ".:/var/www/html" # dev
+      - "./docker/php.ini:/usr/local/etc/php/php.ini" # dev
+      - "./docker/vhost.conf:/etc/apache2/sites-enabled/000-default.conf" # dev
+    ports:
+      - "127.0.0.1:8080:80" #dev
+  db:
+    image: mariadb:10.10.2
+    volumes:
+      - "../install:/docker-entrypoint-initdb.d" # dev (prod image should have this baked in)
+      - "data_db:/var/lib/mysql"
+    environment:
+      MARIADB_ROOT_HOST: localhost
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD} # todo expire in prod
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASS}
+  adminer: # dev
+    image: adminer
+    ports:
+      - "127.0.0.1:8081:8080"
+    profiles:
+      - devel
+volumes:
+  data_db:
