@@ -400,7 +400,7 @@ class Nvrtbl
   {
     global $folders, $config;
 
-    $replay_path = ROOT_PATH.$config['replay_dir'];
+    $replay_path = ROOT_PATH."public/".$config['replay_dir'];
     $dir_list = array();
     $f = new FileManager();
 

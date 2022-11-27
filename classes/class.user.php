@@ -300,7 +300,7 @@ class User
       if (!$this->isload)
         return "";
       if (!empty($this->fields['user_avatar']))
-        return "<img src=\"".ROOT_PATH.$config['avatar_dir']."/".$this->fields['user_avatar']."\" alt=\"\" />";
+        return "<img src=\"".$config['nvtbl_path'].$config['avatar_dir']."/".$this->fields['user_avatar']."\" alt=\"\" />";
       else
         return "<i>".$lang['MEMBER_NO_AVATAR']."</i>";
     }

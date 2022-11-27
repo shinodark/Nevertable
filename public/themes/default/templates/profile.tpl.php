@@ -147,11 +147,11 @@ if (!isset($edit_enable))
 <tr>
 <td colspan="2">
 <center>
-<a href="<?php echo ROOT_PATH ?>/index.php?folder=0&amp;filter=user_id&amp;filterval=<?php echo $user->GetId() ?> "><?php echo sprintf($lang['PROFILE_VIEWALL'],$user->GetPseudo()) ?></a>
+<a href="<?php echo $config['nvtbl_path'] ?>index.php?folder=0&amp;filter=user_id&amp;filterval=<?php echo $user->GetId() ?> "><?php echo sprintf($lang['PROFILE_VIEWALL'],$user->GetPseudo()) ?></a>
 <br/>
-<a href="<?php echo ROOT_PATH ?>/index.php?folder=0&amp;type=<?php echo get_type_by_name("freestyle") ?>&amp;filter=user_id&amp;filterval=<?php echo $user->GetId() ?> "><?php echo sprintf($lang['PROFILE_VIEWALL_PERSONALS'],$user->GetPseudo()) ?></a>
+<a href="<?php echo $config['nvtbl_path'] ?>index.php?folder=0&amp;type=<?php echo get_type_by_name("freestyle") ?>&amp;filter=user_id&amp;filterval=<?php echo $user->GetId() ?> "><?php echo sprintf($lang['PROFILE_VIEWALL_PERSONALS'],$user->GetPseudo()) ?></a>
 <br/>
-<a href="<?php echo ROOT_PATH ?>/index.php?folder=1&amp;filter=user_id&amp;filterval=<?php echo $user->GetId() ?>"><?php echo sprintf($lang['PROFILE_VIEWALL_CONTEST'],$user->GetPseudo()) ?></a>
+<a href="<?php echo $config['nvtbl_path'] ?>index.php?folder=1&amp;filter=user_id&amp;filterval=<?php echo $user->GetId() ?>"><?php echo sprintf($lang['PROFILE_VIEWALL_CONTEST'],$user->GetPseudo()) ?></a>
 </center>
 </td>
 </tr>

@@ -20,7 +20,7 @@
 #
 # ***** END LICENSE BLOCK *****
 
-define('ROOT_PATH', "./");
+define('ROOT_PATH', dirname(__DIR__) . '/');
 define('NVRTBL', 1);
 define('NVRTBL_PATH', "http://www.nevercorner.net/table/");
 define('LEVEL', 30);

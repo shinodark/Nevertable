@@ -20,7 +20,7 @@
 #
 # ***** END LICENSE BLOCK *****
 
-define('ROOT_PATH', "./");
+define('ROOT_PATH', dirname(__DIR__) . '/');
 define('NVRTBL', '1');
 	
 include_once ROOT_PATH ."config.inc.php";

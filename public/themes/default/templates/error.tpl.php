@@ -27,7 +27,7 @@ if (!defined('NVRTBL'))
  * @param: exception exception
  */
 
-global $lang;
+global $lang, $config;
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -55,7 +55,7 @@ global $lang;
 </div>
 
 <div class="button" style="width:200px;">
-<a href="<?php echo ROOT_PATH?>index.php"><?php echo $lang['GUI_BUTTON_MAINPAGE'] ?></a>
+<a href="<?php echo $config['nvtbl_path']?>index.php"><?php echo $lang['GUI_BUTTON_MAINPAGE'] ?></a>
 </div>
 
 </div><!--  main end -->

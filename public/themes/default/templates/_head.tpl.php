@@ -31,10 +31,10 @@ if (!defined('NVRTBL'))
 
 <title><?php echo $title ?></title>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/>
-<link rel="shortcut icon" href="<?php echo ROOT_PATH ?>favicon.ico"/> 
+<link rel="shortcut icon" href="<?php echo $config['nvtbl_path'] ?>favicon.ico"/> 
 <link rel="stylesheet" href="<?php echo $this->table->style->GetCss() ?>" type="text/css" />
-<link rel="alternate" type="application/rss+xml" title="Nevertable rss feed" href="http://table.nevercorner.net/rss.php" />
+<link rel="alternate" type="application/rss+xml" title="Nevertable rss feed" href="<?php echo $config['nvtbl_path'] ?>rss.php" />
 <meta name="Description" content="Neverball Hall of Fame - Contest between hardcore Neverballers" />
 <meta name="Keywords" content="neverball, contest, nevercorner, game, ball, super monkey ball" />
 
-<script type="text/javascript" src="<?php echo ROOT_PATH ?>/includes/js/jsutil.js"></script>
+<script type="text/javascript" src="<?php echo $config['nvtbl_path'] ?>js/jsutil.js"></script>

@@ -201,8 +201,8 @@ function gui_button_back()
 
 function gui_button_main_page()
 {
-  global $lang;
-  return gui_button("<a href=\"".ROOT_PATH."/index.php\">".$lang['GUI_BUTTON_MAINPAGE']."</a>", 300);
+  global $lang, $config;
+  return gui_button("<a href=\"".$config['nvtbl_path']."index.php\">".$lang['GUI_BUTTON_MAINPAGE']."</a>", 300);
 }
 
 function gui_button_main_page_admin()
@@ -226,7 +226,7 @@ function replay_link($replay_file)
 function GetShot($set_path, $map_solfile)
 {
     global $config;
-    return "<img src=\"".ROOT_PATH.$config['shot_dir']."shot".strstr($set_path, '-')."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" />";
+    return "<img src=\"".$config['nvtbl_path'].$config['shot_dir']."shot".strstr($set_path, '-')."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" />";
 }
 
 function GetShotMini($set_path, $map_solfile, $width="")
@@ -235,7 +235,7 @@ function GetShotMini($set_path, $map_solfile, $width="")
     if (empty($width))
       return GetShot($set_path, $map_solfile);
     else
-      return "<img src=\"".ROOT_PATH.$config['shot_dir']."shot".strstr($set_path, '-')."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" width=\"".$width."\"/>";
+      return "<img src=\"".$config['nvtbl_path'].$config['shot_dir']."shot".strstr($set_path, '-')."/".str_replace("sol", "jpg", $map_solfile)."\" alt=\"\" width=\"".$width."\"/>";
 }
 
 function GetDateFromTimestamp($timestamp)

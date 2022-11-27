@@ -39,7 +39,7 @@ while ($val = $this->table->db->FetchArray($comments_res))
 	$enable_edit  = Auth::CheckUser($val['user_id']);
 	
 	if (!empty($val['user_avatar']))
-	    $avatar_html = '<img src="'.ROOT_PATH.$config['avatar_dir'].'/'.$val['user_avatar'].'" alt="" />';
+	    $avatar_html = '<img src="'.$config['nvtbl_path'].$config['avatar_dir'].'/'.$val['user_avatar'].'" alt="" />';
 	else
 		$avatar_html = "&nbsp;";
 		

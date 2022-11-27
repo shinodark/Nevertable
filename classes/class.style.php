@@ -34,7 +34,6 @@ class Style
     {
       global $config;
       $this->current = $config['theme_default'];
-      $this->theme_dir = ROOT_PATH . $config['theme_dir'] . $this->current;
     }
 
     function GetStyle()
@@ -49,33 +48,17 @@ class Style
         $this->current= $config['theme_default'];
       else
       {
-	if (is_dir(ROOT_PATH . $config['theme_dir'] . $name))
+        if (is_dir(ROOT_PATH . "public/". $config['theme_dir'] . $name))
           $this->current = $name;
-	else
+        else
           $this->current= $config['theme_default'];
       }
-      $this->theme_dir = ROOT_PATH . $config['theme_dir'] . $this->current;
-    }
-
-    function GetImageDir()
-    {
-      return $this->theme_dir . "/images/";
-    }
-    
-    function GetIconDir()
-    {
-      return $this->theme_dir . "/images/icons/";
-    }
-    
-    function GetSmiliesDir()
-    {
-      return $this->theme_dir . "/images/smilies/";
     }
 
     function GetCss()
     {
-      return $this->theme_dir . "/" . $this->current . ".css";
-    }
+      global $config;
+      return $config['nvrtbl_path'] . $config['theme_dir'] . $this->current . "/" . $this->current . ".css";    }
 
     function GetImage($ident, $title="", $alt="", $special="")
     {
@@ -84,9 +67,7 @@ class Style
       if (empty($alt))
          $alt=$ident;
 
-      $dir = $this->GetImageDir();
-      if(!file_exists($dir.$icons[$ident]))
-         $dir = ROOT_PATH . $config['theme_dir'] . $config['theme_default']."/images/";
+      $dir = $config['nvtbl_path'] . $config['theme_dir'] . $config['theme_default']."/images/";
       return "<img src=\"".$dir . $icons[$ident] . "\" title=\"".$title."\" alt=\"".$alt."\" ".$special." />";
     }
 
@@ -94,9 +75,7 @@ class Style
     {
       global $config;
 
-      $dir = $this->GetIconDir();
-      if(!file_exists($dir.$ident))
-         $dir = ROOT_PATH . $config['theme_dir'] . $config['theme_default']."/images/icons/";
+      $dir = $config['nvtbl_path'] . $config['theme_dir'] . $config['theme_default']."/images/icons/";
       return "<img src=\"".$dir . $ident.".png"."\" alt=\"\" />";
     }
 

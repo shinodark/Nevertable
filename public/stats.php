@@ -20,7 +20,7 @@
 #
 # ***** END LICENSE BLOCK *****
 
-define('ROOT_PATH', "./");
+define('ROOT_PATH', dirname(__DIR__) . '/');
 include_once ROOT_PATH ."config.inc.php";
 include_once ROOT_PATH ."includes/common.php";
 include_once ROOT_PATH ."includes/classes.php";
