@@ -158,7 +158,7 @@ CREATE TABLE `nvrtbl_users` (
 -- 
 
 INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('version', '3.0', NULL);
-INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('nvtbl_path', 'nevertable-trunk/', NULL);
+INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('nvtbl_path', '/', NULL);
 INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('admin_mail', 'nevertable@nevercorner.net', NULL);
 INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('replay_dir', 'replays/', NULL);
 INSERT INTO `nvrtbl_conf` (`conf_name`, `conf_value`, `conf_desc`) VALUES ('image_dir', 'images/', NULL);
