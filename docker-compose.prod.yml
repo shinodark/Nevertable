@@ -1,0 +1,36 @@
+services:
+  proxy:
+    image: haproxy
+    volumes:
+      - "./docker/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+    networks:
+      - frontend
+    ports:
+      - "127.0.0.1:8404:8404" # stats
+      - "127.0.0.1:80:80" # http
+      - "127.0.0.1:443:443" # https
+  web:
+    image: parasti/nevertable
+    networks:
+      - frontend
+      - backend
+  db:
+    image: mariadb:10.10.2
+    volumes:
+      - "data_db:/var/lib/mysql"
+    networks:
+      - backend
+    environment:
+      MARIADB_ROOT_HOST: localhost
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASS}
+
+volumes:
+  data_db:
+
+networks:
+  frontend:
+  backend:
+    internal: true
