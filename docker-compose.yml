@@ -1,21 +1,19 @@
 services:
-  web:
-    image: parasti/nevertable:devel
+  nevertable-web:
+    image: nevertable:latest
     build:
       context: "."
       args:
         - "extra_extensions=xdebug"
     volumes:
-      - ".:/var/www/html"
-      - "./docker/php.ini:/usr/local/etc/php/php.ini"
-      - "./docker/vhost.conf:/etc/apache2/sites-enabled/000-default.conf"
+      - "./data:/var/www/html/public/data"
     ports:
-      - "127.0.0.1:80:80"
+      - "8888:80"
     depends_on:
-      - db
+      - nevertable-db
     extra_hosts:
       - "host.docker.internal:host-gateway" # for xdebug
-  db:
+  nevertable-db:
     image: mariadb:10.10.2
     volumes:
       - "./install:/docker-entrypoint-initdb.d"
@@ -29,6 +27,6 @@ services:
   adminer:
     image: adminer
     ports:
-      - "127.0.0.1:8081:8080"
+      - "8081:8080"
 volumes:
   data_db:

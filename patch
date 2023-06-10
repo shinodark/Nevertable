@@ -1,0 +1,461 @@
+commit a37685aa0099b0c1adac34042d72bdf7ef22cd45
+Author: shinodark <shinooonline@gmail.com>
+Date:   Sat Jun 10 19:49:14 2023 +0200
+
+    Fix ROOT_PATH in php scripts and tweaks to docker-compose.yml
+
+diff --git a/Dockerfile b/Dockerfile
+index d0e31e5..735b538 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -8,5 +8,8 @@ RUN mv "${PHP_INI_DIR}/php.ini-production" "${PHP_INI_DIR}/php.ini"
+ COPY docker/vhost.conf /etc/apache2/sites-enabled/000-default.conf
+ 
+ ADD ./app /var/www/html/
++RUN chown -R www-data:www-data /var/www/html &&\
++    find /var/www/html/ -type d -exec chmod 755 {} \; &&\
++    find /var/www/html/ -type f -exec chmod 644 {} \;
+ 
+ VOLUME /public/data
+\ No newline at end of file
+diff --git a/app/admin/checkdatabase.php b/app/admin/checkdatabase.php
+index 9ee09a5..d8049e4 100644
+--- a/app/admin/checkdatabase.php
++++ b/app/admin/checkdatabase.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/admin/config.php b/app/admin/config.php
+index c6cdf82..8aa1a7d 100644
+--- a/app/admin/config.php
++++ b/app/admin/config.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/admin/dl.php b/app/admin/dl.php
+index 138d908..c32f568 100644
+--- a/app/admin/dl.php
++++ b/app/admin/dl.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/admin/management.php b/app/admin/management.php
+index 3b632de..eed0825 100644
+--- a/app/admin/management.php
++++ b/app/admin/management.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL' ,1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/admin/memberlist.php b/app/admin/memberlist.php
+index c794f14..83c13ec 100644
+--- a/app/admin/memberlist.php
++++ b/app/admin/memberlist.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/admin/recompute.php b/app/admin/recompute.php
+index b9c8512..9121978 100644
+--- a/app/admin/recompute.php
++++ b/app/admin/recompute.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/admin/sets.php b/app/admin/sets.php
+index 9ce91b1..d8bd547 100644
+--- a/app/admin/sets.php
++++ b/app/admin/sets.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/ajax/com_edit.php b/app/ajax/com_edit.php
+index 8b25e05..0ee0711 100644
+--- a/app/ajax/com_edit.php
++++ b/app/ajax/com_edit.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/ajax/com_load.php b/app/ajax/com_load.php
+index 421dd3d..2d69db9 100644
+--- a/app/ajax/com_load.php
++++ b/app/ajax/com_load.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/ajax/comment_preview.php b/app/ajax/comment_preview.php
+index 78d4b25..ef137a5 100644
+--- a/app/ajax/comment_preview.php
++++ b/app/ajax/comment_preview.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/ajax/map_name_edit.php b/app/ajax/map_name_edit.php
+index 869b691..4498902 100644
+--- a/app/ajax/map_name_edit.php
++++ b/app/ajax/map_name_edit.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/ajax/tag_edit.php b/app/ajax/tag_edit.php
+index a6b1e83..59db39e 100644
+--- a/app/ajax/tag_edit.php
++++ b/app/ajax/tag_edit.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/ajax/tag_load.php b/app/ajax/tag_load.php
+index 693badb..3105b72 100644
+--- a/app/ajax/tag_load.php
++++ b/app/ajax/tag_load.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(dirname(__DIR__)) . '/');
++define('ROOT_PATH', dirname(dirname(__FILE__)) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/conditions.php b/app/conditions.php
+index 4f746aa..66ed8f2 100644
+--- a/app/conditions.php
++++ b/app/conditions.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/config.inc.php.dist b/app/config.inc.php
+similarity index 86%
+rename from config.inc.php.dist
+rename to app/config.inc.php
+index c2ee8d9..0cc0ff9 100644
+--- a/config.inc.php.dist
++++ b/app/config.inc.php
+@@ -24,10 +24,10 @@ if (!defined('NVRTBL'))
+ 	
+ /*all path are relative to nevertable dir */
+ $config = array (
+-    "bdd_server"        => "localhost",
+-    "bdd_name"          => "localbase",
+-    "bdd_user"          => "localebase",
+-    "bdd_passwd"        => "pass",
++    "bdd_server"        => "nevertable-db",
++    "bdd_name"          => "nevertable15",
++    "bdd_user"          => "neverdocker",
++    "bdd_passwd"        => "D9LSywsH%F@dGq%a",
+     "bdd_prefix"        => "nvrtbl_",
+     
+     "bdd_debug" 		=> false,
+diff --git a/app/forgot.php b/app/forgot.php
+index 4a06cb8..485aa74 100644
+--- a/app/forgot.php
++++ b/app/forgot.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/index.php b/app/index.php
+index 05661bd..d43b8dd 100644
+--- a/app/index.php
++++ b/app/index.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', '/var/www/html/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', '1');
+ 	
+ include_once ROOT_PATH ."config.inc.php";
+diff --git a/app/login.php b/app/login.php
+index de55b34..80aaf59 100644
+--- a/app/login.php
++++ b/app/login.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', '1');
+ 
+ include_once ROOT_PATH ."config.inc.php";
+diff --git a/app/memberlist.php b/app/memberlist.php
+index b7e5d6b..700c554 100644
+--- a/app/memberlist.php
++++ b/app/memberlist.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/options.php b/app/options.php
+index 3286125..72b8790 100644
+--- a/app/options.php
++++ b/app/options.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/popup_smilies.php b/app/popup_smilies.php
+index 2271e29..cc54407 100644
+--- a/app/popup_smilies.php
++++ b/app/popup_smilies.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/popup_tagtools.php b/app/popup_tagtools.php
+index 932ae4f..257b631 100644
+--- a/app/popup_tagtools.php
++++ b/app/popup_tagtools.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/profile.php b/app/profile.php
+index f47a2fb..fcdf410 100644
+--- a/app/profile.php
++++ b/app/profile.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/record.php b/app/record.php
+index 770a683..99f35b3 100644
+--- a/app/record.php
++++ b/app/record.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/register.php b/app/register.php
+index 3916264..905ea54 100644
+--- a/app/register.php
++++ b/app/register.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define ('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/app/rss-comments.php b/app/rss-comments.php
+index 36ee642..61791f4 100644
+--- a/app/rss-comments.php
++++ b/app/rss-comments.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ define('NVRTBL_PATH', "http://www.nevercorner.net/table/");
+ define('LEVEL', 30);
+diff --git a/app/rss.php b/app/rss.php
+index b6b3675..d3ca574 100644
+--- a/app/rss.php
++++ b/app/rss.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ define('NVRTBL_PATH', "http://www.nevercorner.net/table/");
+ define('LEVEL', 30);
+diff --git a/app/rssincoming.php b/app/rssincoming.php
+index 57be897..e5b31d0 100644
+--- a/app/rssincoming.php
++++ b/app/rssincoming.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ define('NVRTBL_PATH', "http://www.nevercorner.net/table/");
+ define('LEVEL', 30);
+diff --git a/app/stats.php b/app/stats.php
+index 2de4b25..1ef4256 100644
+--- a/app/stats.php
++++ b/app/stats.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+ include_once ROOT_PATH ."includes/classes.php";
+diff --git a/app/upload.php b/app/upload.php
+index 06497fa..c701227 100644
+--- a/app/upload.php
++++ b/app/upload.php
+@@ -20,7 +20,7 @@
+ #
+ # ***** END LICENSE BLOCK *****
+ 
+-define('ROOT_PATH', dirname(__DIR__) . '/');
++define('ROOT_PATH', dirname(__FILE__) . '/');
+ define('NVRTBL', 1);
+ include_once ROOT_PATH ."config.inc.php";
+ include_once ROOT_PATH ."includes/common.php";
+diff --git a/docker-compose.yml b/docker-compose.yml
+index ccd95a5..1b0c8b6 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -1,21 +1,19 @@
+ services:
+-  web:
+-    image: parasti/nevertable:devel
++  nevertable-web:
++    image: nevertable:latest
+     build:
+       context: "."
+       args:
+         - "extra_extensions=xdebug"
+     volumes:
+-      - ".:/var/www/html"
+-      - "./docker/php.ini:/usr/local/etc/php/php.ini"
+-      - "./docker/vhost.conf:/etc/apache2/sites-enabled/000-default.conf"
++      - "./data:/var/www/html/public/data"
+     ports:
+-      - "127.0.0.1:80:80"
++      - "8888:80"
+     depends_on:
+-      - db
++      - nevertable-db
+     extra_hosts:
+       - "host.docker.internal:host-gateway" # for xdebug
+-  db:
++  nevertable-db:
+     image: mariadb:10.10.2
+     volumes:
+       - "./install:/docker-entrypoint-initdb.d"
+@@ -29,6 +27,6 @@ services:
+   adminer:
+     image: adminer
+     ports:
+-      - "127.0.0.1:8081:8080"
++      - "8081:8080"
+ volumes:
+-  data_db:
+\ No newline at end of file
++  data_db:
