@@ -44,7 +44,7 @@ $table = new Nvrtbl();
 <title>Tag Tools</title>
 <meta http-equiv="Content-Type" content="text/html"; charset="utf-8"/>
 <link rel="stylesheet" href="<?php echo $css?>" type="text/css" />
-<script type="text/javascript" src="js/toolbar.js"></script>
+<script type="text/javascript" src="public/js/toolbar.js"></script>
 </head>
 <body>
  <table><tr>

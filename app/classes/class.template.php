@@ -46,8 +46,8 @@ class Template
     $this->cache  = new Cache("text");
     
     $this->tpm_args = array();
-    $this->tpl_cur_dir = ROOT_PATH . "public/" . $config['theme_dir'] . $this->table->style->GetStyle() . '/templates/';
-    $this->tpl_def_dir = ROOT_PATH . "public/" . $config['theme_dir'] . $config['theme_default'] . '/templates/';
+    $this->tpl_cur_dir = ROOT_PATH . $config['theme_dir'] . $this->table->style->GetStyle() . '/templates/';
+    $this->tpl_def_dir = ROOT_PATH . $config['theme_dir'] . $config['theme_default'] . '/templates/';
     
     $this->tpl_open = false;
   }

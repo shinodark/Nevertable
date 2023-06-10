@@ -40,8 +40,8 @@ $maps = $this->table->db->helper->SelectMapsName();
 <html>
 <head>
 <?php $this->SubTemplate('_head'); ?>
-<script type="text/javascript" src="../js/jquery-1.3.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="../js/jquery.jeditable.mini.js" charset="utf-8"></script>
+<script type="text/javascript" src="../public/js/jquery-1.3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../public/js/jquery.jeditable.mini.js" charset="utf-8"></script>
 </head>
 <body>
 <div id="page">

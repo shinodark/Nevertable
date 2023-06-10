@@ -39,7 +39,7 @@ class Smilies
     global $config;
 
     $smilpath = $config['nvtbl_path'] . $config['smilies_dir'];
-    $smil = ROOT_PATH . "public/" . $config['smilies_dir'] . "/smilies.txt";
+    $smil = ROOT_PATH . $config['smilies_dir'] . "/smilies.txt";
 
     if (file_exists($smil))
     {

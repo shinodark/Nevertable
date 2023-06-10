@@ -43,8 +43,8 @@ $cache = new Cache("text");
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $lang['code'] ?>" lang="<?php echo $lang['code'] ?>">
 <head>
 <?php $this->SubTemplate('_head'); ?>
-<script type="text/javascript" src="js/jquery-1.3.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="js/jquery.jeditable.mini.js" charset="utf-8"></script>
+<script type="text/javascript" src="public/js/jquery-1.3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="public/js/jquery.jeditable.mini.js" charset="utf-8"></script>
 </head>
 <body>
 <div id="topback">
@@ -158,7 +158,7 @@ change_form_select('newonly','<?php echo $args['newonly']?>');
 <div id="footer">
 <?php $this->SubTemplate('_footer');?>
 </div> 
-<script src="./js/wz_tooltip/wz_tooltip.js" type="text/javascript"></script>
+<script src="./public/js/wz_tooltip/wz_tooltip.js" type="text/javascript"></script>
 </div><!-- page end -->
 </div>
 </body>

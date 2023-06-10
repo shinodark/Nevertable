@@ -120,7 +120,7 @@ $langpath = ROOT_PATH . $config['lang_dir'] . $config['opt_user_lang'] . "/";
 <?php $this->SubTemplate('_footer');?>
 </div>
 
-<script src="./js/wz_tooltip/wz_tooltip.js" type="text/javascript"></script>
+<script src="./public/js/wz_tooltip/wz_tooltip.js" type="text/javascript"></script>
 </div><!-- page end -->
 </body>
 </html>

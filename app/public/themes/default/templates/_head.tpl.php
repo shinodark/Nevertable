@@ -37,4 +37,4 @@ if (!defined('NVRTBL'))
 <meta name="Description" content="Neverball Hall of Fame - Contest between hardcore Neverballers" />
 <meta name="Keywords" content="neverball, contest, nevercorner, game, ball, super monkey ball" />
 
-<script type="text/javascript" src="<?php echo $config['nvtbl_path'] ?>js/jsutil.js"></script>
+<script type="text/javascript" src="<?php echo $config['nvtbl_path'] ?>public/js/jsutil.js"></script>

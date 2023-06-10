@@ -56,7 +56,7 @@ $pseudo = isset($fields['pseudo']) ?  $fields['pseudo'] :  $_SESSION['user_pseud
 </td>
 </tr><tr>
 <td>
-<script type="text/javascript" src="<?php echo $config['nvtbl_path']."js/toolbar.js"?>"></script>
+<script type="text/javascript" src="<?php echo $config['nvtbl_path']."public/js/toolbar.js"?>"></script>
 <script type="text/javascript">setTextArea(document.forms['commentform'].content)</script>
 <?php foreach($toolbar_el as $key => $func) { ?>
     <a href="javascript:<?php echo $func?>()"><?php echo $this->table->style->GetIcon($key)?></a>
